@@ -1,0 +1,31 @@
+
+alias t="tail -f"
+
+alias ls='ls -1FhG'
+alias ll='ls -al'
+
+alias grep='grep --color=tty'
+
+alias g=growl-cmd
+
+# Git
+# alias git=hub
+
+alias gc='git commit'
+alias gco='git checkout'
+alias gst='git status'
+alias gp='git pull'
+alias gpu='git push'
+alias gaa='git add .'
+alias gb='git branch'
+
+alias grm="git status | grep deleted | awk '{ print \$3 }' | xargs git rm"
+alias grml="git status | grep deleted | awk '{ print \$3 }'"
+
+# Git flow
+alias gf="git flow"
+alias gff="git flow feature"
+
+# Rails
+alias r=rails
+
