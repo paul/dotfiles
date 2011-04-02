@@ -24,3 +24,4 @@ source $ZSH/oh-my-zsh.sh
 
 source ~/.aliases
 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
