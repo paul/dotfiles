@@ -1,0 +1,58 @@
+[user]
+  name = Paul Sadauskas
+  email = psadauskas@gmail.com
+[core]
+  editor = /usr/bin/vim
+  excludesfile = ~/.gitignore
+[branch]
+  mergeoptions = no-ff
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  ui = auto
+[alias]
+  st    = status
+  co    = checkout
+  ci    = commit -a
+  lg    = log --graph --pretty = format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date = relative
+  c     = commit -m
+  a     = add
+  di    = diff
+  dic   = diff --cached
+  pl    = pull
+  ps    = push
+  plre  = pull --rebase
+  st    = status
+  out   = log origin..HEAD
+  qpl   = log --pretty         = \"%Cblue%h%Creset %Cgreen[%cr]%Creset %s\" origin/production..origin/master
+  graph = log --graph --pretty = format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date = relative
+  ca    = commit --amend
+
+  ff    = flow feature
+  ffs   = flow feature start
+  fff   = flow feature finish
+[status]
+  submodulesummary = true
+[github]
+  user = paul
+  token = 0020b26a3dc5505a1622a2e6b46793d1
+[branch]
+  autosetupmerge = true
+  autosetuprebase = always
+[apply]
+  whitespace = fix
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[format]
+  pretty = %Cblue%h%Creset %Cgreen[%cr]%Creset (%an) %s
+[push]
+  default = tracking
+[sendemail]
+  smtpserver = smtp.gmail.com
+  smtpserverport = 587
+  smtpencryption = tls
+  smtpuser = psadauskas@gmail.com
