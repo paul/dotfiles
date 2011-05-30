@@ -8,6 +8,8 @@ alias grep='grep --color=tty'
 
 alias g=growl-cmd
 
+alias gvim=mvim
+
 # Git
 # alias git=hub
 
