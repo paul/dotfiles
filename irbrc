@@ -61,9 +61,7 @@ if defined? Rails
   # Log to STDOUT if in Rails 3
   if Rails.respond_to?(:logger)
     Rails.logger = @logger
-    if defined? ActiveRecord::Base
-      ActiveRecord::Base.logger = @logger
-    end
+    ActiveRecord::Base.logger = @logger if defined? ActiveRecord::Base
   end
 
 end
