@@ -34,8 +34,6 @@ PATH=$HOME/bin:/usr/local/bin:$PATH
 
 unsetopt correct_all
 
-source ~/bin/ssbe-web.zsh
-
 # prefer GNU utils over the dumb BSD ones:
 source /usr/local/Cellar/coreutils/8.12/aliases
 
