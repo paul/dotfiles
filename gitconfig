@@ -6,6 +6,8 @@
   excludesfile = ~/.gitignore
 [branch]
   mergeoptions = no-ff
+  autosetupmerge = always
+  autosetuprebase = always
 [color]
   diff = auto
   status = auto
@@ -38,9 +40,6 @@
 [github]
   user = paul
   token = 0020b26a3dc5505a1622a2e6b46793d1
-[branch]
-  autosetupmerge = true
-  autosetuprebase = always
 [apply]
   whitespace = fix
 [color "status"]
