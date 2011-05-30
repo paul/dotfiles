@@ -16,7 +16,7 @@ export ZSH_THEME="rando"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(brew bundler git rails3 ruby vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -25,3 +25,17 @@ source $ZSH/oh-my-zsh.sh
 source ~/.aliases
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+# automatically enter directories without cd
+setopt auto_cd
+cdpath=(~/Code ~/Code/api)
+
+PATH=$HOME/bin:/usr/local/bin:$PATH
+
+unsetopt correct_all
+
+source ~/bin/ssbe-web.zsh
+
+# prefer GNU utils over the dumb BSD ones:
+source /usr/local/Cellar/coreutils/8.12/aliases
+
