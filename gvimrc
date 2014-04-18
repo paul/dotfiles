@@ -1,6 +1,7 @@
 " Font
-set guifont=EnvyCodeR:h13
-set noantialias
+"set guifont=EnvyCodeR:h12
+"set noantialias
+set guifont=Anonymous\ Pro\ for\ Powerline:h14
 
 " No audible bell
 set vb
@@ -20,6 +21,6 @@ set guioptions+=a
 " Use console dialogs
 set guioptions+=c
 
-hi normal guibg=black
+"hi normal guibg=black
 "set transp=5
 

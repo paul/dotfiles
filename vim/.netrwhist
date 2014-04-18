@@ -1,11 +1,4 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =9
-let g:netrw_dirhist_1='/Users/rando/Code/api/core/app/helpers'
-let g:netrw_dirhist_2='/Users/rando/Code/api/core/spec/services/observations'
-let g:netrw_dirhist_3='/Users/rando/Code/api/alarm/web/vendor/plugins/internal_gems'
-let g:netrw_dirhist_4='/Users/rando/Code/api/alarm/web/vendor/plugins/internal_gems/lib'
-let g:netrw_dirhist_5='/Users/rando/Code/api/core/spec/services/observations'
-let g:netrw_dirhist_6='/Users/rando/Code/api/synops/app/scripts/views/overview'
-let g:netrw_dirhist_7='/Users/rando/Code/api/core/vendor/rack-ssbe_auth/lib/rack'
-let g:netrw_dirhist_8='/Users/rando/Code/api/core/vendor/rack-ssbe_auth/lib'
-let g:netrw_dirhist_9='/Users/rando/Code/api/core/vendor/plugins/caching_respond_to'
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/Users/rando/Code/librato/app-environs/cloudsnarf/production/m3.2xlarge'
+let g:netrw_dirhist_2='/Users/rando/Code/librato/cloudsnarf/app/models/aws_resource'

@@ -112,15 +112,40 @@ set nobackup
 
 " Highlighting {{{
 set background=dark
-if &t_Co >= 256 || has("gui_running")
-   colorscheme ir_black
+syntax on                    " switch syntax highlighting on, when the terminal has colors
+if !has("gui_running")
+  let g:solarized_termcolors=16
+  let g:solarized_bold      =   1
+  let g:solarized_underline =   1
+  let g:solarized_italic    =   1
+endif
+if has("gui_running")
+  let g:solarized_termcolors=256
+  " No audible bell
+  set vb
+
+  " No toolbar
+  set guioptions-=T
+  " no scrollbars
+  set guioptions-=r
+  set guioptions-=R
+  set guioptions-=l
+  set guioptions-=L
+  set guioptions-=b
+
+  " Clipboard when visual select
+  set guioptions+=a
+
+  " Use console dialogs
+  set guioptions+=c
 endif
 
-if &t_Co > 2 || has("gui_running")
-   syntax on                    " switch syntax highlighting on, when the terminal has colors
-   colorscheme ir_black
-endif
+colorscheme solarized
+"endif
 " }}}
+
+set colorcolumn=80,120
+hi ColorColumn ctermbg=234 guibg=#1D1E2C
 
 " Shortcut mappings {{{
 " Since I never use the ; key anyway, this is a real optimization for almost
@@ -208,4 +233,25 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " shortcut to jump to next conflict marker
 nmap <silent> ,c /^\(<\\|=\\|>\)\{7\}\([^=].\+\)\?$<CR>
 " }}}
+
+" Turn off line numbers when copying to RTF/HTML
+let g:html_number_lines=0
+
+" Unite
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy', 'sorter_rank'])
+nnoremap <leader>t :Unite -no-split -start-insert buffer file_rec/async:!<CR>
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+endfunction
+
+" Airline
+let g:airline_powerline_fonts=1
 
