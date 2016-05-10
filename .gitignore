@@ -1,3 +1,6 @@
 git/.gitconfig.local
 zsh/.env.local
 
+# generated
+nvim/.config/nvim/.netrwhist
+
