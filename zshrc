@@ -64,21 +64,7 @@ export PAGER=most
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-## AWSAM
-export PATH="$PATH:$HOME/Code/librato/awsam/bin"
-if [ -s $HOME/.awsam/bash.rc ]; then
-  source $HOME/.awsam/bash.rc
-fi
-
-#export JAVA_HOME="$(/usr/libexec/java_home)"
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
-export EC2_AMITOOL_HOME="/usr/local/Library/LinkedKegs/ec2-ami-tools/jars"
-export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
-export AWS_CLOUDWATCH_HOME="/usr/local/Library/LinkedKegs/cloud-watch/jars"
-export SERVICE_HOME="$AWS_CLOUDWATCH_HOME"
-export AWS_ELASTICACHE_HOME="/usr/local/Cellar/aws-elasticache/1.7.000/libexec"
-# replace those silly java tools with the nicer aws cli
-#source /usr/local/share/python/aws_zsh_completer.sh
+source /usr/local/share/zsh/site-functions/_aws
 
 export GOPATH=$HOME/Code/go
 
