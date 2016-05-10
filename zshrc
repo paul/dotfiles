@@ -25,17 +25,19 @@ plugins=(
   gem
   git
   git_remote_branch
-  github
+  #github
   go
   golang
+  #gpg-agent
   heroku
   osx
   rails
   ruby
   sublime
-  tmux
-  tmuxinator
+  #tmux
+  #tmuxinator
   vagrant
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
