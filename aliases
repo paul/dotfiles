@@ -7,8 +7,11 @@ alias ll='ls -al'
 
 alias grep='grep --color=tty'
 
-alias gvim=mvim
-alias vim='mvim -v'
+alias vim=nvim
+alias gvim=nvim
+
+# alias gvim=mvim
+# alias vim='mvim -v'
 
 # Git
 alias git=hub
