@@ -56,7 +56,8 @@ PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
 
 unsetopt correct_all
 
-export PGHOST=/var/pgsql_socket
+# export PGHOST=/var/pgsql_socket
+# using postgres-common instead
 
 export EDITOR=vim
 export PAGER=most
