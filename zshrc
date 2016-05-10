@@ -66,7 +66,6 @@ unsetopt correct_all
 # using postgres-common instead
 
 export EDITOR=vim
-export PAGER=most
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
