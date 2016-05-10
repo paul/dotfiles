@@ -7,8 +7,6 @@ alias ll='ls -al'
 
 alias grep='grep --color=tty'
 
-alias n=command-notifier
-
 alias gvim=mvim
 alias vim='mvim -v'
 
