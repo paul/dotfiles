@@ -50,6 +50,10 @@ PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 source ~/.aliases
 eval `dircolors $HOME/.dir_colors`
 
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/base16-tomorrow.dark.sh"
+[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
 # automatically enter directories without cd
 setopt auto_cd
 cdpath=(~/Code/tycho ~/Code/kapost ~/Code)
