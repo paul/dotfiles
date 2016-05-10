@@ -50,7 +50,7 @@ eval `dircolors $HOME/.dir_colors`
 
 # automatically enter directories without cd
 setopt auto_cd
-cdpath=(~/Code)
+cdpath=(~/Code/tycho ~/Code/kapost ~/Code)
 
 PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
 
