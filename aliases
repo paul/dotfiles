@@ -24,6 +24,4 @@ alias r=rails
 alias b=bundle
 alias be='bundle exec'
 
-#alias ack=ag
-
 alias ssh="TERM=screen-256color ssh"
