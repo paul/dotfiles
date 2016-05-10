@@ -27,7 +27,6 @@ set hlsearch         " highlight search terms
 set incsearch        " show search matches as you type
 set list             " show invisible characters
 set listchars=tab:»·,trail:·,extends:#,nbsp:·
-set pastetoggle=<F2> " when in insert mode, press <F2> to go to paste mode, where you can paste mass data that won't be autoindented
 set mouse=a          " enable using the mouse if terminal emulator supports it (xterm does)
 
 
@@ -43,7 +42,7 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp " store swap files in one of
 set viminfo='20,\"80           " read/write a .viminfo file, don't store more than 80 lines of registers
 set wildmenu                   " make tab completion for files/buffers act like bash
 set wildmode=longest:full,full " show a list when pressing tab and complete
-set wildignore=*.swp,*.bak,*.pyc,*.class
+"set wildignore=*.swp,*.bak,*.pyc,*.class,*/tmp/*,*.log
 set title                      " change the terminal's title
 "set visualbell                " don't beep
 set noerrorbells               " don't beep
@@ -68,8 +67,12 @@ set nobackup
 " slows the commands down
 nnoremap ; :
 
-" Change the mapleader from \ to ,
-let mapleader=","
+" Change the mapleader from \ to spacebar
+let mapleader="\<Space>"
+
+" Useful leader shortcuts
+nnoremap <Leader>w :w<CR>
+
 
 " Easy window navigation
 map <C-h> <C-w>h
@@ -78,18 +81,21 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 map <C-tab> <C-w>p
 
-" In normal mode, Space opens command mode
-nnoremap <Space> :
-
 " Make arrow keys useful again
-map <down> <ESC>:bn<RETURN>
+"map <down> <ESC>:bn<RETURN>
 "map <right> <ESC>:Tlist<RETURN>
-"map <left> <ESC>:NERDTreeToggle<RETURN>
-map <up> <ESC>:bp<RETURN>
+map <left> <ESC>:NERDTreeToggle<RETURN>
+map <up> <ESC>:MBEToggle<RETURN>
 
 " Maps autocomplete to tab
 imap <Tab> <C-P>
 
+" Make yank stick things on the OSX clipboard
+set clipboard=unnamed
+
+
+" Strip trailing whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
 
 
 """
@@ -118,7 +124,8 @@ if has("gui_running")
 endif
 
 set background=dark
-colorscheme solarized
+" colorscheme solarized
+colorscheme base16-tomorrow
 
 " Add a ruler at 80 and 120 columns
 set colorcolumn=80,120
@@ -130,6 +137,34 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " shortcut to jump to next conflict marker
 nmap <silent> ,c /^\(<\\|=\\|>\)\{7\}\([^=].\+\)\?$<CR>
 
+"""
+" Files to ignore
+"""
+
+set wildignore=*.o,*.obj,*~,*.pyc "stuff to ignore when tab completing
+set wildignore+=.env
+set wildignore+=.env[0-9]+
+set wildignore+=.env-pypy
+set wildignore+=.git,.gitkeep
+set wildignore+=.tmp
+set wildignore+=.coverage
+set wildignore+=*DS_Store*
+set wildignore+=.sass-cache/
+set wildignore+=__pycache__/
+set wildignore+=.webassets-cache/
+set wildignore+=vendor/rails/**
+set wildignore+=vendor/cache/**
+set wildignore+=*.gem
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=.tox/**
+set wildignore+=.idea/**
+set wildignore+=.vagrant/**
+set wildignore+=.coverage/**
+set wildignore+=*.egg,*.egg-info
+set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=*.so,*.swp,*.zip,*/.Trash/**,*.pdf,*.dmg,*/Library/**,*/.rbenv/**
+set wildignore+=*/.nx/**,*.app
 
 """
 " Plugins
@@ -145,20 +180,19 @@ vmap <Enter> <Plug>(EasyAlign)
 " Start interactive EasyAlign with a Vim movement
 nmap <Leader>a <Plug>(EasyAlign)
 
-" Unite
-let g:unite_source_history_yank_enable = 1
-call unite#filters#matcher_default#use(['matcher_fuzzy', 'sorter_rank'])
-nnoremap <leader>t :Unite -no-split -start-insert buffer file_rec/async:!<CR>
-
-" Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-" Play nice with supertab
-  let b:SuperTabDisabled=1
-" Enable navigation with control-j and control-k in insert mode
-  imap <buffer> <C-j> <Plug>(unite_select_next_line)
-  imap <buffer> <C-k> <Plug>(unite_select_previous_line)
-endfunction
+" fuzzy-search all files
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+      \ --ignore .git
+      \ --ignore .svn
+      \ --ignore .hg
+      \ --ignore .DS_Store
+      \ --ignore "**/tmp/**"
+      \ --ignore "**/node_modules/**"
+      \ -g ""'
+nnoremap <leader>t :CtrlPMixed<CR>
+let g:ctrlp_mruf_relative = 1 " Ignore MRU files in other directories
+"let g:ctlrp_map = '<Leader>t'
+"let g:ctlrp_cmd = 'CtrlPMixed'
 
 " Airline
 let g:airline_powerline_fonts=1

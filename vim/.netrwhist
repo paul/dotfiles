@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/Users/rando/Code/kapost/kale/app/jobs'
+let g:netrw_dirhist_2='/Users/rando/Code/kapost/kale/app/jobs/bitly'
+let g:netrw_dirhist_3='/Users/rando/Code/kapost/savoy'
+let g:netrw_dirhist_4='/Users/rando/Code/kapost/savoy/spec'
+let g:netrw_dirhist_5='/Users/rando/Code/kapost/savoy/spec/jobs'
+let g:netrw_dirhist_6='/Users/rando/Code/kapost/kale'
