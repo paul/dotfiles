@@ -10,12 +10,17 @@
   mergeoptions = no-ff
   autosetupmerge = always
   autosetuprebase = always
+[pull]
+  rebase = true
 [color]
   diff = auto
   status = auto
   branch = auto
   interactive = auto
   ui = auto
+[rebase]
+  autoSquash = true
+  autoStash = true
 [alias]
   b     = branch
   p     = pull
@@ -28,6 +33,10 @@
   graph = log --graph --pretty = format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date = relative
 
   lg    = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+
+  addw  = "!git diff -w --no-color | git apply --cached --ignore-whitespace"
+
+  pr = pull-request
 
   #
   # Working with branches
@@ -87,9 +96,9 @@
   # Checkout their version of a file and add it
   theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
 
-  # Delete any branches that have been merged into master
+  # Delete any branches that have been merged into current branch
   # See also: https://gist.github.com/robmiller/5133264
-  delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+  cleanup-branches = "!git branch --merged | grep -v '\\*' | xargs git branch -d"
 
 [format]
   pretty = %C(magenta reverse)%h%Creset %Cgreen[%cr]%Creset (%an) %s
@@ -121,6 +130,12 @@
   cmd = opendiff \"$LOCAL\" \"$REMOTE\"
   path =
 [mergetool "sourcetree"]
-  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+  cmd = /opt/homebrew-cask/Caskroom/sourcetree/2.2.4/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
   trustExitCode = true
-
+[user]
+  name = Paul Sadauskas
+  email = psadauskas@gmail.com
+[filter "lfs"]
+  clean = git lfs clean %f
+  smudge = git lfs smudge %f
+  required = true
