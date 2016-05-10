@@ -11,7 +11,7 @@ alias gvim=mvim
 alias vim='mvim -v'
 
 # Git
-# alias git=hub
+alias git=hub
 alias g=git
 
 # Rails
