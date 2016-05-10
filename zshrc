@@ -87,6 +87,7 @@ export LD_PRELOAD=/usr/local/lib/libtcmalloc_minimal.dylib
 # Newline before every prompt
 precmd() { print "" }
 
+eval "$(direnv hook zsh)"
 
 # added by travis gem
 [ -f /Users/rando/.travis/travis.sh ] && source /Users/rando/.travis/travis.sh
