@@ -85,3 +85,8 @@ precmd() { print "" }
 
 # added by travis gem
 [ -f /Users/rando/.travis/travis.sh ] && source /Users/rando/.travis/travis.sh
+LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
+if [ -f $LUNCHY_DIR/lunchy-completion.zsh ]; then
+  . $LUNCHY_DIR/lunchy-completion.zsh
+fi
+
