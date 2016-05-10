@@ -1,5 +1,8 @@
-\pset null NULL
-\set HISTSIZE 2000
+\pset null ␀
+\pset format wrapped
+\set HISTSIZE 20000
 \encoding unicode
 
+\x auto
+\timing on
 
