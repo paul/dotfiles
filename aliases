@@ -13,7 +13,6 @@ alias vim='mvim -v'
 # Git
 alias git=hub
 alias g=git
-alias github=/Users/rando/Applications/GitHub.app/Contents/MacOS/github_cli
 
 # Rails
 alias r=rails
