@@ -6,3 +6,4 @@
 /tmp/
 *.tmp*
 *.sql
+node_modules/
