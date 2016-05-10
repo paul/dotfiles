@@ -75,8 +75,8 @@ export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
 #export RUBY_HEAP_MIN_SLOTS=800000
 #export RUBY_FREE_MIN=600000
 # >= 2.1.0
-RUBY_GC_HEAP_FREE_SLOTS=800000
-RUBY_GC_HEAP_INIT_SLOTS=600000
+export RUBY_GC_HEAP_FREE_SLOTS=800000
+export RUBY_GC_HEAP_INIT_SLOTS=600000
 export LD_PRELOAD=/usr/local/lib/libtcmalloc_minimal.dylib
 
 # Newline before every prompt
