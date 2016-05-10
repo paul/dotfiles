@@ -24,13 +24,6 @@ alias r=rails
 alias b=bundle
 alias be='bundle exec'
 
-
-# Librato
-alias run-api='source ~/Code/librato/env/metrics_api_devrc && bundle exec rackup -s thin -p 9292'
-alias run-test-api='source ~/Code/librato/env/metrics_api_testrc && bundle exec rackup -s thin -p 9293'
-
-alias libbie='http -a portal-dev@librato.com:b37a9ab05c2f794caa5741a037d30afca7c7e07ff9823b5916c2416b31394305'
-
 #alias ack=ag
 
 alias ssh="TERM=screen-256color ssh"
