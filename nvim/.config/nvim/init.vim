@@ -91,6 +91,9 @@ nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
 nmap <C-tab> <C-w>p
 
+" Maps autocomplete to tab
+imap <Tab> <C-P>
+
 " Make yank stick things on the OSX clipboard
 set clipboard=unnamed
 
