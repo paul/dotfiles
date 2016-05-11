@@ -23,6 +23,10 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'airblade/vim-gitgutter'
 
+Plug 'neomake/neomake'
+
+Plug 'tpope/vim-commentary'
+
 call plug#end()
 
 " Sensible is some nice defaults, but make sure we load it first
@@ -139,3 +143,7 @@ nmap <leader>] <Plug>AirlineSelectNextTab
 
 " git-gutter
 let g:gitgutter_realtime=250
+
+" Neomake
+" run on file save
+autocmd! BufWritePost * Neomake
