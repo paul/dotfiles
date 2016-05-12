@@ -32,6 +32,8 @@ Plug 'othree/es.next.syntax.vim'
 
 Plug 'junegunn/vim-easy-align'
 
+Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
+
 call plug#end()
 
 " Sensible is some nice defaults, but make sure we load it first
