@@ -27,6 +27,9 @@ Plug 'neomake/neomake'
 
 Plug 'tpope/vim-commentary'
 
+Plug 'othree/yajs.vim'
+Plug 'othree/es.next.syntax.vim'
+
 call plug#end()
 
 " Sensible is some nice defaults, but make sure we load it first
