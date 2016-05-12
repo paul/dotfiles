@@ -30,6 +30,8 @@ Plug 'tpope/vim-commentary'
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
 
+Plug 'junegunn/vim-easy-align'
+
 call plug#end()
 
 " Sensible is some nice defaults, but make sure we load it first
@@ -153,3 +155,10 @@ let g:gitgutter_realtime=250
 " Neomake
 " run on file save
 autocmd! BufWritePost * Neomake
+
+" Easy Align
+" Start interactive EasyAlign in visual mode
+vmap <Enter> <Plug>(EasyAlign)
+
+" Start interactive EasyAlign with a Vim movement
+nmap <Leader>a <Plug>(EasyAlign)
