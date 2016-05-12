@@ -3,7 +3,7 @@
   path = ~/.gitconfig.local
 [core]
   editor = /usr/bin/vim
-  excludesfile = /Users/rando/.gitignore_global
+  excludesfile = /Users/rando/.gitignore.global
 [merge]
   tool = opendiff
 [branch]
