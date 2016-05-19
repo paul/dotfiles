@@ -34,6 +34,8 @@ Plug 'junegunn/vim-easy-align'
 
 Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
 
+Plug 'elzr/vim-json'
+
 call plug#end()
 
 " Sensible is some nice defaults, but make sure we load it first
@@ -164,3 +166,7 @@ vmap <Enter> <Plug>(EasyAlign)
 
 " Start interactive EasyAlign with a Vim movement
 nmap <Leader>a <Plug>(EasyAlign)
+
+" vim-json
+" Disable quote concealing
+let g:vim_json_syntax_conceal = 0
