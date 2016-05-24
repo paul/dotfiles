@@ -110,8 +110,14 @@ set clipboard=unnamed
 autocmd BufWritePre * :%s/\s\+$//e
 
 "
-" Plugin shortcuts
+" Plugin config
 "
+
+" ruby-vim
+" highlight operators
+let ruby_operators = 1
+" spellcheck inside strings
+" let ruby_spellcheck_strings = 1
 
 " Ag.vim
 " use * to search current word in normal mode
