@@ -65,7 +65,7 @@ unsetopt correct_all
 # export PGHOST=/var/pgsql_socket
 # using postgres-common instead
 
-export EDITOR=vim
+export EDITOR=nvim
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
