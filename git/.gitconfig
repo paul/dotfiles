@@ -3,7 +3,7 @@
   path = ~/.gitconfig.local
 [core]
   editor = /usr/bin/vim
-  excludesfile = /Users/rando/.gitignore.global
+	excludesfile = /Users/rando/.gitignore.global
 [merge]
   tool = opendiff
 [branch]
@@ -127,11 +127,11 @@
 [hub]
   protocol = https
 [difftool "sourcetree"]
-  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
 [mergetool "sourcetree"]
-  cmd = /opt/homebrew-cask/Caskroom/sourcetree/2.2.4/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-  trustExitCode = true
+	cmd = /opt/homebrew-cask/Caskroom/sourcetree/2.2.4/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
 [user]
   name = Paul Sadauskas
   email = psadauskas@gmail.com
