@@ -135,7 +135,10 @@
 [user]
   name = Paul Sadauskas
   email = psadauskas@gmail.com
+	signingkey = 1F43CF58
 [filter "lfs"]
   clean = git lfs clean %f
   smudge = git lfs smudge %f
   required = true
+[commit]
+	gpgsign = true
