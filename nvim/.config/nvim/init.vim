@@ -115,9 +115,9 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 " ruby-vim
 " highlight operators
-let ruby_operators = 1
+" let ruby_operators = 1
 " spellcheck inside strings
-" let ruby_spellcheck_strings = 1
+let ruby_spellcheck_strings = 1
 
 " Ag.vim
 " use * to search current word in normal mode
