@@ -53,6 +53,7 @@ colorscheme base16-tomorrow
 set colorcolumn=80,120
 hi ColorColumn ctermbg=234 guibg=#1D1E2C
 
+set autoread                   " automatically reload files if they change on disk
 
 set wrap                       " wrap lines
 set expandtab
@@ -130,7 +131,7 @@ vmap * <Plug>AgActionVisual
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_command_prefix = 'Fzf' " Commands start with Fzf, Eg :FzfGitFiles
-nmap <C-Space> :FzfGitFiles<CR>
+nmap <C-Space> :FzfFiles<CR>
 nmap <C-@> <C-Space>
 
 " Airline
