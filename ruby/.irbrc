@@ -57,10 +57,12 @@ if ENV['RAILS_ENV'] || defined? Rails
   IRB.conf[:PROMPT_MODE] = :CUSTOM
 
   require 'logger'
-  logger = Logger.new(STDOUT)
+  require "active_support/logger"
+  require "active_support/tagged_logger"
+  logger = ActiveSupport::TaggedLogger.new(Logger.new(STDOUT))
 
   # Log to STDOUT if in Rails 3
-  if defined?(Rails) && Rails.respond_to?(:logger)
+  if defined?(Rails) && Rails.respond_to?(:logger=)
     Rails.logger = logger
     ActiveRecord::Base.logger = logger if defined? ActiveRecord::Base
     Mongoid.logger = logger if defined? Mongoid
