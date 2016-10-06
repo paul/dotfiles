@@ -46,12 +46,16 @@ source $ZSH/oh-my-zsh.sh
 
 # prefer GNU utils over the dumb BSD ones:
 PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+    # PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
 
 source ~/.aliases
 eval `dircolors $HOME/.dir_colors`
 
 # Base16 Shell
-BASE16_SHELL="$HOME/.config/base16-shell/base16-tomorrow.dark.sh"
+BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-tomorrow-night.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
 # automatically enter directories without cd
@@ -101,3 +105,8 @@ if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
 else
   eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+[ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
+
