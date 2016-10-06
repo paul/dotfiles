@@ -5,6 +5,10 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 export ZSH_THEME="rando"
 
+if [[ `uname` == "Darwin" ]]; then 
+	OSX=1
+fi
+
 # Set to this to use case-sensitive completion
 # export CASE_SENSITIVE="true"
 
@@ -17,7 +21,6 @@ export ZSH_THEME="rando"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
-  brew
   bundler
   chruby
   colored-man
@@ -26,30 +29,31 @@ plugins=(
   git
   git_remote_branch
   #github
-  go
-  golang
+  #go
+  #golang
   #gpg-agent
   heroku
-  osx
   rails
   ruby
-  sublime
   #tmux
   #tmuxinator
   vagrant
   zsh-syntax-highlighting
 )
 
+if [[ "$OSX" == "1" ]]; then
+	plugins+=(brew osx)
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
 # prefer GNU utils over the dumb BSD ones:
-PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
-MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-
-    # PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-
+if [[ "$OSX" == "1" ]]; then
+	PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+	MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+fi
 
 source ~/.aliases
 eval `dircolors $HOME/.dir_colors`
@@ -66,17 +70,12 @@ PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
 
 unsetopt correct_all
 
-# export PGHOST=/var/pgsql_socket
-# using postgres-common instead
-
 export EDITOR=nvim
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
 source /usr/local/share/zsh/site-functions/_aws
-
-export GOPATH=$HOME/Code/go
 
 export RUBY_GC_MALLOC_LIMIT=1000000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
@@ -86,24 +85,27 @@ export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
 # >= 2.1.0
 export RUBY_GC_HEAP_FREE_SLOTS=800000
 export RUBY_GC_HEAP_INIT_SLOTS=600000
-export LD_PRELOAD=/usr/local/lib/libtcmalloc_minimal.dylib
 
 # Newline before every prompt
 precmd() { print "" }
 
 eval "$(direnv hook zsh)"
 
-LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
-if [ -f $LUNCHY_DIR/lunchy-completion.zsh ]; then
-  . $LUNCHY_DIR/lunchy-completion.zsh
+if [[ "$OSX" == "1" ]]; then
+	LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
+	if [ -f $LUNCHY_DIR/lunchy-completion.zsh ]; then
+		. $LUNCHY_DIR/lunchy-completion.zsh
+	fi
 fi
 
 # GPG Agent
-if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
-  source ~/.gnupg/.gpg-agent-info
-  export GPG_AGENT_INFO
-else
-  eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+if [[ "$OSX" == "1" ]]; then
+	if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
+		source ~/.gnupg/.gpg-agent-info
+		export GPG_AGENT_INFO
+	else
+		eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+	fi
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
