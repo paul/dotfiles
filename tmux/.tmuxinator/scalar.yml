@@ -31,8 +31,21 @@ attach: false
 post: tmux -CC attach -t scalar
 
 windows:
-  - terminal: chruby
-  - server: foreman start web
-  - guard: guard
-  - log: tail -f log/development.log
-  - test_log: tail -f log/test.log
+  - editor: chruby
+  - tests:
+      layout: even-horizontal
+      panes:
+        - t log/test.log
+        - guard
+  - server:
+      layout: even-horizontal
+      panes:
+        - foreman start web
+        - t log/development.log
+  - terminal:
+      layout: even-horizontal
+      panes:
+        - rails c
+        - git status
+
+
