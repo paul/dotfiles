@@ -2,8 +2,9 @@
   # secrets
   path = ~/.gitconfig.local
 [core]
-  editor = /usr/bin/vim
-	excludesfile = /Users/rando/.gitignore.global
+  editor = nvim
+  pager = most
+  excludesfile = /Users/rando/.gitignore.global
 [merge]
   tool = opendiff
 [branch]
@@ -29,7 +30,7 @@
   lol   = log --pretty=oneline --abbrev-commit --graph --decorate
   c     = commit -m
   a     = add
-  st    = status
+  st    = status -sb
   graph = log --graph --pretty = format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date = relative
 
   lg    = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
@@ -128,9 +129,9 @@
   protocol = https
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
-	cmd = /opt/homebrew-cask/Caskroom/sourcetree/2.2.4/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [user]
   name = Paul Sadauskas
@@ -141,4 +142,4 @@
   smudge = git lfs smudge %f
   required = true
 [commit]
-	gpgsign = true
+	#gpgsign = true
