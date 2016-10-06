@@ -9,6 +9,7 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-eunuch'
 
 Plug 'chriskempson/base16-vim'
 
@@ -26,15 +27,17 @@ Plug 'airblade/vim-gitgutter'
 Plug 'neomake/neomake'
 
 Plug 'tpope/vim-commentary'
-
-Plug 'othree/yajs.vim'
-Plug 'othree/es.next.syntax.vim'
+Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
 
 Plug 'junegunn/vim-easy-align'
 
+" Syntax plugins
+Plug 'othree/yajs.vim'
+Plug 'othree/es.next.syntax.vim'
+Plug 'cespare/vim-toml'
 Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
-
 Plug 'elzr/vim-json'
+Plug 'kchmck/vim-coffee-script'
 
 call plug#end()
 
@@ -54,6 +57,7 @@ set colorcolumn=80,120
 hi ColorColumn ctermbg=234 guibg=#1D1E2C
 
 set autoread                   " automatically reload files if they change on disk
+set autowriteall               " Save files when switching buffers
 
 set wrap                       " wrap lines
 set expandtab
