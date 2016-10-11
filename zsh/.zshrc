@@ -1,11 +1,21 @@
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
+export ZSH_CUSTOM=$HOME/.zsh
+
+export BULLETTRAIN_PROMPT_ORDER=(
+  status
+  dir
+  ruby
+  git
+)
+
+
 
 # Set to the name theme to load.
-# Look in ~/.oh-my-zsh/themes/
-export ZSH_THEME="rando"
+# Look in ~/.zsh/themes/
+export ZSH_THEME="bullet-train"
 
-if [[ `uname` == "Darwin" ]]; then 
+if [[ `uname` == "Darwin" ]]; then
 	OSX=1
 fi
 
@@ -75,7 +85,7 @@ export EDITOR=nvim
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-source /usr/local/share/zsh/site-functions/_aws
+[ -f /usr/local/share/zsh/site-functions/_aws ] && source /usr/local/share/zsh/site-functions/_aws
 
 export RUBY_GC_MALLOC_LIMIT=1000000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
@@ -112,3 +122,4 @@ fi
 
 [ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
 
+[ -f /usr/share/chruby/chruby.sh ] && source /usr/share/chruby/chruby.sh

@@ -28,3 +28,6 @@ alias ssh="TERM=screen-256color ssh"
 
 # Docker
 alias dc=docker-compose
+
+# Arch Linux
+alias p=pacaur
