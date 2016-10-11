@@ -108,8 +108,13 @@ nmap <C-tab> <C-w>p
 " Maps autocomplete to tab
 imap <Tab> <C-P>
 
-" Make yank stick things on the OSX clipboard
-set clipboard=unnamed
+let s:uname = system("uname")
+if s:uname == "Darwin\n"
+  " Make yank stick things on the OSX clipboard
+  set clipboard=unnamed
+else
+  set clipboard+=unnamedplus
+endif
 
 " Strip trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
