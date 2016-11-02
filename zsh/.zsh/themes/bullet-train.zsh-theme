@@ -62,7 +62,7 @@ if [ ! -n "${BULLETTRAIN_STATUS_ERROR_BG+1}" ]; then
   BULLETTRAIN_STATUS_ERROR_BG=red
 fi
 if [ ! -n "${BULLETTRAIN_STATUS_FG+1}" ]; then
-  BULLETTRAIN_STATUS_FG=white
+  BULLETTRAIN_STATUS_FG=black
 fi
 
 # TIME
@@ -81,7 +81,7 @@ if [ ! -n "${BULLETTRAIN_CUSTOM_MSG+1}" ]; then
   BULLETTRAIN_CUSTOM_MSG=false
 fi
 if [ ! -n "${BULLETTRAIN_CUSTOM_BG+1}" ]; then
-  BULLETTRAIN_CUSTOM_BG=black
+  BULLETTRAIN_CUSTOM_BG=white
 fi
 if [ ! -n "${BULLETTRAIN_CUSTOM_FG+1}" ]; then
   BULLETTRAIN_CUSTOM_FG=default
@@ -95,7 +95,7 @@ if [ ! -n "${BULLETTRAIN_VIRTUALENV_BG+1}" ]; then
   BULLETTRAIN_VIRTUALENV_BG=yellow
 fi
 if [ ! -n "${BULLETTRAIN_VIRTUALENV_FG+1}" ]; then
-  BULLETTRAIN_VIRTUALENV_FG=white
+  BULLETTRAIN_VIRTUALENV_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_VIRTUALENV_PREFIX+1}" ]; then
   BULLETTRAIN_VIRTUALENV_PREFIX=🐍
@@ -109,7 +109,7 @@ if [ ! -n "${BULLETTRAIN_NVM_BG+1}" ]; then
   BULLETTRAIN_NVM_BG=green
 fi
 if [ ! -n "${BULLETTRAIN_NVM_FG+1}" ]; then
-  BULLETTRAIN_NVM_FG=white
+  BULLETTRAIN_NVM_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_NVM_PREFIX+1}" ]; then
   BULLETTRAIN_NVM_PREFIX="⬡ "
@@ -123,7 +123,7 @@ if [ ! -n "${BULLETTRAIN_RUBY_BG+1}" ]; then
   BULLETTRAIN_RUBY_BG=magenta
 fi
 if [ ! -n "${BULLETTRAIN_RUBY_FG+1}" ]; then
-  BULLETTRAIN_RUBY_FG=white
+  BULLETTRAIN_RUBY_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_RUBY_PREFIX+1}" ]; then
   BULLETTRAIN_RUBY_PREFIX=♦️
@@ -137,7 +137,7 @@ if [ ! -n "${BULLETTRAIN_GO_BG+1}" ]; then
   BULLETTRAIN_GO_BG=cyan
 fi
 if [ ! -n "${BULLETTRAIN_GO_FG+1}" ]; then
-  BULLETTRAIN_GO_FG=white
+  BULLETTRAIN_GO_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_GO_PREFIX+1}" ]; then
   BULLETTRAIN_GO_PREFIX="go "
@@ -151,7 +151,7 @@ if [ ! -n "${BULLETTRAIN_DIR_BG+1}" ]; then
   BULLETTRAIN_DIR_BG=blue
 fi
 if [ ! -n "${BULLETTRAIN_DIR_FG+1}" ]; then
-  BULLETTRAIN_DIR_FG=white
+  BULLETTRAIN_DIR_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_DIR_CONTEXT_SHOW+1}" ]; then
   BULLETTRAIN_DIR_CONTEXT_SHOW=false
@@ -174,7 +174,7 @@ if [ ! -n "${BULLETTRAIN_GIT_COLORIZE_DIRTY_BG_COLOR+1}" ]; then
   BULLETTRAIN_GIT_COLORIZE_DIRTY_BG_COLOR=yellow
 fi
 if [ ! -n "${BULLETTRAIN_GIT_BG+1}" ]; then
-  BULLETTRAIN_GIT_BG=white
+  BULLETTRAIN_GIT_BG=green
 fi
 if [ ! -n "${BULLETTRAIN_GIT_FG+1}" ]; then
   BULLETTRAIN_GIT_FG=black
@@ -431,7 +431,7 @@ prompt_hg() {
     if $(hg prompt >/dev/null 2>&1); then
       if [[ $(hg prompt "{status|unknown}") = "?" ]]; then
         # if files are not added
-        prompt_segment red white
+        prompt_segment red black
         st='±'
       elif [[ -n $(hg prompt "{status|modified}") ]]; then
         # if any modification
@@ -478,7 +478,7 @@ prompt_dir() {
     dir="${dir}%0~"
   else
     #medium directories (default case)
-    dir="${dir}%4(c:...:)%3c"
+    dir="${dir}%3(c::)%2c"
   fi
 
   prompt_segment $BULLETTRAIN_DIR_BG $BULLETTRAIN_DIR_FG $dir
