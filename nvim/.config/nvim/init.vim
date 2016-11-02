@@ -38,6 +38,7 @@ Plug 'cespare/vim-toml'
 Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
 Plug 'elzr/vim-json'
 Plug 'kchmck/vim-coffee-script'
+Plug 'hashivim/vim-hashicorp-tools'
 
 call plug#end()
 
