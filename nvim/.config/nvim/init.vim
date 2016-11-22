@@ -187,3 +187,6 @@ nmap <Leader>a <Plug>(EasyAlign)
 " vim-json
 " Disable quote concealing
 let g:vim_json_syntax_conceal = 0
+
+" less noisy opposing parens
+hi MatchParen cterm=bold ctermbg=none ctermfg=none
