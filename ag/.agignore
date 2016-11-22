@@ -1,5 +1,6 @@
 *-min.js
 **.min.js
+*.bundle.*.js
 *.log
 /log/
 /logs/
