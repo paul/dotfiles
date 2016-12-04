@@ -2,14 +2,20 @@
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$HOME/.zsh
 
+export BULLETTRAIN_CONTEXT_DEFAULT_USER=rando
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+  export BULLETTRAIN_CONTEXT_SHOW=true
+  export BULLETTRAIN_IS_SSH_CLIENT=true
+fi
+
 export BULLETTRAIN_PROMPT_ORDER=(
   status
+  context
   dir
   ruby
   git
 )
-
-
 
 # Set to the name theme to load.
 # Look in ~/.zsh/themes/
