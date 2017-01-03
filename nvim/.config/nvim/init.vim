@@ -141,6 +141,7 @@ vmap * <Plug>AgActionVisual
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_command_prefix = 'Fzf' " Commands start with Fzf, Eg :FzfGitFiles
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nmap <C-Space> :FzfFiles<CR>
 nmap <C-@> <C-Space>
 
