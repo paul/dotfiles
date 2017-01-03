@@ -1,20 +1,20 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == */home/rando/.fzf/bin* ]]; then
-  export PATH="$PATH:/home/rando/.fzf/bin"
+if [[ ! "$PATH" == */Users/rando/Code/dotfiles/zsh/.fzf/bin* ]]; then
+  export PATH="$PATH:/Users/rando/Code/dotfiles/zsh/.fzf/bin"
 fi
 
 # Man path
 # --------
-if [[ ! "$MANPATH" == */home/rando/.fzf/man* && -d "/home/rando/.fzf/man" ]]; then
-  export MANPATH="$MANPATH:/home/rando/.fzf/man"
+if [[ ! "$MANPATH" == */Users/rando/Code/dotfiles/zsh/.fzf/man* && -d "/Users/rando/Code/dotfiles/zsh/.fzf/man" ]]; then
+  export MANPATH="$MANPATH:/Users/rando/Code/dotfiles/zsh/.fzf/man"
 fi
 
 # Auto-completion
 # ---------------
-# [[ $- == *i* ]] && source "/home/rando/.fzf/shell/completion.zsh" 2> /dev/null
+[[ $- == *i* ]] && source "/Users/rando/Code/dotfiles/zsh/.fzf/shell/completion.zsh" 2> /dev/null
 
 # Key bindings
 # ------------
-# source "/home/rando/.fzf/shell/key-bindings.zsh"
+source "/Users/rando/Code/dotfiles/zsh/.fzf/shell/key-bindings.zsh"
 
