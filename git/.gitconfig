@@ -39,6 +39,8 @@
 
   pr = pull-request
 
+  pf = push --force-with-lease
+
   #
   # Working with branches
   #
