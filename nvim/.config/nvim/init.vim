@@ -31,6 +31,8 @@ Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
 
 Plug 'junegunn/vim-easy-align'
 
+Plug 'rhysd/committia.vim'
+
 " Syntax plugins
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
