@@ -16,7 +16,7 @@ Plug 'chriskempson/base16-vim'
 Plug 'rking/ag.vim'             " :Ag search
 Plug 'Chun-Yang/vim-action-ag'  " gag to Ag search, eg `gagiw` to search for word
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 Plug 'vim-airline/vim-airline'
@@ -41,6 +41,8 @@ Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
 Plug 'elzr/vim-json'
 Plug 'kchmck/vim-coffee-script'
 Plug 'hashivim/vim-hashicorp-tools'
+Plug 'elmcast/elm-vim'
+Plug 'ekalinin/Dockerfile.vim'
 
 call plug#end()
 
@@ -101,10 +103,13 @@ set iskeyword+=_
 
 let mapleader="\<Space>"
 
+ if has('nvim') " https://github.com/neovim/neovim/issues/2048
+     nmap <BS> <C-W>h
+ endif
 " Easy window navigation
 nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
+nmap <C-j> <C-w>h
+nmap <C-k> <C-w>l
 nmap <C-l> <C-w>l
 nmap <C-tab> <C-w>p
 
