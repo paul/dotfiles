@@ -17,6 +17,10 @@ export BULLETTRAIN_PROMPT_ORDER=(
   git
 )
 
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+  source /etc/profile.d/vte.sh
+fi
+
 # Set to the name theme to load.
 # Look in ~/.zsh/themes/
 export ZSH_THEME="bullet-train"
@@ -33,6 +37,10 @@ fi
 
 # Uncomment following line if you want to disable colors in ls
 # export DISABLE_LS_COLORS="true"
+
+zstyle :omz:plugins:chruby path /usr/share/chruby/chruby.sh
+zstyle :omz:plugins:chruby auto /usr/share/chruby/auto.sh
+
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -55,6 +63,7 @@ plugins=(
   #tmuxinator
   vagrant
   zsh-syntax-highlighting
+  ssh-agent
 )
 
 if [[ "$OSX" == "1" ]]; then
@@ -75,18 +84,23 @@ source ~/.aliases
 eval `dircolors $HOME/.dir_colors`
 
 # Base16 Shell
-BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-tomorrow-night.sh"
+BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-oceanicnext.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
 # automatically enter directories without cd
 setopt auto_cd
 cdpath=(~/Code/tycho ~/Code/kapost ~/Code)
 
-PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
+N_PREFIX=~/.n
+PATH=./bin:$HOME/bin:$N_PREFIX/bin:$PATH
 
 unsetopt correct_all
 
 export EDITOR=nvim
+export BROWSER=vivaldi-stable
+
+# Enable ssh-agent identities
+zstyle :omz:plugins:ssh-agent identities id_rsyncnet
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
@@ -128,4 +142,7 @@ fi
 
 [ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
 
-[ -f /usr/share/chruby/chruby.sh ] && source /usr/share/chruby/chruby.sh
+# [ -f /usr/share/chruby/chruby.sh ] && source /usr/share/chruby/chruby.sh
+
+# For capybara-qt-webkit
+export QMAKE=/usr/bin/qmake-qt5

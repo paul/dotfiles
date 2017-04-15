@@ -13,6 +13,10 @@ alias gvim=nvim
 # alias gvim=mvim
 # alias vim='mvim -v'
 
+# Linux
+
+alias sc='sudo systemctl'
+
 # Git
 alias git=hub
 alias g=git
@@ -28,4 +32,4 @@ alias ssh="TERM=screen-256color ssh"
 
 # Docker
 alias dc=docker-compose
-alias docker-gc=docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc
+alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
