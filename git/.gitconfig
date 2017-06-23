@@ -4,7 +4,7 @@
 [core]
   editor = nvim
   pager = most
-  excludesfile = /Users/rando/.gitignore.global
+  excludesfile = /home/rando/.gitignore.global
 [merge]
   tool = opendiff
 [branch]
