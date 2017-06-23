@@ -1,4 +1,3 @@
-
 call plug#begin('~/.config/nvim/plugins')
 " Do :PlugInstall after adding things to this list
 
@@ -93,6 +92,8 @@ set showcmd                    " show (partial) command in the last line of the 
 set modeline                   " allow files to include a 'mode line', to override vim defaults
 set modelines=5                " check the first 5 lines for a modeline
 
+set mouse=a
+
 " Try to show more context when scrolling
 set scrolloff=5
 set sidescrolloff=10
@@ -103,13 +104,13 @@ set iskeyword+=_
 
 let mapleader="\<Space>"
 
- if has('nvim') " https://github.com/neovim/neovim/issues/2048
-     nmap <BS> <C-W>h
- endif
+if has('nvim') " https://github.com/neovim/neovim/issues/2048
+    nmap <BS> <C-W>h
+endif
 " Easy window navigation
 nmap <C-h> <C-w>h
-nmap <C-j> <C-w>h
-nmap <C-k> <C-w>l
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
 nmap <C-tab> <C-w>p
 
@@ -198,3 +199,4 @@ let g:vim_json_syntax_conceal = 0
 
 " less noisy opposing parens
 hi MatchParen cterm=bold ctermbg=none ctermfg=none
+
