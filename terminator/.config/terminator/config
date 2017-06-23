@@ -1,15 +1,18 @@
 [global_config]
-  borderless = True
-  dbus = True
-  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
-  focus = mouse
+  always_split_with_profile = True
+  broadcast_default = off
+  enabled_plugins = InactivityWatch, ActivityWatch, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
   inactive_color_offset = 1.0
   scroll_tabbar = True
   title_hide_sizetext = True
   title_transmit_bg_color = "#c0bebf"
 [keybindings]
-  next_tab = <Primary>bracketright
-  prev_tab = <Primary>bracketleft
+  go_next = <Alt>j
+  go_prev = <Alt>k
+  new_window = <Primary><Shift>n
+  next_tab = <Alt>bracketright
+  prev_tab = <Alt>bracketleft
+  split_vert = <Primary><Shift>d
   switch_to_tab_1 = <Primary>1
   switch_to_tab_10 = <Primary>0
   switch_to_tab_2 = <Primary>2
@@ -32,14 +35,11 @@
 [profiles]
   [[default]]
     background_color = "#2d2d2d"
-    background_image = None
     copy_on_selection = True
     cursor_color = "#d3d0c8"
-    font = Anonymous Pro for Powerline 12
+    font = mononoki Nerd Font 11
     foreground_color = "#d3d0c8"
     palette = "#2d2d2d:#f2777a:#99cc99:#ffcc66:#6699cc:#cc99cc:#66cccc:#d3d0c8:#747369:#f2777a:#99cc99:#ffcc66:#6699cc:#cc99cc:#66cccc:#f2f0ec"
-    scroll_on_output = False
     scrollback_lines = 50000
-    scrollbar_position = disabled
-    show_titlebar = False
+    scrollbar_position = hidden
     use_system_font = False
