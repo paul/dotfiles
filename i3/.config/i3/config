@@ -30,7 +30,8 @@ font pango:monospace 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+# bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec xfce4-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -41,6 +42,7 @@ bindsym $mod+d exec dmenu_run
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+backslash exec rofi_run
 
 # change focus
 bindsym $mod+j focus left
@@ -154,3 +156,10 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
 }
+
+# Auto start programs & applets
+exec "nm-applet"
+exec "dropbox start -i"
+exec "shutter --min_at_startup"
+exec "/usr/bin/xscreensaver"
+
