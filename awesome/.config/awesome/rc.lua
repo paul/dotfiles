@@ -54,13 +54,11 @@ launcher = "rofi -combi-modi window,run -show combi -modi combi"
 autorun = true
 autorunApps =
 {
-   "/usr/bin/conky -p 5",
    "dropbox start -i",
    "shutter --min_at_startup",
    "/usr/bin/setxkbmap -option \"ctrl:nocaps\"",
    "/usr/bin/xscreensaver",
-   "xset r rate 200 60",
-   "albert"
+   "/usr/bin/buildnotifyapplet.py"
 }
 if autorun then
    for app = 1, #autorunApps do
