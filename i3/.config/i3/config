@@ -13,11 +13,11 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:mononoki Nerd Font 12
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+# font pango:DejaVu Sans Mono 8
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -31,7 +31,9 @@ floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec xfce4-terminal
+# bindsym $mod+Return exec xfce4-terminal
+bindsym $mod+Return exec urxvt256c-ml
+
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -45,10 +47,10 @@ bindsym $mod+d exec dmenu_run
 bindsym $mod+backslash exec rofi_run
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -57,10 +59,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -69,7 +71,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
+bindsym $mod+b split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -133,10 +135,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -151,15 +153,65 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Colors
+
+set_from_resource $Black          i3wm.color00 #181818
+set_from_resource $grey1          i3wm.color18 #282828
+set_from_resource $grey2          i3wm.color19 #383838
+set_from_resource $Bright_Black   i3wm.color08 #585858
+set_from_resource $grey3          i3wm.color20 #B8B8B8
+set_from_resource $White          i3wm.color07 #D8D8D8
+set_from_resource $grey4          i3wm.color21 #E8E8E8
+set_from_resource $Bright_White   i3wm.color15 #F8F8F8
+set_from_resource $Bright_Red     i3wm.color09 #AB4642
+set_from_resource $Red            i3wm.color01 #AB4642
+set_from_resource $Orange         i3wm.color16 #DC9656
+set_from_resource $Bright_Yellow  i3wm.color11 #F7CA88
+set_from_resource $Yellow         i3wm.color03 #F7CA88
+set_from_resource $Bright_Green   i3wm.color10 #A1B56C
+set_from_resource $Green          i3wm.color02 #A1B56C
+set_from_resource $Bright_Cyan    i3wm.color14 #86C1B9
+set_from_resource $Cyan           i3wm.color06 #86C1B9
+set_from_resource $Blue           i3wm.color04 #7CAFC2
+set_from_resource $Bright_Blue    i3wm.color12 #7CAFC2
+set_from_resource $Bright_Magenta i3wm.color13 #BA8BAF
+set_from_resource $Magenta        i3wm.color05 #BA8BAF
+set_from_resource $Tan            i3wm.color17 #A16946
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+  status_command i3status
+
+  colors {
+    background $Black
+    separator  $Bright_Black
+    statusline $White
+
+    #State             Border        BG            Text
+    focused_workspace  $White        $Bright_Black $White
+    active_workspace   $White        $Yellow       $Black
+    inactive_workspace $Bright_Black $Black        $Bright_Black
+    urgent_workspace   $Red          $Red          $Black
+    binding_mode       $Black        $Yellow       $Black
+  }
 }
 
+
+# Basic color configuration using the Base16 variables for windows and borders.
+#PropertyName           Border BG     Text   Indicator Child Border
+client.focused          $grey1 $grey1 $grey4 $grey1  $grey1
+client.focused_inactive $grey2 $grey2 $White $Yellow $grey2
+client.unfocused        $grey2 $Black $White $Red    $grey2
+client.urgent           $Red   $Red   $Black $Red    $Red
+client.placeholder      $Black $Black $White $Black  $Black
+client.background       $Bright_White
+
 # Auto start programs & applets
-exec "nm-applet"
+exec --no-startup-id xsetroot --solid "#1B2B34"
+exec --no-startup-id compton -CGb
 exec "dropbox start -i"
 exec "shutter --min_at_startup"
 exec "/usr/bin/xscreensaver"
+
 
