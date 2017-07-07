@@ -1,4 +1,0 @@
-pane	0	1	:~	1	:*	1	:/home/rando	0	zsh	:
-pane	0	1	:~	1	:*	2	:/home/rando	1	zsh	:
-window	0	1	1	:*	9ac4,120x59,0,0{60x59,0,0,0,59x59,61,0,1}
-state	0
