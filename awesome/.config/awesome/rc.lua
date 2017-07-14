@@ -45,7 +45,8 @@ end
 beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xfce4-terminal"
+-- terminal = "xfce4-terminal"
+terminal = "urxvt256c-ml"
 editor = os.getenv("EDITOR") or "vi"
 editor_cmd = terminal .. " -e " .. editor
 launcher = "rofi -combi-modi window,run -show combi -modi combi"
