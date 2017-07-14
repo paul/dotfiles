@@ -210,6 +210,7 @@ client.background       $Bright_White
 # Auto start programs & applets
 exec --no-startup-id xsetroot --solid "#1B2B34"
 exec --no-startup-id compton -CGb
+exec --no-startup-id dunst
 exec "dropbox start -i"
 exec "shutter --min_at_startup"
 exec "/usr/bin/xscreensaver"
