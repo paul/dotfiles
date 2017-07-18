@@ -1,0 +1,26 @@
+#include ".config/Xresources.colors"
+
+URxvt*font: xft:mononoki Nerd Font:style=UniqueID:size=11
+/* URxvt*font: xft:AnonymicePowerline Nerd Font:size=11,xft:AnonymicePowerline Nerd Font */
+URxvt*letterSpace: -1
+
+/* URxvt.borderLess: true */
+URxvt.scrollBar: false
+
+URxvt.internalBorder: 0
+URxvt.externalBorder: 0
+
+Xft.dpi: 96
+Xft.antialias: true
+Xft.rgba: rgb
+Xft.hinting: true
+Xft.hintstyle: hintslight
+
+
+URxvt*perl-ext-common: default,matcher
+/* URxvt*perl-ext-common: default,matcher,tabbed */
+URxvt*url-launcher: /usr/bin/xdg-open
+URxvt*matcher.button: 1
+URxvt*saveLines: 100000
+
+
