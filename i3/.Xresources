@@ -1,5 +1,6 @@
 #include ".config/Xresources.colors"
 
+/* Xft.dpi: 144 */
 Xft.dpi: 96
 Xft.autohint: 0
 Xft.lcdfilter:  lcddefault
@@ -17,13 +18,6 @@ URxvt.scrollBar: false
 
 URxvt.internalBorder: 0
 URxvt.externalBorder: 0
-
-Xft.dpi: 96
-Xft.antialias: true
-Xft.rgba: rgb
-Xft.hinting: true
-Xft.hintstyle: hintslight
-
 
 URxvt*perl-ext-common: default,matcher
 /* URxvt*perl-ext-common: default,matcher,tabbed */

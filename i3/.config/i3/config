@@ -13,7 +13,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:mononoki Nerd Font 12
+font pango:mononoki Nerd Font 8
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -212,11 +212,12 @@ hide_edge_borders both
 new_window normal 1
 
 # Auto start programs & applets
-exec --no-startup-id xsetroot --solid "#1B2B34"
 exec --no-startup-id compton -CGb
 exec --no-startup-id dunst
 exec "dropbox start -i"
 exec "shutter --min_at_startup"
 exec "/usr/bin/xscreensaver"
+exec "xsetroot --solid '#1B2B34'"
+exec "~/bin/fix-keyboard"
 
 
