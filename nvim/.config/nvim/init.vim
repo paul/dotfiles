@@ -42,6 +42,7 @@ Plug 'kchmck/vim-coffee-script'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'elmcast/elm-vim'
 Plug 'ekalinin/Dockerfile.vim'
+Plug 'elixir-lang/vim-elixir'
 
 call plug#end()
 
