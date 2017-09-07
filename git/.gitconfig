@@ -126,7 +126,7 @@
   smtpencryption = tls
   smtpuser = psadauskas@gmail.com
 [credential]
-	helper = store
+	helper = libsecret
 [hub]
   protocol = https
 [difftool "sourcetree"]
