@@ -23,7 +23,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'airblade/vim-gitgutter'
 
-Plug 'neomake/neomake'
+" Plug 'neomake/neomake'
 
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
@@ -179,13 +179,33 @@ nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>[ <Plug>AirlineSelectPrevTab
 nmap <leader>] <Plug>AirlineSelectNextTab
 
+" ale linter
+
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+let g:ale_sign_column_always = 1
+let g:ale_sign_error = '✖'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_delay = 500
+
+
+let g:airline#extensions#ale#enabled = 1
+
+
 
 " git-gutter
 let g:gitgutter_realtime=250
 
-" Neomake
-" run on file save
-autocmd! BufWritePost * Neomake
+" " Neomake
+" " run on file save
+" autocmd! BufWritePost * Neomake
+" let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+" let g:neomake_javascript_eslint_maker = {
+"     \ 'args': ['--no-color', '--format', 'compact'],
+"     \ 'errorformat': '%f: line %l\, col %c\, %m'
+"     \ }
+" let g:neomake_javascript_enabled_makers = ['eslint']
 
 " Easy Align
 " Start interactive EasyAlign in visual mode
@@ -201,3 +221,9 @@ let g:vim_json_syntax_conceal = 0
 " less noisy opposing parens
 hi MatchParen cterm=bold ctermbg=none ctermfg=none
 
+" Load all plugins now. ( from ~/.local/share/nvim/site/pack/... )
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
