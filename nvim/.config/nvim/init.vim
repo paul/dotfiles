@@ -12,8 +12,7 @@ Plug 'tpope/vim-eunuch'
 
 Plug 'chriskempson/base16-vim'
 
-Plug 'rking/ag.vim'             " :Ag search
-Plug 'Chun-Yang/vim-action-ag'  " gag to Ag search, eg `gagiw` to search for word
+Plug 'mileszs/ack.vim'             " :Ag search
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -95,6 +94,12 @@ set modelines=5                " check the first 5 lines for a modeline
 
 set mouse=a
 
+" Maintain undo history between sessions
+set undofile
+set undodir=$HOME/tmp/vimundo
+set undolevels=1000
+set undoreload=10000
+
 " Try to show more context when scrolling
 set scrolloff=5
 set sidescrolloff=10
@@ -135,15 +140,20 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 " ruby-vim
 " highlight operators
-" let ruby_operators = 1
+let ruby_operators = 1
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
-" Ag.vim
-" use * to search current word in normal mode
-nmap * <Plug>AgActionWord
-" use * to search selected text in visual mode
-vmap * <Plug>AgActionVisual
+" ack.vim
+
+" Use ag for ack
+let g:ackprg = 'ag --vimgrep --smart-case'
+cnoreabbrev ag Ack
+
+nmap gag :Ack! <cword><cr>
+nmap * :Ack! <cword><cr>
+
+
 
 " FZF
 " [Buffers] Jump to the existing window if possible
