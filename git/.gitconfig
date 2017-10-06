@@ -3,7 +3,7 @@
   path = ~/.gitconfig.local
 [core]
   editor = nvim
-  pager = most
+  pager = less
   excludesfile = /home/rando/.gitignore.global
 [merge]
   tool = opendiff
