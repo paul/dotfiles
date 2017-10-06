@@ -91,8 +91,7 @@ BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-oceanicnext.sh"
 setopt auto_cd
 cdpath=(~/Code/tycho ~/Code/kapost ~/Code)
 
-N_PREFIX=~/.n
-PATH=./bin:$HOME/bin:$N_PREFIX/bin:$PATH
+PATH=./bin:$HOME/bin:./node_modules/.bin:$PATH
 
 unsetopt correct_all
 
