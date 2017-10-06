@@ -13,7 +13,7 @@
         <value type="int" value="2"/>
         <value type="int" value="5"/>
         <value type="int" value="15"/>
-        <value type="int" value="7"/>
+        <value type="int" value="1"/>
         <value type="int" value="8"/>
         <value type="int" value="6"/>
         <value type="int" value="4"/>
@@ -47,9 +47,9 @@
     <property name="plugin-4" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
     </property>
-    <property name="plugin-7" type="string" value="i3-workspaces"/>
     <property name="plugin-8" type="string" value="separator">
       <property name="style" type="uint" value="1"/>
     </property>
+    <property name="plugin-1" type="string" value="i3-workspaces"/>
   </property>
 </channel>
