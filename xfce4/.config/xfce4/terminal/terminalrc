@@ -3,7 +3,7 @@ MiscAlwaysShowTabs=FALSE
 MiscBell=FALSE
 MiscBellUrgent=FALSE
 MiscBordersDefault=TRUE
-MiscCursorBlinks=FALSE
+MiscCursorBlinks=TRUE
 MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
 MiscDefaultGeometry=80x24
 MiscInheritGeometry=FALSE
@@ -30,6 +30,5 @@ ColorForeground=#C0C5CE
 ColorBackground=#1B2B34
 ColorCursor=x
 ColorPalette=#1B2B34;#EC5f67;#99C794;#FAC863;#6699CC;#C594C5;#5FB3B3;#C0C5CE;#65737E;#EC5f67;#99C794;#FAC863;#6699CC;#C594C5;#5FB3B3;#D8DEE9
-ScrollingOnOutput=FALSE
 ScrollingBar=TERMINAL_SCROLLBAR_NONE
 
