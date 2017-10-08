@@ -13,21 +13,25 @@ Exec_Command=true
 Show_Units=true
 Small_Spacings=false
 Command_Name=xfce4-sensors
-Number_Chips=4
+Number_Chips=5
 Suppress_Hddtemp_Message=false
 Suppress_Tooltip=true
 Preferred_Width=593
 Preferred_Height=554
 
 [Chip0]
-Name=acpitz-0
+Name=nct6776-a00
 Number=0
 
 [Chip1]
-Name=coretemp-0
+Name=acpitz-0
 Number=1
 
-[Chip1_Feature0]
+[Chip2]
+Name=coretemp-0
+Number=2
+
+[Chip2_Feature0]
 Id=0
 Address=0
 Name=CPU
@@ -36,11 +40,11 @@ Show=true
 Min=0.00
 Max=67.00
 
-[Chip2]
-Name=Hard disks
-Number=2
-
 [Chip3]
-Name=ACPI
+Name=Hard disks
 Number=3
+
+[Chip4]
+Name=ACPI
+Number=4
 

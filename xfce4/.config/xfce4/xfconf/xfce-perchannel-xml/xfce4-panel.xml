@@ -28,12 +28,14 @@
     <property name="plugin-6" type="string" value="systray">
       <property name="names-visible" type="array">
         <value type="string" value="networkmanager applet"/>
+        <value type="string" value="litecoin-qt"/>
         <value type="string" value="dnfdragora-updater"/>
         <value type="string" value="shutter"/>
         <value type="string" value="google-play-music-desktop-player"/>
         <value type="string" value="keybase"/>
         <value type="string" value="seapplet"/>
         <value type="string" value="bluetooth"/>
+        <value type="string" value="ktorrent"/>
         <value type="string" value="xfce4-power-manager"/>
         <value type="string" value="slack"/>
         <value type="string" value="blueberry-tray.py"/>
