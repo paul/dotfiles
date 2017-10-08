@@ -1,0 +1,26 @@
+next_color=3
+viewer_size=128
+viewer_text_overlay_position=0
+use_background_color=false
+network_type_0_interface_name=enp0s25
+network_type_1_interface_name=eth1
+network_type_2_interface_name=eth2
+network_type_3_interface_name=ppp
+network_type_4_interface_name=slip
+network_type_5_interface_name=wlan0
+network_type_6_interface_name=wlan1
+network_type_7_interface_name=wlan2
+viewer_text_overlay_enabled=true
+viewer_text_overlay_format_string=%M
+viewer_text_overlay_separator=\ 
+viewer_text_overlay_font=San Francisco Text Light 10
+viewer_text_overlay_color=-1195853569
+
+[1]
+type=network_load
+interface_type=0
+interface_direction=0
+max=5723
+tag=Net
+color=-1050256720
+

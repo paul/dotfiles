@@ -1,0 +1,6 @@
+Command=/home/rando/Code/dotfiles/util/gpmdp-xfce-panel
+UseLabel=0
+Text=Now Playing
+UpdatePeriod=1000
+Font=San Francisco Text 16
+
