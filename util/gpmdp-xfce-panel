@@ -1,0 +1,5 @@
+#!/bin/sh
+
+nowPlaying=$(cat ~/.config/Google\ Play\ Music\ Desktop\ Player/json_store/playback.json| jq -r 'if .playing then "\(.song.artist) - \(.song.title)" else "Not Playing" end')
+echo "<img>/usr/share/icons/breeze-dark/status/22/audio-volume-high.svg</img>"
+echo "<txt><span color='#B8B8B8'>${nowPlaying}</span></txt>"

@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+
+require "socket"
+require "json"
+
+module I3IPC
+  class Connection
+    I3_IPC = "i3-ipc"
+
+    def disconnect!
+      @socket.close if @socket
+      @socket = nil
+    end
+
+    def call(command, data = nil)
+      write(command, data)
+      read
+    end
+
+    private
+
+    def write(type, data = nil)
+      socket.write(pack(type, data))
+    end
+
+    def read
+      data = socket.read(14) # "i3-ipc" + 4b len + 4b type
+      magic, len, recv_type = unpack(data)
+      socket.read(len)
+    end
+
+    def pack(type, data = nil)
+      size = data ? data.to_s.bytes.count : 0
+      msg = I3_IPC + [size, type].pack("LL")
+      msg << data.to_s if data
+      msg
+    end
+
+    def unpack(data)
+      header_size = I3_IPC.size
+      head = data[0, header_size]
+      len, type = data[header_size..-1].unpack("LL")
+      [head, len, type]
+    end
+
+    def socket
+      @socket ||= connect!
+    end
+
+    def socket_path
+      @socket_path ||= `i3 --get-socketpath`.chomp!
+    end
+
+    def connect!
+      UNIXSocket.new(socket_path)
+    end
+
+  end
+end
+
+conn = I3IPC::Connection.new
+data = JSON.parse(conn.call(1))
+
+out = String.new
+out << "<txt>"
+
+out << data.map do |ws|
+  title = ws["name"]
+  style = case
+          when ws["visible"]
+            {color: "#E8E8E8"}
+          when ws["urgent"]
+            {color: "#AB4642"}
+          else
+            {color: "#B8B8B8"}
+          end
+  "<span color='#{style[:color]}'>#{title}</span>"
+end.join("  ")
+
+out << "</txt>"
+
+puts out
