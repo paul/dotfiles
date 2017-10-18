@@ -1,4 +1,4 @@
-next_color=2
+next_color=4
 viewer_size=96
 viewer_text_overlay_position=0
 use_background_color=false
@@ -8,6 +8,7 @@ viewer_text_overlay_format_string=%m
 viewer_text_overlay_separator=\ 
 viewer_text_overlay_font=San Francisco Text Light 10
 viewer_type=curve
+background_color=673720575
 
 [1]
 type=cpu_usage

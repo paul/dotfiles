@@ -1,4 +1,4 @@
-next_color=4
+next_color=1
 viewer_size=96
 viewer_text_overlay_position=0
 use_background_color=false
@@ -19,6 +19,6 @@ viewer_text_overlay_separator=\
 [1]
 type=load_average
 tag=Load Avg
-max=2.24174
+max=4.6162
 color=-1050256720
 
