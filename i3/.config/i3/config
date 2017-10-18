@@ -221,4 +221,5 @@ new_window normal 1
 # exec "/usr/bin/xscreensaver"
 # exec "~/bin/fix-keyboard"
 
+for_window [id="0x5e00054"] floading enable resize set 120 80
 
