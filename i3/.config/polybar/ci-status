@@ -1,0 +1,32 @@
+#!/bin/bash
+
+CIRCLE_TOKEN=$(git config --includes --get circleci.api-token)
+
+icon=""
+success="#A1B56C"
+failed="#AB4642"
+building="#F7CA88"
+
+recent_builds=$(http --ignore-stdin --json --auth ${CIRCLE_TOKEN}: https://circleci.com/api/v1.1/recent-builds)
+outcome=$(echo ${recent_builds} | jq 'first(.[] | select(.user.login == "paul" and .outcome != null)) | .outcome' -r)
+
+case "$outcome" in
+  success)
+    printf "%%{F%s}%s" $success $icon
+    ;;
+
+  failed)
+    printf "%%{F%s}%s" $failed $icon
+    ;;
+
+  cancelled)
+    ;;
+
+  timedout)
+    ;;
+
+
+
+esac
+
+

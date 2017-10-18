@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cat ~/.config/Google\ Play\ Music\ Desktop\ Player/json_store/playback.json| jq -r 'if .playing then "\(.song.artist) - \(.song.title)" else "Not Playing" end'

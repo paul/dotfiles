@@ -47,7 +47,7 @@ font-1 = mononoki Nerd Font:size=14;1
 
 modules-left = i3
 modules-center =
-modules-right = now-playing cpu memory temperature filesystem net volume date powermenu
+modules-right = now-playing ci cpu memory temperature filesystem net volume date powermenu
 
 tray-position = right
 tray-padding = 2
@@ -117,6 +117,12 @@ label-urgent-padding = 2
 type = custom/script
 format =  <label>
 exec = ~/bin/now-playing
+
+[module/ci]
+type = custom/script
+exec = ~/bin/ci-status
+tail = true
+
 
 [module/cpu]
 type = internal/cpu
