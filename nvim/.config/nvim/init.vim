@@ -22,6 +22,8 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'airblade/vim-gitgutter'
 
+Plug 'rhysd/devdocs.vim'
+
 " Plug 'neomake/neomake'
 
 Plug 'tpope/vim-commentary'
@@ -188,6 +190,10 @@ nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>[ <Plug>AirlineSelectPrevTab
 nmap <leader>] <Plug>AirlineSelectNextTab
+
+" DevDocs
+nmap K <Plug>(devdocs-under-cursor)
+
 
 " ale linter
 
