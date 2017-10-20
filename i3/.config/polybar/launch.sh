@@ -6,10 +6,12 @@ killall -q polybar
 # Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Launch bar1 and bar2
-polybar primary &
+PRIMARY_MONITOR=$(xrandr | grep -E " connected (primary )?[1-9]+" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
+SECONDARY_MONITOR=$(xrandr | grep -E " connected ^(primary )?[1-9]+" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
 
-if xrandr | grep 'DP-0 connected'; then
-  polybar secondary &
+MONITOR=$PRIMARY_MONITOR polybar primary &
+
+if [ -z ${SECONDARY_MONITOR+x} ]; then
+  MONITOR=$SECONDARY_MONITOR polybar secondary &
 fi
 
