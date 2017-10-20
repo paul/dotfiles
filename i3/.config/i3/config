@@ -154,7 +154,6 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Colors
-
 set_from_resource $Black          i3wm.color00 #181818
 set_from_resource $grey1          i3wm.color18 #282828
 set_from_resource $grey2          i3wm.color19 #383838
@@ -202,7 +201,7 @@ set_from_resource $Tan            i3wm.color17 #A16946
 
 # Basic color configuration using the Base16 variables for windows and borders.
 #PropertyName           Border        BG     Text   Indicator     Child Border
-client.focused          $Bright_Black $Cyan  $Black $Bright_Black $Bright_Black
+client.focused          $Bright_Black $Blue  $Black $Bright_Black $Bright_Black
 client.focused_inactive $grey2        $grey2 $White $Yellow       $grey2
 client.unfocused        $grey2        $Black $White $Red          $grey2
 client.urgent           $Red          $Red   $Black $Red          $Red

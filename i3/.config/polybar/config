@@ -18,8 +18,8 @@ primary = ${xrdb:color4:#ffb52a}
 secondary = ${xrdb:color2:#e60053}
 alert = ${xrdb:color1:#bd2c40}
 
-[bar/example]
-;monitor = ${env:MONITOR:HDMI-1}
+[bar/primary]
+monitor = ${env:MONITOR:DP-1}
 width = 100%
 height = 28
 ;offset-x = 1%
@@ -47,7 +47,7 @@ font-1 = mononoki Nerd Font:size=14;1
 
 modules-left = i3
 modules-center =
-modules-right = now-playing ci cpu memory temperature filesystem net volume date powermenu
+modules-right = now-playing ci cpu memory temperature filesystem net wifi volume date powermenu
 
 tray-position = right
 tray-padding = 2
@@ -67,6 +67,57 @@ wm-restack = i3
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+
+[bar/secondary]
+monitor = ${env:MONITOR:DP-0}
+width = 100%
+height = 28
+;offset-x = 1%
+;offset-y = 1%
+radius = 0.0
+fixed-center = false
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 3
+line-color = #f00
+
+border-size = 0
+border-color = #00000000
+
+padding-left = 0
+padding-right = 2
+
+module-margin-left = 2
+module-margin-right = 2
+
+font-0 = San Francisco Text:size=12;0
+font-1 = mononoki Nerd Font:size=14;1
+
+modules-left = i3
+modules-center =
+modules-right =
+
+tray-position =
+tray-padding =
+;tray-transparent = true
+;tray-background = #0063ff
+
+;wm-restack = bspwm
+wm-restack = i3
+
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+;scroll-up = i3wm-wsnext
+;scroll-down = i3wm-wsprev
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
 
 [module/filesystem]
 type = internal/fs
@@ -116,11 +167,11 @@ label-urgent-padding = 2
 [module/now-playing]
 type = custom/script
 format =  <label>
-exec = ~/bin/now-playing
+exec = ~/.config/polybar/now-playing
 
 [module/ci]
 type = custom/script
-exec = ~/bin/ci-status
+exec = ~/.config/polybar/ci-status
 tail = true
 
 
@@ -129,24 +180,48 @@ type = internal/cpu
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-format = <label> <ramp-coreload>
+format = <ramp-load> <label>
 label = %percentage:2%%
 
-ramp-coreload-0 = ▁
-ramp-coreload-1 = ▂
-ramp-coreload-2 = ▃
-ramp-coreload-3 = ▄
-ramp-coreload-4 = ▅
-ramp-coreload-5 = ▆
-ramp-coreload-6 = ▇
-ramp-coreload-7 = █
+ramp-load-0 = ▁
+ramp-load-1 = ▂
+ramp-load-2 = ▃
+ramp-load-3 = ▄
+ramp-load-4 = ▅
+ramp-load-5 = ▆
+ramp-load-6 = ▇
+ramp-load-7 = █
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-label = %gb_used%/%gb_total% (%percentage_used%%)
+label = %percentage_used%%
+
+[module/wifi]
+type = internal/network
+interface = wlp110s0
+interval = 3.0
+
+format-connected = <ramp-signal> <label-connected>
+label-connected = %essid%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+ramp-signal-0 = ▁
+ramp-signal-1 = ▂
+ramp-signal-2 = ▃
+ramp-signal-3 = ▄
+ramp-signal-4 = ▅
+ramp-signal-5 = ▆
+ramp-signal-6 = ▇
+ramp-signal-7 = █
+ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/net]
 type = internal/network
@@ -244,7 +319,7 @@ animation-charging-framerate = 750
 [module/temperature]
 type = internal/temperature
 thermal-zone = 2
-hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input
+; hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input
 warn-temperature = 70
 
 format = <ramp> <label>
