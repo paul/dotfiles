@@ -52,9 +52,10 @@
         <value type="string" value="ibus-ui-gtk3"/>
         <value type="string" value="orage"/>
         <value type="string" value="shutter"/>
+        <value type="string" value="seapplet"/>
         <value type="string" value="google-play-music-desktop-player"/>
         <value type="string" value="keybase"/>
-        <value type="string" value="seapplet"/>
+        <value type="string" value="buildnotifyapplet.py"/>
         <value type="string" value="clipman"/>
         <value type="string" value="bluetooth"/>
         <value type="string" value="xfce4-power-manager"/>
@@ -65,6 +66,11 @@
     <property name="plugin-3" type="string" value="i3-workspaces"/>
     <property name="plugin-1" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+    </property>
+    <property name="clipman" type="empty">
+      <property name="settings" type="empty">
+        <property name="add-primary-clipboard" type="bool" value="true"/>
+      </property>
     </property>
   </property>
 </channel>

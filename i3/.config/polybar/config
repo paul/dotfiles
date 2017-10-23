@@ -25,7 +25,7 @@ height = 28
 ;offset-x = 1%
 ;offset-y = 1%
 radius = 0.0
-fixed-center = false
+fixed-center = true
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -47,12 +47,13 @@ font-1 = mononoki Nerd Font:size=14;1
 
 modules-left = i3
 modules-center =
-modules-right = now-playing ci cpu memory temperature filesystem net wifi volume date powermenu
+modules-right = now-playing ci cpu memory temperature filesystem net wifi volume date
 
 tray-position = right
 tray-padding = 2
 ;tray-transparent = true
 ;tray-background = #0063ff
+tray-maxsize=22
 
 ;wm-restack = bspwm
 wm-restack = i3

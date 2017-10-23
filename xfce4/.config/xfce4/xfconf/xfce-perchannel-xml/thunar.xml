@@ -4,12 +4,12 @@
   <property name="last-view" type="string" value="ThunarDetailsView"/>
   <property name="misc-single-click" type="bool" value="false"/>
   <property name="last-icon-view-zoom-level" type="string" value="THUNAR_ZOOM_LEVEL_NORMAL"/>
-  <property name="last-window-width" type="int" value="1857"/>
-  <property name="last-window-height" type="int" value="680"/>
+  <property name="last-window-width" type="int" value="766"/>
+  <property name="last-window-height" type="int" value="1340"/>
   <property name="last-window-maximized" type="bool" value="false"/>
   <property name="last-separator-position" type="int" value="170"/>
   <property name="last-details-view-zoom-level" type="string" value="THUNAR_ZOOM_LEVEL_SMALLER"/>
-  <property name="last-details-view-column-widths" type="string" value="50,195,50,50,1177,50,50,69,244"/>
+  <property name="last-details-view-column-widths" type="string" value="50,195,50,50,477,50,50,83,167"/>
   <property name="misc-file-size-binary" type="bool" value="true"/>
   <property name="misc-date-style" type="string" value="THUNAR_DATE_STYLE_SHORT"/>
 </channel>
