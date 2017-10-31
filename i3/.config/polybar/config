@@ -47,7 +47,7 @@ font-1 = mononoki Nerd Font:size=14;1
 
 modules-left = i3
 modules-center =
-modules-right = now-playing ci cpu memory temperature filesystem net wifi volume date
+modules-right = now-playing cpu memory temperature nvidiatemp filesystem net wifi volume date
 
 tray-position = right
 tray-padding = 2
@@ -169,11 +169,6 @@ label-urgent-padding = 2
 type = custom/script
 format =  <label>
 exec = ~/.config/polybar/now-playing
-
-[module/ci]
-type = custom/script
-exec = ~/.config/polybar/ci-status
-tail = true
 
 
 [module/cpu]
@@ -327,7 +322,7 @@ format = <ramp> <label>
 format-warn = <ramp> <label-warn>
 format-warn-underline = ${colors.alert}
 
-label = %temperature%
+label = CPU %temperature%
 label-warn = %temperature%
 label-warn-foreground = ${colors.secondary}
 
@@ -335,6 +330,11 @@ ramp-0 = 
 ramp-1 = 
 ramp-2 = 
 ramp-foreground = ${colors.foreground-alt}
+
+[module/nvidiatemp]
+type = custom/script
+format = GPU <label>°C
+exec = nvidia-settings -q gpucoretemp -t
 
 [module/powermenu]
 type = custom/menu
