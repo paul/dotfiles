@@ -57,11 +57,11 @@ plugins=(
   #golang
   #gpg-agent
   heroku
-  rails
-  ruby
+  # rails # Its just dumb aliases
+  # ruby
   #tmux
   #tmuxinator
-  vagrant
+  # vagrant
   zsh-syntax-highlighting
   ssh-agent
 )
