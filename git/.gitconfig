@@ -5,6 +5,7 @@
   editor = nvim
   pager = less
   excludesfile = /home/rando/.gitignore.global
+  commentChar = ";"
 [merge]
   tool = opendiff
 [branch]
