@@ -44,6 +44,7 @@ Plug 'hashivim/vim-hashicorp-tools'
 Plug 'elmcast/elm-vim'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'elixir-lang/vim-elixir'
+Plug 'jez/vim-github-hub'
 
 call plug#end()
 
