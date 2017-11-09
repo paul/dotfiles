@@ -193,7 +193,7 @@ nmap <leader>[ <Plug>AirlineSelectPrevTab
 nmap <leader>] <Plug>AirlineSelectNextTab
 
 " DevDocs
-nmap K <Plug>(devdocs-under-cursor)
+" nmap K <Plug>(devdocs-under-cursor)
 
 
 " ale linter
@@ -206,6 +206,10 @@ let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '⚠'
 let g:ale_lint_delay = 500
 
+cnoreabbrev Fix ALEFix
+let g:ale_fixers = {
+\   'ruby': ['rubocop'],
+\}
 
 let g:airline#extensions#ale#enabled = 1
 
