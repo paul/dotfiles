@@ -3,4 +3,5 @@ zsh/.env.local
 
 # generated
 nvim/.config/nvim/.netrwhist
+nvim/.local/share/nvim/shada/main.shada
 
