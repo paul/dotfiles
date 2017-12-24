@@ -127,7 +127,7 @@ interval = 25
 mount-0 = /
 mount-1 = /home
 
-label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %used%/%total%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
@@ -169,6 +169,7 @@ label-urgent-padding = 2
 type = custom/script
 format =  <label>
 exec = ~/.config/polybar/now-playing
+interval = 2
 
 
 [module/cpu]
@@ -323,7 +324,7 @@ format-warn = <ramp> <label-warn>
 format-warn-underline = ${colors.alert}
 
 label = CPU %temperature%
-label-warn = %temperature%
+label-warn = CPU %temperature%
 label-warn-foreground = ${colors.secondary}
 
 ramp-0 = 

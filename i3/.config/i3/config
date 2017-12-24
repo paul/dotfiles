@@ -220,14 +220,15 @@ hide_edge_borders both
 new_window normal 1
 
 # Auto start programs & applets
-# exec --no-startup-id compton -CGb
-# exec --no-startup-id xsetroot --solid "#1B2B34"
-# exec --no-startup-id dunst
-# exec "dropbox start -i"
-# exec "shutter --min_at_startup"
-# exec "/usr/bin/xscreensaver"
-# exec "~/bin/fix-keyboard"
+exec shutter --min_at_startup
+exec parcellite
+exec slack
+exec mailspring
+exec_always --no-startup-id ~/bin/fix-keyboard
 
 for_window [id="0x5e00054"] floating enable resize set 120 80
 for_window [title="Emoji Choice"] floating enable
+
+assign [class="^Slack$"] 10
+assign [class="^Mailspring"] 10
 
