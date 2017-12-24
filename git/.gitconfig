@@ -39,7 +39,7 @@
 
   addw  = "!git diff -w --no-color | git apply --cached --ignore-whitespace"
 
-  pr = pull-request
+  prc = "!hub -c core.commentChar='%' pull-request"
 
   pf = push --force-with-lease
 
