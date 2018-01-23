@@ -143,7 +143,7 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 " ruby-vim
 " highlight operators
-let ruby_operators = 1
+" let ruby_operators = 1 " Breaks HEREDOCs https://github.com/vim-ruby/vim-ruby/issues/358
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
