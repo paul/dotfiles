@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require "http"
+require "json"
+
+TEXTUS_TEAM_ID="T1QMU6KNX"
+
+tokens = JSON.parse(`secret-tool lookup service Slack account tokens`)
+token = tokens[TEXTUS_TEAM_ID]["token"]
+
+msg = ARGV[0]
+
+emoji = case msg
+        when /hacking/i then ":desktop_computer:"
+        when /away/i    then ":ghost:"
+        else
+          ""
+        end
+
+status = {
+  status_text: msg,
+  status_emoji: emoji
+}
+
+HTTP.post("https://slack.com/api/users.profile.set", form: {token: token, profile: status.to_json})

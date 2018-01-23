@@ -1,0 +1,25 @@
+#!/bin/sh
+
+[ $# -eq 0 ] && { echo "Usage: $0 [internal|external|both]"; exit 1; }
+
+$HOME/bin/fix-keyboard
+
+case "$1" in
+  "internal" )
+    nvidia-settings --assign CurrentMetaMode="DP-0: nvidia-auto-select +0+0 {viewportin=2560x1440, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+    xrandr --output DP-0 --auto --scale-from 2560x1440 --panning 2560x1440 --primary
+  ;;
+
+  "external" )
+    nvidia-settings --assign CurrentMetaMode="DP-0: NULL, DP-1: nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+  ;;
+
+  "both" )
+    nvidia-settings --assign CurrentMetaMode="DP-0: nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-1: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+    xrandr --output DP-0 --scale-from 1920x1080 --output DP-1 --primary --pos 1920x0
+  ;;
+
+esac
+
+$HOME/.config/polybar/launch.sh
+xsetroot -solid "#1B2B34"
