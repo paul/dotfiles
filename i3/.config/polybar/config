@@ -42,12 +42,13 @@ padding-right = 2
 module-margin-left = 2
 module-margin-right = 2
 
-font-0 = San Francisco Text:size=12;0
-font-1 = mononoki Nerd Font:size=14;1
+font-0 = Overpass:style=Regular:size=12;0
+font-1 = mononoki Nerd Font Mono:style=Regular:size=14;1
+font-2 = Noto Sans:style=Regular:size=12
 
 modules-left = i3
-modules-center =
-modules-right = now-playing cpu memory temperature nvidiatemp filesystem net wifi volume date
+modules-center = date
+modules-right = now-playing cpu memory temperature nvidiatemp filesystem
 
 tray-position = right
 tray-padding = 2
@@ -137,6 +138,11 @@ format = <label-state> <label-mode>
 index-sort = true
 wrapping-scroll = false
 
+ws-icon-0 = 1;
+ws-icon-1 = 9;
+ws-icon-2 = 10;
+ws-icon-default = 
+
 ; Only show workspaces on the same output as the bar
 pin-workspaces = true
 
@@ -145,23 +151,23 @@ label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
-label-focused = %index%
+label-focused = %index%%icon%
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.primary}
 label-focused-padding = 2
 
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%
+label-unfocused = %index%%icon%
 label-unfocused-padding = 2
 
 ; visible = Active workspace on unfocused monitor
-label-visible = %index%
+label-visible = %index%%icon%
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %index%!
+label-urgent = %index%!%icon%
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 2
 
@@ -222,7 +228,7 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/net]
 type = internal/network
-interface = enp0s25
+interface = enp109s0f1
 interval = 3.0
 
 format-connected-prefix = " "
@@ -243,12 +249,11 @@ interval = 5
 
 date = "%a, %b %d"
 
-time = "%I:%M %P"
+time = "%I:%M%P"
 
-format-prefix = "%{T2}%{T-}"
 format-prefix-foreground = ${colors.foreground-alt}
 
-label = %date% %time%
+label = %time% %date%
 
 [module/volume]
 type = internal/volume

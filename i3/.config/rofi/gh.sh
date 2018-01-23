@@ -15,8 +15,8 @@ then
     # Url-encode query string
     q=$(printf "${@} in:name" | jq -R -r @uri)
 
-    http -vd GET https://api.github.com/search/repositories\?q=${q} "Authorization:${AUTH}" | jq -r '.items | map(.full_name) | .[]'
+    http GET https://api.github.com/search/repositories\?q=${q} "Authorization:${AUTH}" | jq -r '.items | map(.full_name) | .[]'
   fi
 else
-  http -vd GET https://api.github.com/user/starred "Authorization:${AUTH}" | jq -r 'map(.full_name) | .[]'
+  http GET https://api.github.com/user/starred "Authorization:${AUTH}" | jq -r 'map(.full_name) | .[]'
 fi

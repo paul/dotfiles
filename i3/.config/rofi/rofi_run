@@ -1,3 +1,4 @@
 #!/bin/sh
 
-rofi -combi-modi window,run,gh:~/.config/rofi/gh.sh -show combi -modi combi
+rofi -combi-modi window,run -show combi -modi combi
+# rofi -combi-modi window,run,gh:~/.config/rofi/gh.sh -show combi -modi combi

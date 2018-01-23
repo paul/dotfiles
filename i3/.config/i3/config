@@ -44,7 +44,7 @@ bindsym $mod+Shift+q kill
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
-bindsym $mod+backslash exec rofi_run
+bindsym $mod+backslash exec ~/.config/rofi/rofi_run
 
 # change focus
 bindsym $mod+h focus left
@@ -131,9 +131,10 @@ bindsym XF86Launch5 exec "shutter --select"
 bindsym XF86Launch6 exec "shutter --section"
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+#
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK toggle # mute sound
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -212,7 +213,7 @@ set_from_resource $Tan            i3wm.color17 #A16946
 client.focused          $Bright_Black $Blue  $Black $Bright_Black $Bright_Black
 client.focused_inactive $grey2        $grey2 $White $Yellow       $grey2
 client.unfocused        $grey2        $Black $White $Red          $grey2
-client.urgent           $Red          $Red   $Black $Red          $Red
+client.urgent           $grey2          $Black $Red   $Red          $grey2
 client.placeholder      $Black        $Black $White $Black        $Black
 client.background       $Bright_Black
 
@@ -220,15 +221,31 @@ hide_edge_borders both
 new_window normal 1
 
 # Auto start programs & applets
+
+# Gnome
+# exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
+# exec_always --no-startup-id gnome-power-manager
+
+# Xfce
+exec --no-startup-id xfsettingsd --sm-client-disable
+exec --no-startup-id xfce4-volumed
+
+
+# common
+exec nm-applet
 exec shutter --min_at_startup
 exec parcellite
 exec slack
 exec mailspring
-exec_always --no-startup-id ~/bin/fix-keyboard
+exec google-play-music-desktop-player
+
+exec_always --no-startup-id $HOME/config/polybar/launch.sh
+exec_always --no-startup-id $HOME/bin/fix-keyboard
 
 for_window [id="0x5e00054"] floating enable resize set 120 80
 for_window [title="Emoji Choice"] floating enable
 
 assign [class="^Slack$"] 10
 assign [class="^Mailspring"] 10
+assign [class="^Google Play Music Desktop Player$"] 9
 
