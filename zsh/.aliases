@@ -28,7 +28,7 @@ alias r=rails
 alias b=bundle
 alias be='bundle exec'
 
-alias ssh="TERM=screen-256color ssh"
+# alias ssh="TERM=screen-256color ssh"
 
 # Docker
 alias dc=docker-compose

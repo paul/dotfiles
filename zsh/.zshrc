@@ -50,7 +50,7 @@ plugins=(
   colored-man
   docker
   gem
-  git
+  # git  # Adds too many dumb aliases
   git_remote_branch
   #github
   #go
@@ -146,5 +146,15 @@ fi
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+export GOPATH=$HOME/Code/go
+
+# npm -g installs for my user instead
+NPM_PACKAGES="${HOME}/.npm-packages"
+PATH="$PATH:$NPM_PACKAGES/bin"
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh
