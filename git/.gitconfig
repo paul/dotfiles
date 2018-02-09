@@ -5,6 +5,7 @@
   editor = nvim
   pager = less
   excludesfile = /home/rando/.gitignore.global
+	askpass = /usr/bin/ksshaskpass
 [merge]
   tool = opendiff
 [branch]
@@ -45,6 +46,7 @@
 
   # rebasing
   rb = rebase
+  rbm = rebase --interactive master
   rbi = rebase --interactive
   rbc = rebase --continue
   rba = rebase --abort
@@ -152,9 +154,11 @@
   smudge = git lfs smudge %f
   required = true
 [commit]
-	; gpgsign = true
+	gpgsign = true
 [fetch]
 	prune = true
 [rerere]
 	enabled = true
 	autoUpdate = true
+[gpg]
+	program = gpg2
