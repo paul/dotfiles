@@ -9,6 +9,8 @@ Plug 'tpope/vim-rails'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-cucumber'
+Plug 'ruanyl/vim-gh-line'          " <leader>gh to open line on github
 
 Plug 'chriskempson/base16-vim'
 
@@ -55,9 +57,8 @@ runtime! plugin/sensible.vim
 syntax on
 
 set background=dark
-" colorscheme solarized
 let base16colorspace=256
-colorscheme base16-tomorrow
+colorscheme base16-oceanicnext
 
 " Add a ruler at 80 and 120 columns
 set colorcolumn=80,120
@@ -137,6 +138,14 @@ endif
 " Strip trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
 
+" Identify the syntax highlighting group used at the cursor
+map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" On window resize, re-balance the splits
+autocmd VimResized * wincmd =
+
 "
 " Plugin config
 "
@@ -147,8 +156,10 @@ autocmd BufWritePre * :%s/\s\+$//e
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
-" ack.vim
+" gh-line
+let g:gh_open_command = 'xdg-open '
 
+" ack.vim
 " Use ag for ack
 let g:ackprg = 'ag --vimgrep --smart-case'
 cnoreabbrev ag Ack
