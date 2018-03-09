@@ -1,0 +1,9 @@
+[Unit]
+Description=Run backups daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=default.target

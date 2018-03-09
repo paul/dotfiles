@@ -1,0 +1,9 @@
+[Unit]
+Description=Backups my homedir
+Wants=backups.timer
+
+[Service]
+ExecStart=/home/rando/bin/backup.sh
+
+[Install]
+WantedBy=backups.target
