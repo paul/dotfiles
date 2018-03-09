@@ -13,6 +13,7 @@ msg = ARGV[0]
 emoji = case msg
         when /hacking/i then ":desktop_computer:"
         when /away/i    then ":ghost:"
+        when /lunch/i   then ":knife_fork_plate:"
         else
           ""
         end
@@ -23,3 +24,5 @@ status = {
 }
 
 HTTP.post("https://slack.com/api/users.profile.set", form: {token: token, profile: status.to_json})
+
+`systemd-run --user --on-active="1hr" ~/bin/status`
