@@ -38,29 +38,29 @@ fi
 # Uncomment following line if you want to disable colors in ls
 # export DISABLE_LS_COLORS="true"
 
-zstyle :omz:plugins:chruby path /usr/share/chruby/chruby.sh
-zstyle :omz:plugins:chruby auto /usr/share/chruby/auto.sh
+# zstyle :omz:plugins:chruby path /usr/share/chruby/chruby.sh
+# zstyle :omz:plugins:chruby auto /usr/share/chruby/auto.sh
 
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
-  bundler
-  chruby
+  # bundler
+  # chruby
   colored-man
   docker
   gem
-  # git  # Adds too many dumb aliases
+  git  # Adds too many dumb aliases
+  git-extras
+  gitfast # Completion
   git_remote_branch
-  #github
+  github
   #go
   #golang
-  #gpg-agent
+  gpg-agent
   heroku
   # rails # Its just dumb aliases
-  # ruby
-  #tmux
-  #tmuxinator
+  # ruby  # just aliases
   # vagrant
   zsh-syntax-highlighting
   ssh-agent
@@ -89,9 +89,8 @@ BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-oceanicnext.sh"
 
 # automatically enter directories without cd
 setopt auto_cd
-cdpath=(~/Code/tycho ~/Code/kapost ~/Code)
+cdpath=(~/Code/tycho ~/Code)
 
-PATH=./bin:$HOME/bin:./node_modules/.bin:$PATH
 
 unsetopt correct_all
 
@@ -127,21 +126,12 @@ if [[ "$OSX" == "1" ]]; then
 	fi
 fi
 
-# GPG Agent
-if [[ "$OSX" == "1" ]]; then
-	if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
-		source ~/.gnupg/.gpg-agent-info
-		export GPG_AGENT_INFO
-	else
-		eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
-	fi
-fi
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 [ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
 
-# [ -f /usr/share/chruby/chruby.sh ] && source /usr/share/chruby/chruby.sh
+[ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
+[ -f /usr/local/share/chruby/auto.sh ] && source /usr/local/share/chruby/auto.sh
 
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
@@ -152,9 +142,19 @@ export GOPATH=$HOME/Code/go
 NPM_PACKAGES="${HOME}/.npm-packages"
 PATH="$PATH:$NPM_PACKAGES/bin"
 
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh
+# This goes last, cause lots of other things above add shit to the path
+export PATH=./bin:$HOME/bin:./node_modules/.bin:$PATH
+
+function fix_path() {
+  local mypath="./bin:$HOME/bin:./node_modules/.bin"
+  PATH=${PATH/$mypath//} # Remove my preferred paths from the string
+  PATH=$mypath:$PATH     # Prepend it back on the beginning
+  export PATH=$PATH
+}
+
+if [[ ! "$preexec_functions" == *fix_path* ]]; then
+  preexec_functions+=("fix_path")
+fi
+
+
+

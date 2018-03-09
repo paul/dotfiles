@@ -16,6 +16,7 @@ alias gvim=nvim
 # Linux
 
 alias sc='sudo systemctl'
+alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
 
 # Git
 alias git=hub

@@ -10,5 +10,5 @@
 
 # Key bindings
 # ------------
-source "/usr/share/fzf/key-bindings.zsh"
+source "/usr/share/fzf/shell/key-bindings.zsh"
 

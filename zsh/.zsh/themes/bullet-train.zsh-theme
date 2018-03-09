@@ -651,6 +651,6 @@ PROMPT=''
 [[ $BULLETTRAIN_PROMPT_ADD_NEWLINE == true ]] && PROMPT="$PROMPT$NEWLINE"
 PROMPT="$PROMPT"'%{%f%b%k%}$(build_prompt)'
 [[ $BULLETTRAIN_PROMPT_SEPARATE_LINE == true ]] && PROMPT="$PROMPT$NEWLINE"
-PROMPT="$PROMPT"'%{${fg_bold[default]}%}'
+PROMPT="$PROMPT"'%{${fg[default]}%}'
 [[ $BULLETTRAIN_PROMPT_SEPARATE_LINE == false ]] && PROMPT="$PROMPT "
 PROMPT="$PROMPT"'$(prompt_char) %{$reset_color%}'
