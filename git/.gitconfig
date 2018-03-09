@@ -5,7 +5,7 @@
   editor = nvim
   pager = less
   excludesfile = /home/rando/.gitignore.global
-	askpass = /usr/bin/ksshaskpass
+  askpass = /usr/bin/ksshaskpass
 [merge]
   tool = opendiff
 [branch]
@@ -136,7 +136,7 @@
   smtpencryption = tls
   smtpuser = psadauskas@gmail.com
 [credential]
-	helper = libsecret
+  ; helper = libsecret
 [hub]
   protocol = https
 [difftool "sourcetree"]
