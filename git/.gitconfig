@@ -50,6 +50,8 @@
   rbi = rebase --interactive
   rbc = rebase --continue
   rba = rebase --abort
+  # Rebase commits on current branch, without adding in new commits from master
+  rbb = "!git rebase -i `git merge-base master HEAD`"
 
   #
   # Working with branches
@@ -83,8 +85,6 @@
   # As above, but in your difftool
   merge-difftool = "!git difftool `git merge-span ... $1`"
 
-  # Interactively rebase all the commits on the current branch
-  rebase-branch = "!git rebase -i `git merge-base master HEAD`"
 
   #
   # Working with files
