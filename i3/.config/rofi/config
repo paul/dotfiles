@@ -1,24 +1,13 @@
 
-! State:           'bg',     'fg',     'bgalt',  'hlbg',   'hlfg'
-rofi.color-normal: #1b2b34,  #c0c5ce,  #1b2b34,  #65737e,  #c0c5ce
-rofi.color-urgent: #1b2b34,  #ec5f67,  #1b2b34,  #65737e,  #fdf6e3
-rofi.color-active: #1b2b34,  #d8dee9,  #1b2b34,  #65737e,  #d8dee9
-
-!                  'background', 'border', 'separator'
-rofi.color-window: #1b2b34,      #1b2b34,  #002b36
-
-! rofi.background: #151718
-! rofi.foreground: #d6d6d6
-! rofi.hlbg: #41535B
-! rofi.hlfg: #ffffff
-! rofi.bc: #151718
-rofi.eh: 1
-rofi.fullscreen: true
-rofi.width: 100
-rofi.padding: 200
-rofi.lines: 12
-rofi.line-margin: 5
-rofi.font: System San Francisco Display 18
-rofi.opacity: 80
+# rofi.eh: 1
+# rofi.fullscreen: true
+# rofi.width: 100
+# rofi.padding: 200
+# rofi.lines: 12
+# rofi.line-margin: 5
+# rofi.font: System San Francisco Display 18
+# rofi.opacity: 80
+rofi.theme: /home/rando/.local/share/rofi/themes/base16-tomorrow-night.rasi
+rofi.matching: fuzzy
 
 # vim: set ft=xdefaults:
