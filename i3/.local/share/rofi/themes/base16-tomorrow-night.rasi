@@ -25,17 +25,18 @@
     red:  @base08;
 
     background:        @base00;
-    background-color:  @background;
+    /* background-color:  @background; */
+    background-color: rgba(29, 31, 33, 80%);
     lightbg:           @base03;
 
     foreground:        @base05;
     lightfg:           @base06;
     border-color:      @foreground;
 
-    normal-background: @background;
+    normal-background: @background-color;
     normal-foreground: @foreground;
 
-    active-background:           @background;
+    active-background:           @background-color;
     active-foreground:           @lightfg;
     selected-active-background:  @blue;
     selected-active-foreground:  @background;
@@ -57,12 +58,14 @@ window {
     font:             "Overpass 14";
     location: center;
     anchor: center;
+    background-color: rgba(29, 31, 33, 20%);
 }
 mainbox {
-    border:  0;
+    border:  20px solid;
+    border-radius: 20;
+    border-color: @normal-background;
     padding: 0;
     margin: 20% 30%;
-    /* background-color: @background; */
 }
 message {
     border:       1px solid 0px 0px ;

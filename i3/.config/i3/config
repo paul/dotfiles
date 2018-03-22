@@ -240,16 +240,10 @@ new_window normal 1
 # exec --no-startup-id xfsettingsd --sm-client-disable
 # exec --no-startup-id xfce4-volumed
 
-for_window [id="0x5e00054"] floating enable resize set 120 80
-for_window [title="Emoji Choice"] floating enable
-
-assign [class="^Slack$"] 10
-assign [class="^Mailspring"] 10
-assign [class="^Google Play Music Desktop Player$"] 9
-
 ## Plasma Integration
 # Try to kill the wallpaper set by Plasma (it takes up the entire workspace and hides everythiing)
 exec --no-startup-id wmctrl -c Plasma
+exec --no-startup-id compton -b
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
 
 ## Avoid tiling popups, dropdown windows from plasma
@@ -264,3 +258,14 @@ for_window [class="Klipper"] floating enable; border none
 for_window [class="Plasmoidviewer"] floating enable; border none
 # Don't focus notification windows
 no_focus [class="plasmashell"]
+
+
+for_window [id="0x5e00054"] floating enable resize set 120 80
+for_window [title="Emoji Choice"] floating enable
+
+# Move apps to specific desktops
+assign [class="^Slack$"] 10
+assign [class="^Mailspring"] 10
+assign [class="^Google Play Music Desktop Player$"] 9
+
+
