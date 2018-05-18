@@ -23,7 +23,7 @@ MERGED_ON_REMOTE=`git branch -r --merged origin/master | sed 's/ *origin\///' | 
 
 if [ "$MERGED_ON_REMOTE" ]; then
 	echo "The following remote branches are fully merged and will be removed:"
-	echo $MERGED_ON_REMOTE
+	echo $MERGED_ON_REMOTE | xargs -n1 | sort
 
 	read -p "Continue (y/N)? "
 	if [ "$REPLY" == "y" ]; then
