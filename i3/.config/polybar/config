@@ -42,7 +42,7 @@ padding-right = 2
 module-margin-left = 2
 module-margin-right = 2
 
-font-0 = Overpass:style=Regular:size=12;0
+font-0 = San Francisco Text:size=12;0
 font-1 = mononoki Nerd Font Mono:style=Regular:size=14;1
 font-2 = Noto Sans:style=Regular:size=12
 
@@ -96,6 +96,7 @@ module-margin-right = 2
 
 font-0 = San Francisco Text:size=12;0
 font-1 = mononoki Nerd Font:size=14;1
+font-2 = Noto Sans:style=Regular:size=12
 
 modules-left = i3
 modules-center =
@@ -151,23 +152,23 @@ label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
-label-focused = %index%%icon%
+label-focused = %name% %icon%
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.primary}
 label-focused-padding = 2
 
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%%icon%
+label-unfocused = %name% %icon%
 label-unfocused-padding = 2
 
 ; visible = Active workspace on unfocused monitor
-label-visible = %index%%icon%
+label-visible = %name% %icon%
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %index%!%icon%
+label-urgent = %name% %icon%
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 2
 
@@ -328,8 +329,8 @@ format = <ramp> <label>
 format-warn = <ramp> <label-warn>
 format-warn-underline = ${colors.alert}
 
-label = CPU %temperature%
-label-warn = CPU %temperature%
+label = CPU %temperature-c%
+label-warn = CPU %temperature-c%
 label-warn-foreground = ${colors.secondary}
 
 ramp-0 = 

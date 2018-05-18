@@ -10,7 +10,8 @@ PRIMARY_MONITOR=$(xrandr | grep " connected primary" | sed -e "s/\([A-Z0-9]\+\) 
 # SECONDARY_MONITOR=$(xrandr | grep " connected" | grep -v "primary" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
 
 export MONITOR=$PRIMARY_MONITOR
-polybar primary &
+sleep 2 # give i3 a chance to come up
+$HOME/.local/bin/polybar primary &
 
 # if [ -n "$SECONDARY_MONITOR" ]; then
 #   export MONITOR=$SECONDARY_MONITOR
