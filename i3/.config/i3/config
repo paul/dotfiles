@@ -131,7 +131,7 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-bindsym XF86Launch5 exec "shutter --select"
+bindsym XF86Launch5 exec "flameshot gui"
 bindsym XF86Launch6 exec "shutter --section"
 
 # Pulse Audio controls
@@ -139,6 +139,9 @@ bindsym XF86Launch6 exec "shutter --section"
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK toggle # mute sound
+
+# Ctrl-Alt-l
+bindsym Control+Mod1+l exec --no-startup-id gnome-screensaver-command --lock
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -243,7 +246,9 @@ exec_always --no-startup-id gnome-power-manager
 exec --no-startup-id nm-applet
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
-exec_always ~/.config/polybar/launch.sh
+exec --no-startup-id ibus-daemon -drx # emoji picker
+
+# exec_always ~/.config/polybar/launch.sh
 exec dex -ae i3
 
 # Xfce
