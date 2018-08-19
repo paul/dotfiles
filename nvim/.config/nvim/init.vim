@@ -10,9 +10,8 @@ Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-cucumber'
-Plug 'ruanyl/vim-gh-line'          " <leader>gh to open line on github
 
-Plug 'chriskempson/base16-vim'
+Plug 'ruanyl/vim-gh-line'          " <leader>gh to open line on github
 
 Plug 'mileszs/ack.vim'             " :Ag search
 
@@ -23,10 +22,12 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 Plug 'airblade/vim-gitgutter'
+Plug 'mattn/webapi-vim'
+Plug 'mattn/gist-vim'
 
 Plug 'rhysd/devdocs.vim'
 
-" Plug 'neomake/neomake'
+Plug 'w0rp/ale'
 
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
@@ -36,17 +37,23 @@ Plug 'junegunn/vim-easy-align'
 Plug 'rhysd/committia.vim'
 
 " Syntax plugins
-Plug 'othree/yajs.vim'
-Plug 'othree/es.next.syntax.vim'
+Plug 'chriskempson/base16-vim'
+
 Plug 'cespare/vim-toml'
-Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
-Plug 'elzr/vim-json'
-Plug 'kchmck/vim-coffee-script'
-Plug 'hashivim/vim-hashicorp-tools'
-Plug 'elmcast/elm-vim'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'elixir-lang/vim-elixir'
+Plug 'elmcast/elm-vim'
+Plug 'elzr/vim-json'
+Plug 'hashivim/vim-hashicorp-tools'
 Plug 'jez/vim-github-hub'
+Plug 'kchmck/vim-coffee-script'
+Plug 'nathanielc/vim-tickscript'
+Plug 'nginx/nginx', { 'rtp': 'contrib/vim' }
+Plug 'othree/es.next.syntax.vim'
+Plug 'othree/yajs.vim'
+Plug 'reasonml-editor/vim-reason-plus'
+Plug 'rust-lang/rust.vim'
+
 
 call plug#end()
 
@@ -70,6 +77,7 @@ set autowriteall               " Save files when switching buffers
 set wrap                       " wrap lines
 set expandtab
 set softtabstop=2
+set tabstop=2
 set shiftwidth=2
 set backspace=indent,eol,start " allow backspacing over everything in insert mode
 set autoindent                 " always set autoindenting on
@@ -86,7 +94,7 @@ set smartcase        " ignore case if search pattern is all lowercase, case-sens
 set smarttab         " insert tabs on the start of a line according to shiftwidth, not tabstop
 
 set list             " show invisible characters
-set listchars=tab:»·,trail:·,extends:#,nbsp:·
+set listchars=tab:│·,trail:·,extends:#,nbsp:·
 
 set wildmenu                   " make tab completion for files/buffers act like bash
 set wildmode=longest:full,full " show a list when pressing tab and complete
@@ -113,6 +121,7 @@ set iskeyword+=$
 set iskeyword+=_
 
 let mapleader="\<Space>"
+nmap <CR> :write!<CR> " Enter in normal mode saves
 
 if has('nvim') " https://github.com/neovim/neovim/issues/2048
     nmap <BS> <C-W>h
@@ -152,7 +161,7 @@ autocmd VimResized * wincmd =
 
 " ruby-vim
 " highlight operators
-" let ruby_operators = 1 " Breaks HEREDOCs https://github.com/vim-ruby/vim-ruby/issues/358
+let ruby_operators = 1 " Breaks HEREDOCs https://github.com/vim-ruby/vim-ruby/issues/358
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
@@ -166,7 +175,6 @@ cnoreabbrev ag Ack
 
 nmap gag :Ack! <cword><cr>
 nmap * :Ack! <cword><cr>
-
 
 
 " FZF
@@ -213,18 +221,28 @@ nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '✖'
-let g:ale_sign_warning = '⚠'
+let g:ale_sign_error = 'ﱥ'
+let g:ale_sign_warning = ''
+
+let g:ale_set_highlights = 0
 let g:ale_lint_delay = 500
 
 cnoreabbrev Fix ALEFix
+let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-\   'ruby': ['rubocop'],
+\   'reason':     ['refmt'],
+\   'ruby':       ['rubocop'],
+\   'rust':       ['rustfmt'],
+\   'go':         ['gofmt'],
+\   'elm':        ['elm-format'],
+\   'javascript': ['eslint'],
 \}
 
 let g:airline#extensions#ale#enabled = 1
 
-
+" tickfmt
+let g:tick_fmt_command = "~/Code/go/bin/tickfmt"
+let g:tick_fmt_experimental = 0
 
 " git-gutter
 let g:gitgutter_realtime=250
