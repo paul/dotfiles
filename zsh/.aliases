@@ -17,6 +17,12 @@ alias gvim=nvim
 
 alias sc='sudo systemctl'
 alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
+alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade'
+
+# alias open=xdg-open
+function open () {
+  detach xdg-open "$*"
+}
 
 # Git
 alias git=hub

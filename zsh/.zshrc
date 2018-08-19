@@ -17,9 +17,9 @@ export BULLETTRAIN_PROMPT_ORDER=(
   git
 )
 
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-  source /etc/profile.d/vte.sh
-fi
+# if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+#   source /etc/profile.d/vte.sh
+# fi
 
 # Set to the name theme to load.
 # Look in ~/.zsh/themes/
@@ -38,15 +38,14 @@ fi
 # Uncomment following line if you want to disable colors in ls
 # export DISABLE_LS_COLORS="true"
 
-# zstyle :omz:plugins:chruby path /usr/share/chruby/chruby.sh
-# zstyle :omz:plugins:chruby auto /usr/share/chruby/auto.sh
-
+zstyle :omz:plugins:chruby path ~/.local/share/chruby/chruby.sh
+zstyle :omz:plugins:chruby auto ~/.local/share/chruby/auto.sh
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   # bundler
-  # chruby
+  chruby
   colored-man
   docker
   gem
@@ -130,8 +129,8 @@ fi
 
 [ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
 
-[ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
-[ -f /usr/local/share/chruby/auto.sh ] && source /usr/local/share/chruby/auto.sh
+# [ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
+# [ -f /usr/local/share/chruby/auto.sh ] && source /usr/local/share/chruby/auto.sh
 
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
@@ -142,19 +141,27 @@ export GOPATH=$HOME/Code/go
 NPM_PACKAGES="${HOME}/.npm-packages"
 PATH="$PATH:$NPM_PACKAGES/bin"
 
-# This goes last, cause lots of other things above add shit to the path
-export PATH=./bin:$HOME/bin:./node_modules/.bin:$PATH
 
+# Always my sure my paths are at the front
+typeset -U path # make path unique
 function fix_path() {
-  local mypath="./bin:$HOME/bin:./node_modules/.bin"
-  PATH=${PATH/$mypath//} # Remove my preferred paths from the string
-  PATH=$mypath:$PATH     # Prepend it back on the beginning
-  export PATH=$PATH
+  path=(./bin node_modules/.bin ~/bin ~/.local/bin ~/.npm-packages/bin "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
   preexec_functions+=("fix_path")
 fi
 
+# Don't show less when < 1 page of output
+export LESS="--quit-if-one-screen $LESS"
 
 
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh ]] && . /home/rando/Code/textus/node_modules/tabtab/.completions/sls.zsh
+
+# added by travis gem
+[ -f /home/rando/.travis/travis.sh ] && source /home/rando/.travis/travis.sh
