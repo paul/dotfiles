@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 set -euo pipefail
 # set -vx
@@ -11,15 +11,16 @@ borg create -v --stats                      \
   --compression lz4                         \
   $REPO::${MACHINE}-'{now:%Y-%m-%d}'        \
   /home/rando                               \
-  /etc                                      \
   --exclude '/home/*/*.log'                 \
+  --exclude '/home/*/*.log.*'               \
   --exclude '/home/*/*.dump'                \
+  --exclude '/home/*/*.rdb'                 \
   --exclude '/home/rando/Dropbox'           \
   --exclude '/home/rando/.cache'            \
   --exclude '/home/rando/Downloads'         \
   --exclude '/home/rando/*/Cache/*'
 
-borg prune -v --list $REPO --prefix ${MACHINE}- \
+borg prune -v --list --stats $REPO --prefix ${MACHINE}- --save-space \
   --keep-daily=7 --keep-weekly=4 --keep-monthly=12
 
 

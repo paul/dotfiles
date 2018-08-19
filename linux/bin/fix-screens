@@ -22,3 +22,5 @@ case "$1" in
 esac
 
 xsetroot -solid "#1B2B34"
+~/.config/polybar/launch.sh
+
