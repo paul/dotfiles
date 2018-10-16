@@ -126,7 +126,7 @@ if [ ! -n "${BULLETTRAIN_RUBY_FG+1}" ]; then
   BULLETTRAIN_RUBY_FG=black
 fi
 if [ ! -n "${BULLETTRAIN_RUBY_PREFIX+1}" ]; then
-  BULLETTRAIN_RUBY_PREFIX=♦️
+  BULLETTRAIN_RUBY_PREFIX="%F{red}%F{black}"
 fi
 
 # Go
