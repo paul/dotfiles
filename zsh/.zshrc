@@ -153,7 +153,7 @@ if [[ ! "$preexec_functions" == *fix_path* ]]; then
 fi
 
 # Don't show less when < 1 page of output
-export LESS="--quit-if-one-screen $LESS"
+# export LESS="--quit-if-one-screen $LESS"
 
 
 # tabtab source for serverless package
