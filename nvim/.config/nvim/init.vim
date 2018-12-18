@@ -20,6 +20,7 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'edkolev/tmuxline.vim'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'mattn/webapi-vim'
