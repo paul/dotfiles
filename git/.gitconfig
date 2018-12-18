@@ -5,8 +5,8 @@
   editor = nvim
   pager = less --quit-if-one-screen --no-init
   excludesfile = /home/rando/.gitignore.global
-  ; askpass = /usr/bin/ksshaskpass
-  askpass = /usr/bin/ssh-askpass
+  askpass = /usr/bin/ksshaskpass
+  ; askpass = /usr/bin/ssh-askpass
 [merge]
   tool = opendiff
 [branch]
@@ -143,7 +143,9 @@
   smtpencryption = tls
   smtpuser = psadauskas@gmail.com
 [credential]
-	helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+	; helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+  helper = /usr/libexec/git-core/git-credential-libsecret
+
 [hub]
   protocol = https
 [difftool "sourcetree"]
@@ -168,5 +170,5 @@
 	enabled = true
 	autoUpdate = true
 [gpg]
-  ; program = gpg2 ; fedora
-  program = gpg  ; ubuntu
+  program = gpg2 ; fedora
+  ; program = gpg  ; ubuntu
