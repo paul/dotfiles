@@ -121,7 +121,11 @@ set iskeyword+=$
 set iskeyword+=_
 
 let mapleader="\<Space>"
-nmap <CR> :write!<CR> " Enter in normal mode saves
+
+" Enter in normal mode saves
+nmap <CR> :write!<CR>
+" Except in the quickfix window, which we want the default behavior (open)
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 
 if has('nvim') " https://github.com/neovim/neovim/issues/2048
     nmap <BS> <C-W>h
@@ -169,8 +173,9 @@ let ruby_spellcheck_strings = 1
 let g:gh_open_command = 'xdg-open '
 
 " ack.vim
-" Use ag for ack
-let g:ackprg = 'ag --vimgrep --smart-case'
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep --smart-case'
+endif
 cnoreabbrev ag Ack
 
 nmap gag :Ack! <cword><cr>
