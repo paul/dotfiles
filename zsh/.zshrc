@@ -155,6 +155,8 @@ fi
 # Don't show less when < 1 page of output
 # export LESS="--quit-if-one-screen $LESS"
 
+# Allow C-\ to be used for other things than SIGQUIT
+stty quit undef
 
 # tabtab source for serverless package
 # uninstall by removing these lines or running `tabtab uninstall serverless`
