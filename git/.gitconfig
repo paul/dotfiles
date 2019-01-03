@@ -146,6 +146,9 @@
 	; helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
   helper = /usr/libexec/git-core/git-credential-libsecret
 
+[credential "https://github.com"]
+  username = paul
+
 [hub]
   protocol = https
 [difftool "sourcetree"]
