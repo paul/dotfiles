@@ -31,10 +31,9 @@ floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec xfce4-terminal
+bindsym $mod+Return exec alacritty
 # bindsym $mod+Return exec konsole
 # bindsym $mod+Return exec urxvt256c-ml
-
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -45,7 +44,11 @@ bindsym $mod+Shift+q kill
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
-bindsym $mod+backslash exec ~/.config/rofi/rofi_run
+# bindsym $mod+backslash exec ~/.config/rofi/rofi_run
+#
+# Open krunner with $mod+\
+bindsym $mod+backslash exec qdbus org.kde.kglobalaccel /component/krunner org.kde.kglobalaccel.Component.invokeShortcut 'run command'
+
 
 # change focus
 bindsym $mod+h focus left
@@ -89,7 +92,7 @@ bindsym $mod+e layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -97,7 +100,7 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
-             # backtick
+# backtick
 bindsym $mod+grave workspace back_and_forth
 
 # switch to workspace
@@ -129,19 +132,21 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# Open logout confirmation screen with $mod+e
+bindsym $mod+Shift+e exec qdbus org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1
 
-bindsym XF86Launch5 exec "flameshot gui"
-bindsym XF86Launch6 exec "shutter --section"
+# bindsym XF86Launch5 exec "flameshot gui"
+# bindsym XF86Launch6 exec "shutter --section"
 
 # Pulse Audio controls
 #
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK toggle # mute sound
+# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% #increase sound volume
+# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% #decrease sound volume
+# bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK toggle # mute sound
 
 # Ctrl-Alt-l
-bindsym Control+Mod1+l exec --no-startup-id gnome-screensaver-command --lock
+# bindsym Control+Mod1+l exec --no-startup-id gnome-screensaver-command --lock
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -237,19 +242,20 @@ new_window normal 1
 
 # Auto start programs & applets
 
-exec_always --no-startup-id ~/bin/fix-screens external
-exec_always --no-startup-id ~/bin/fix-keyboard
+# exec_always --no-startup-id ~/bin/fix-screens external
+# exec_always --no-startup-id ~/bin/fix-keyboard
 
 # Gnome
-exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
-exec_always --no-startup-id gnome-power-manager
-exec --no-startup-id nm-applet
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
+# exec_always --no-startup-id gnome-power-manager
+# exec --no-startup-id nm-applet
+# exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
-exec --no-startup-id ibus-daemon -drx # emoji picker
+# exec --no-startup-id ibus-daemon -drx # emoji picker
 
 # exec_always ~/.config/polybar/launch.sh
-exec dex -ae i3
+# exec dex -ae i3
+
 
 # Xfce
 # exec --no-startup-id xfsettingsd --sm-client-disable
@@ -261,19 +267,25 @@ exec dex -ae i3
 # exec --no-startup-id compton -b
 # for_window [title="Desktop — Plasma"] kill; floating enable; border none
 
-## Avoid tiling popups, dropdown windows from plasma
+##
+## KDE
+##
+# Avoid tiling popups, dropdown windows from plasma
 # for the first time, manually resize them, i3 will remember the setting for floating windows
-# for_window [class="plasmashell"] floating enable;
-# for_window [class="Plasma"] floating enable; border none
-# for_window [title="plasma-desktop"] floating enable; border none
-# for_window [title="win7"] floating enable; border none
-# for_window [class="krunner"] floating enable; border none
-# for_window [class="Kmix"] floating enable; border none
-# for_window [class="Klipper"] floating enable; border none
-# for_window [class="Plasmoidviewer"] floating enable; border none
+for_window [title="Desktop — Plasma"] kill; floating enable; border none
+for_window [class="plasmashell"] floating enable; floating_maximum_size 1200 x 1200
+for_window [class="Plasma"] floating enable; border none
+for_window [title="plasma-desktop"] floating enable; border none
+for_window [title="win7"] floating enable; border none
+for_window [class="krunner"] floating enable; border none
+for_window [class="Kmix"] floating enable; border none
+for_window [class="Klipper"] floating enable; border none
+for_window [class="Plasmoidviewer"] floating enable; border none
+for_window [class="(?i)*nextcloud*"] floating disable
 # Don't focus notification windows
 no_focus [class="plasmashell"]
 
+exec --no-startup-id feh --bg-scale ~/Dropbox/Backgrounds/Widescreen/blade\ runner.png
 
 for_window [id="0x5e00054"] floating enable resize set 120 80
 for_window [title="Emoji Choice"] floating enable
