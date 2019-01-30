@@ -8,7 +8,11 @@
   askpass = /usr/bin/ksshaskpass
   ; askpass = /usr/bin/ssh-askpass
 [merge]
-  tool = opendiff
+  tool = kdiff3
+  conflictstyle = diff3 # show original content before conflicts
+[diff]
+  wordRegex = [^[:space:]] # For Github-style word diffs
+  algorithm = patience     # combine "functions" together in diff
 [branch]
   mergeoptions = no-ff
   autosetupmerge = always
@@ -122,9 +126,6 @@
 
 [format]
   pretty = %C(magenta reverse)%h%Creset %Cgreen[%cr]%Creset (%an) %s
-[diff]
-  # For Github-style word diffs
-  wordRegex = [^[:space:]]
 [status]
   submodulesummary = true
 [apply]
