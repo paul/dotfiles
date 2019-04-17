@@ -1,0 +1,11 @@
+[Unit]
+Description=Fix user keyboard settings on wake from suspend
+After=suspend.target
+Wants=local-system-resume.service
+Before=local-system-resume.service
+
+[Service]
+ExecStart=/home/rando/bin/backup.sh
+
+[Install]
+WantedBy=suspend.target
