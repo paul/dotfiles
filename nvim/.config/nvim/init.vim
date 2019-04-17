@@ -1,6 +1,8 @@
 call plug#begin('~/.config/nvim/plugins')
 " Do :PlugInstall after adding things to this list
 
+Plug 'vimwiki/vimwiki'
+
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -8,7 +10,6 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-cucumber'
 
 Plug 'ruanyl/vim-gh-line'          " <leader>gh to open line on github
@@ -20,7 +21,6 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'edkolev/tmuxline.vim'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'mattn/webapi-vim'
@@ -55,8 +55,8 @@ Plug 'othree/yajs.vim'
 Plug 'reasonml-editor/vim-reason-plus'
 Plug 'rust-lang/rust.vim'
 
-
 call plug#end()
+
 
 " Sensible is some nice defaults, but make sure we load it first
 " so everything in this file overrides it
@@ -123,6 +123,9 @@ set iskeyword+=_
 
 let mapleader="\<Space>"
 
+" Reload this config
+nmap <leader>r :so $MYVIMRC<CR>
+
 " Enter in normal mode saves
 nmap <CR> :write!<CR>
 " Except in the quickfix window, which we want the default behavior (open)
@@ -160,9 +163,13 @@ map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<
 " On window resize, re-balance the splits
 autocmd VimResized * wincmd =
 
+command! BW :bn|:bd#
+
 "
 " Plugin config
 "
+
+let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki'}]
 
 " ruby-vim
 " highlight operators
@@ -172,6 +179,7 @@ let ruby_spellcheck_strings = 1
 
 " gh-line
 let g:gh_open_command = 'xdg-open '
+" let g:gh_open_command = 'fn() { echo "$@" | xclip -i; } fn '
 
 " ack.vim
 if executable('ag')
@@ -216,6 +224,9 @@ nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>[ <Plug>AirlineSelectPrevTab
 nmap <leader>] <Plug>AirlineSelectNextTab
+
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
 
 " DevDocs
 " nmap K <Plug>(devdocs-under-cursor)
