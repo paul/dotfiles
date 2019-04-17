@@ -92,7 +92,7 @@ bindsym $mod+e layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-# bindsym $mod+space focus mode_toggle
+bindsym $mod+Ctrl+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -272,15 +272,15 @@ new_window normal 1
 ##
 # Avoid tiling popups, dropdown windows from plasma
 # for the first time, manually resize them, i3 will remember the setting for floating windows
-for_window [title="Desktop — Plasma"] kill; floating enable; border none
-for_window [class="plasmashell"] floating enable; floating_maximum_size 1200 x 1200
-for_window [class="Plasma"] floating enable; border none
-for_window [title="plasma-desktop"] floating enable; border none
-for_window [title="win7"] floating enable; border none
-for_window [class="krunner"] floating enable; border none
-for_window [class="Kmix"] floating enable; border none
-for_window [class="Klipper"] floating enable; border none
-for_window [class="Plasmoidviewer"] floating enable; border none
+for_window [title="Desktop — Plasma"] kill; floating enable
+for_window [class="plasmashell"] floating enable resize set 640 x 480
+for_window [class="Plasma"] floating enable
+for_window [title="plasma-desktop"] floating enable
+for_window [title="win7"] floating enable
+for_window [class="krunner"] floating enable
+for_window [class="Kmix"] floating enable
+for_window [class="Klipper"] floating enable
+for_window [class="Plasmoidviewer"] floating enable
 for_window [class="(?i)*nextcloud*"] floating disable
 # Don't focus notification windows
 no_focus [class="plasmashell"]
