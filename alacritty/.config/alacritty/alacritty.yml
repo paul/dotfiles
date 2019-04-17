@@ -56,7 +56,7 @@ scrolling:
   faux_multiplier: 3
 
   # Scroll to the bottom when new text is written to the terminal.
-  auto_scroll: false
+  auto_scroll: true
 
 # Spaces per Tab (changes require restart)
 #
@@ -66,7 +66,7 @@ scrolling:
 # To prevent unexpected behavior in these applications, it's also required to
 # change the `it` value in terminfo when altering this setting.
 # tabspaces: 8
-tabspaces: 4
+tabspaces: 8
 
 # Font configuration (changes require restart)
 #
@@ -227,7 +227,7 @@ selection:
   # When set to `true`, selected text will be copied to both the primary and
   # the selection clipboard. Otherwise, it will only be copied to the selection
   # clipboard.
-  save_to_clipboard: false
+  save_to_clipboard: true
 
 dynamic_title: true
 
@@ -349,10 +349,10 @@ key_bindings:
   # - { key: PageDown, mods: Shift,   chars: "\x1b[6;2~"                   }
   # - { key: PageDown, mods: Control, chars: "\x1b[6;5~"                   }
   # - { key: PageDown,                chars: "\x1b[6~"                     }
-  - { key: PageUp,   mods: Shift,   action: ScrollPageUp   }
-  - { key: PageDown, mods: Shift,   action: ScrollPageDown }
-  - { key: End,      mods: Shift,   action: ScrollToBottom }
-  - { key: Home,     mods: Shift,   action: ScrollToTop    }
+  # - { key: PageUp,   mods: Shift,   action: ScrollPageUp   }
+  # - { key: PageDown, mods: Shift,   action: ScrollPageDown }
+  # - { key: End,      mods: Shift,   action: ScrollToBottom }
+  # - { key: Home,     mods: Shift,   action: ScrollToTop    }
   - { key: Tab,      mods: Shift,   chars: "\x1b[Z"                      }
   - { key: Back,                    chars: "\x7f"                        }
   - { key: Back,     mods: Alt,     chars: "\x1b\x7f"                    }
@@ -440,8 +440,5 @@ key_bindings:
   - { key: F12,      mods: Super,   chars: "\x1b[24;3~"                  }
 
 # Mine
-# \x1c is C-\
-  - { key: T,        mods: Super, chars: "\x1cc" }
-  - { key: LBracket, mods: Super, chars: "\x1cp" }
-  - { key: RBracket, mods: Super, chars: "\x1cn" }
+  - { key: N, mods: Control|Shift, action: SpawnNewInstance }
 
