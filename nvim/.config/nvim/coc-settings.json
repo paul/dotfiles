@@ -1,0 +1,6 @@
+{
+  //"suggest.timeout": 1000,
+  "suggest.noselect": false,
+  "suggest.autoTrigger": "none"
+}
+

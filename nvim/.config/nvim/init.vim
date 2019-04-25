@@ -1,3 +1,4 @@
+
 call plug#begin('~/.config/nvim/plugins')
 " Do :PlugInstall after adding things to this list
 
@@ -16,7 +17,6 @@ Plug 'ruanyl/vim-gh-line'          " <leader>gh to open line on github
 
 Plug 'mileszs/ack.vim'             " :Ag search
 
-Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 Plug 'vim-airline/vim-airline'
@@ -29,6 +29,7 @@ Plug 'mattn/gist-vim'
 Plug 'rhysd/devdocs.vim'
 
 Plug 'w0rp/ale'
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
 
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
@@ -36,6 +37,9 @@ Plug 'tpope/vim-eunuch' " Vim sugar for unix commands
 Plug 'junegunn/vim-easy-align'
 
 Plug 'rhysd/committia.vim'
+
+" Trying out
+Plug 'jeetsukumaran/vim-buffergator'
 
 " Syntax plugins
 Plug 'chriskempson/base16-vim'
@@ -97,8 +101,8 @@ set smarttab         " insert tabs on the start of a line according to shiftwidt
 set list             " show invisible characters
 set listchars=tab:│·,trail:·,extends:#,nbsp:·
 
-set wildmenu                   " make tab completion for files/buffers act like bash
-set wildmode=longest:full,full " show a list when pressing tab and complete
+" set wildmenu                   " make tab completion for files/buffers act like bash
+" set wildmode=longest:full,full " show a list when pressing tab and complete
 
 set title                      " change the terminal's title
 set showcmd                    " show (partial) command in the last line of the screen
@@ -126,6 +130,7 @@ let mapleader="\<Space>"
 " Reload this config
 nmap <leader>r :so $MYVIMRC<CR>
 
+
 " Enter in normal mode saves
 nmap <CR> :write!<CR>
 " Except in the quickfix window, which we want the default behavior (open)
@@ -142,7 +147,7 @@ nmap <C-l> <C-w>l
 nmap <C-tab> <C-w>p
 
 " Maps autocomplete to tab
-imap <Tab> <C-P>
+" imap <Tab> <C-P>
 
 let s:uname = system("uname")
 if s:uname == "Darwin\n"
@@ -196,9 +201,12 @@ nmap * :Ack! <cword><cr>
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_command_prefix = 'Fzf' " Commands start with Fzf, Eg :FzfGitFiles
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nmap <C-Space> :FzfFiles<CR>
+nmap <C-p> :FzfBuffers<CR>
 nmap <C-@> <C-Space>
+cnoreabbrev Rg FzfRg
+cnoreabbrev Ag FzfRg
+
 
 " Airline
 let g:airline_powerline_fonts=1
@@ -227,10 +235,7 @@ nmap <leader>] <Plug>AirlineSelectNextTab
 
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-
-" DevDocs
-" nmap K <Plug>(devdocs-under-cursor)
-
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 
 " ale linter
 
@@ -256,6 +261,26 @@ let g:ale_fixers = {
 \}
 
 let g:airline#extensions#ale#enabled = 1
+
+" coc
+" Use tab/shift-tab to autocomplete
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+
 
 " tickfmt
 let g:tick_fmt_command = "~/Code/go/bin/tickfmt"
