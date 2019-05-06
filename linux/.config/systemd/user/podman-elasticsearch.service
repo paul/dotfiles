@@ -1,0 +1,17 @@
+[Unit]
+Description=Elasticsearch Podman container
+Wants=syslog.service
+After=network.target
+
+[Service]
+ExecStartPre=-/usr/bin/podman rm "podman-elasticsearch"
+ExecStart=/usr/bin/podman run --name podman-elasticsearch -v /home/rando/.local/share/elasticsearch/data:/usr/share/elasticsearch/data:Z -e "discovery.type=single-node" --net host docker.elastic.co/elasticsearch/elasticsearch:6.7.2
+
+ExecReload=-/usr/bin/podman stop podman-elasticsearch
+ExecReload=-/usr/bin/podman rm podman-elasticsearch
+
+ExecStop=/usr/bin/podman stop -t 30 elasticsearch
+
+Restart=always
+[Install]
+WantedBy=multi-user.target
