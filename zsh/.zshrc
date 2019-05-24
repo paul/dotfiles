@@ -128,6 +128,7 @@ if [[ "$OSX" == "1" ]]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 [ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
 

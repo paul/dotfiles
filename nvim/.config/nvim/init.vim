@@ -1,3 +1,6 @@
+"
+" Reload this config with <Space>-r
+"
 
 call plug#begin('~/.config/nvim/plugins')
 " Do :PlugInstall after adding things to this list
@@ -201,6 +204,7 @@ nmap * :Ack! <cword><cr>
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_command_prefix = 'Fzf' " Commands start with Fzf, Eg :FzfGitFiles
+let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden'
 nmap <C-Space> :FzfFiles<CR>
 nmap <C-p> :FzfBuffers<CR>
 nmap <C-@> <C-Space>
