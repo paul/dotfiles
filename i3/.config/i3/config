@@ -32,6 +32,7 @@ floating_modifier $mod
 # start a terminal
 # bindsym $mod+Return exec i3-sensible-terminal
 # bindsym $mod+Return exec alacritty
+# bindsym $mod+Return exec "~/.local/bin/alacritty"
 bindsym $mod+Return exec kitty
 # bindsym $mod+Return exec konsole
 # bindsym $mod+Return exec urxvt256c-ml
@@ -279,6 +280,7 @@ for_window [class="Plasma"] floating enable
 for_window [title="plasma-desktop"] floating enable
 for_window [title="win7"] floating enable
 for_window [class="krunner"] floating enable
+for_window [class="kruler"] floating enable
 for_window [class="Kmix"] floating enable
 for_window [class="Klipper"] floating enable
 for_window [class="Plasmoidviewer"] floating enable
