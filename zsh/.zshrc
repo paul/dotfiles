@@ -130,10 +130,8 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 FZF_DEFAULT_COMMAND='rg --files --hidden'
 
-[ -f ~/.iterm2_shell_integration.zsh ] && source ~/.iterm2_shell_integration.zsh
-
-# [ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
-# [ -f /usr/local/share/chruby/auto.sh ] && source /usr/local/share/chruby/auto.sh
+# Fedora provides a package
+[ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
 
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
