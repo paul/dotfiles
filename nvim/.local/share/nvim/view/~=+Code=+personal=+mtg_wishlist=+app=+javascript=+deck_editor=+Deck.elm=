@@ -1,0 +1,142 @@
+let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
+argglobal
+let s:cpo_save=&cpo
+set cpo&vim
+nmap <buffer>  hp <Plug>GitGutterPreviewHunk
+nmap <buffer>  hu <Plug>GitGutterUndoHunk
+nmap <buffer>  hs <Plug>GitGutterStageHunk
+nmap <buffer> [c <Plug>GitGutterPrevHunk
+nmap <buffer> \w <Plug>(elm-browse-docs)
+nmap <buffer> \d <Plug>(elm-show-docs)
+nmap <buffer> \e <Plug>(elm-error-detail)
+nmap <buffer> \r <Plug>(elm-repl)
+nmap <buffer> \t <Plug>(elm-test)
+nmap <buffer> \b <Plug>(elm-make-main)
+nmap <buffer> \m <Plug>(elm-make)
+nmap <buffer> ]c <Plug>GitGutterNextHunk
+xmap <buffer> ac <Plug>GitGutterTextObjectOuterVisual
+omap <buffer> ac <Plug>GitGutterTextObjectOuterPending
+nmap <buffer> gf :call elm#util#GoToModule(expand('<cfile>'))
+xmap <buffer> ic <Plug>GitGutterTextObjectInnerVisual
+omap <buffer> ic <Plug>GitGutterTextObjectInnerPending
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal nocindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=80,120
+setlocal comments=s1fl:{-,mb:\ ,ex:-},:--
+setlocal commentstring=--\ %s
+setlocal complete=.,w,b,u,t
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=%\\S%\\+\ \ %#%[cefi]%[rxod]%[eir]%[a-z]%#%\\x1b[0m\ %\\+%\\S%\\+%$%\\&%\\x1b%\\S%\\+\ \ %#%m%\\>%\\x1b[0m\ \ %#%f,%\\s\ %#%[cefi]%[rxod]%[eir]%[a-z]%#\ %\\+%\\S%\\+%$%\\&%\\s\ %#%m%\\>\ \ %#%f,\ %#Overwrite%.%#%\\S%\\+\ \ %#%m%\\x1b[0m\ \ %#%f,%-G\ %#Overwrite%.%#\"h\"%.%#,%+GStarted\ %\\u%\\u%.%#,%+GCompleted\ %\\d%\\d%\\d%.%#,%+G[ActiveJob]%.%#]\ Perform%.%#,%.%#rails\ test\ %f:%l,%+GCurrent\ version:%.%#,%+G\ %#Status\ %#Migration\ ID%.%#,%+G\ The\ fixture\ ID\ for\ %.%#,%f:\ %s\ (%m)%$%\\&%.%#/fixtures/%.%#(%\\d%\\+),%+G\ %#Prefix\ %#Verb%.%#,%+G\ %#Code\ LOC:\ %.%#,%+GAbout\ your\ application's\ environment,%+Grun\ %\\S%#::Application.routes,%+Irails\ %\\S%\\+%\\s%\\+#\ %.%#,%+Eruby:%.%#(LoadError),%+EUsage:%.%#,%+ECould\ not\ find\ generator%.%#,%+EType\ 'rails'\ for\ help.,%\\&completion=rails#complete_rails,%\\&console=console,%\\&start=console,%\\&terminal=%\\C%\\%%(console%\\|dbconsole%\\|server%\\|%[cs]%\\|db%\\)%\\>:%\\@!%\\ze%.%#,%\\&default=default,%D(in\ %f),%\\s%#%\\d%#:%#\ %#from\ %f:%l:%m,%\\s%#%\\d%#:%#\ %#from\ %f:%l:,%\\s%##\ %f:%l:%m%\\&%.%#%\\D:%\\d%\\+:%.%#,%\\s%##\ %f:%l%\\&%.%#%\\D:%\\d%\\+,%\\s%#[%f:%l:\ %#%m%\\&%.%#%\\D:%\\d%\\+:%.%#,%\\s%#%f:%l:\ %#%m%\\&%.%#%\\D:%\\d%\\+:%.%#,%\\s%#%f:%l:,%m\ [%f:%l]:,%+Erake\ aborted!,%+EDon't\ know\ how\ to\ build\ task\ %.%#,%+Einvalid\ option:%.%#,%+Irake\ %\\S%\\+%\\s%\\+#\ %.%#,%\\&chdir\ /home/rando/Code/personal/mtg_wishlist,%\\&buffer=%%:s/.*/\\=rails#buffer(submatch(0)).default_task(exists('l#')\ ?\ l#\ :\ 0)/
+setlocal expandtab
+if &filetype != 'elm'
+setlocal filetype=elm
+endif
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=tcqj
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=^\\s*import\\s\\+
+setlocal includeexpr=GetElmFilename(v:fname)
+setlocal indentexpr=GetElmIndent()
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e,0=else,0=if,0=of,0=import,0=then,0=type,0|,0},0],0),=-},0=in
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255,$
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispwords=
+setlocal list
+setlocal makeencoding=
+setlocal makeprg=bin/rails
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,hex
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=elm#Complete
+setlocal path=~/Code/personal/mtg_wishlist/src,~/Code/personal/mtg_wishlist/elm-stuff/packages/**/src,.,/usr/include,,
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal scrollback=-1
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal softtabstop=2
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=%!airline#statusline(2)
+setlocal suffixesadd=.elm
+setlocal noswapfile
+setlocal synmaxcol=3000
+if &syntax != 'elm'
+setlocal syntax=elm
+endif
+setlocal tabstop=2
+setlocal tagcase=
+setlocal tags=~/Code/personal/mtg_wishlist/tags,~/Code/personal/mtg_wishlist/tmp/tags,./tags;,tags
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal undofile
+setlocal undolevels=-123456
+setlocal winhighlight=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+silent! normal! zE
+let s:l = 33 - ((32 * winheight(0) + 40) / 80)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+33
+normal! 021|
+let &so = s:so_save | let &siso = s:siso_save
+doautoall SessionLoadPost
+" vim: set ft=vim :
