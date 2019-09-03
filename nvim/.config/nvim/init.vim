@@ -43,6 +43,7 @@ Plug 'rhysd/committia.vim'
 
 " Trying out
 Plug 'jeetsukumaran/vim-buffergator'
+Plug 'ryanoasis/vim-devicons'
 
 " Syntax plugins
 Plug 'chriskempson/base16-vim'
