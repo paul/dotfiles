@@ -204,14 +204,19 @@ nmap * :Ack! <cword><cr>
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'down': '~40%' }
+" let g:fzf_layout = { 'window': '30new' }
 let g:fzf_command_prefix = 'Fzf' " Commands start with Fzf, Eg :FzfGitFiles
-let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden'
 nmap <C-Space> :FzfFiles<CR>
 nmap <C-p> :FzfBuffers<CR>
 nmap <C-@> <C-Space>
 cnoreabbrev Rg FzfRg
 cnoreabbrev Ag FzfRg
 
+if executable('rg')
+  let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden --glob "!.git/*"'
+  set grepprg=rg\ --vimgrep
+  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+endif
 
 " Airline
 let g:airline_powerline_fonts=1
