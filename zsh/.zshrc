@@ -148,7 +148,7 @@ PATH="$PATH:$NPM_PACKAGES/bin"
 # Always my sure my paths are at the front
 typeset -U path # make path unique
 function fix_path() {
-  path=(./bin node_modules/.bin ~/bin ~/.local/bin ~/.npm-packages/bin "$path[@]")
+  path=(./bin node_modules/bin ~/bin ~/.local/bin ~/node_modules/bin "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
