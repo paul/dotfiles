@@ -78,6 +78,6 @@ drush sql
 And as soon as the tab key is pressed, the script will display the available commands:
 ```
 drush sql
-sqlc           sql-conf       sql-create     sql-dump       sql-query      sql-sanitize
+sqlc           sql-conf       sql-create     sql-dump       sql-query      sql-sanitize                
 sql-cli        sql-connect    sql-drop       sqlq           sqlsan         sql-sync
 ```

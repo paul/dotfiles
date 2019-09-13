@@ -36,3 +36,4 @@ elif (( CURRENT == 3 )); then
         "names:book names:($(get_booknames))"
   esac
 fi
+

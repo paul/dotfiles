@@ -1,4 +1,4 @@
-# pylint
+# pylint 
 
 This plugin adds code analysis for python through [Pylint](https://www.pylint.org/).
 

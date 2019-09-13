@@ -4,7 +4,7 @@ alias-finder() {
     case $i in
       -e|--exact) exact=true;;
       -l|--longer) longer=true;;
-      *)
+      *) 
         if [[ -z $cmd ]]; then
           cmd=$i
         else

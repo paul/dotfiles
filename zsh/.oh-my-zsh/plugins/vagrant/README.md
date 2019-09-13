@@ -7,3 +7,4 @@ To use it, add `vagrant` to the plugins array in your zshrc file:
 ```zsh
 plugins=(... vagrant)
 ```
+

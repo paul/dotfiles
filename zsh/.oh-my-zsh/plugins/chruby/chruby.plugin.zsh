@@ -8,7 +8,7 @@
 #
 #    zstyle :omz:plugins:chruby path /local/path/to/chruby.sh
 #    zstyle :omz:plugins:chruby auto /local/path/to/auto.sh
-#
+# 
 # TODO
 #  - autodetermine correct source path on non OS X systems
 #  - completion if ruby-install exists
@@ -26,7 +26,7 @@ _homebrew-installed() {
         if [ -h  /usr/local/opt/chruby ];then
 		_brew_prefix="/usr/local/opt/chruby"
 	else
-		# ok , it is not default prefix
+		# ok , it is not default prefix 
 		# this call to brew is expensive ( about 400 ms ), so at least let's make it only once
 		_brew_prefix=$(brew --prefix chruby)
 	fi
@@ -57,7 +57,7 @@ fi
 _source_from_omz_settings() {
     local _chruby_path
     local _chruby_auto
-
+    
     zstyle -s :omz:plugins:chruby path _chruby_path
     zstyle -s :omz:plugins:chruby auto _chruby_auto
 

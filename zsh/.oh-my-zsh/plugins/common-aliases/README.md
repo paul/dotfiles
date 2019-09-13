@@ -75,7 +75,7 @@ $ find . -type f 2>/dev/null
 ```
 
 | Alias | Command                     | Description                                                 |
-|-------|-----------------------------|-------------------------------------------------------------|
+|-------|-----------------------------|-------------------------------------------------------------| 
 | H     | `\| head`                   | Pipes output to head which outputs the first part of a file |
 | T     | `\| tail`                   | Pipes output to tail which outputs the last part of a file  |
 | G     | `\| grep`                   | Pipes output to grep to search for some word                |
@@ -99,7 +99,7 @@ that file will be open with `acroread`.
 |-------|-------------|-------------------------------------|
 | pdf   | `acroread`  | Opens up a document using acroread  |
 | ps    | `gv`        | Opens up a .ps file using gv        |
-| dvi   | `xdvi`      | Opens up a .dvi file using xdvi     |
+| dvi   | `xdvi`      | Opens up a .dvi file using xdvi     | 
 | chm   | `xchm`      | Opens up a .chm file using xchm     |
 | djvu  | `djview`    | Opens up a .djvu file using djview  |
 

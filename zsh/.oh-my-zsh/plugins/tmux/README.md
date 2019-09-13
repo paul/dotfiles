@@ -7,7 +7,7 @@ To use it add `tmux` to the plugins array in your zshrc file.
 plugins=(... tmux)
 ```
 
-The plugin also supports the following -
+The plugin also supports the following - 
 - determines if tmux is installed or not, if not, prompts user to install tmux
 - determines if the terminal supports the 256 colors or not, sets the appropriate configuration variable
 - sets the correct local config file to use

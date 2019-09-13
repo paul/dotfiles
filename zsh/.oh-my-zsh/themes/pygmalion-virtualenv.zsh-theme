@@ -46,3 +46,5 @@ prompt_pygmalion_precmd(){
 }
 
 prompt_setup_pygmalion
+
+

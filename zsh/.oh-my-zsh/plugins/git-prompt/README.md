@@ -53,7 +53,7 @@ The symbols are as follows:
 ## Customisation
 
 - Set the variable `ZSH_THEME_GIT_PROMPT_CACHE` to any value in order to enable caching.
-- You may also change a number of variables (whose name start with `ZSH_THEME_GIT_PROMPT_`)
+- You may also change a number of variables (whose name start with `ZSH_THEME_GIT_PROMPT_`) 
   to change the appearance of the prompt. Take a look at the bottom of the [plugin file](git-prompt.plugin.zsh)`
   to see what variables are available.
 

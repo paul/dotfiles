@@ -16,3 +16,4 @@ plugins=(... vundle)
 | vundle        | `vundle`        | Install plugins set in .vimrc (equals `:PluginInstall`)                    |
 | vundle-update | `vundle-update` | Update plugins set in .vimrc (equals `:PluginInstall!`)                    |
 | vundle-clean  | `vundle-clean`  | Delete plugins that have been removed from .vimrc (equals `:PluginClean!`) |
+
