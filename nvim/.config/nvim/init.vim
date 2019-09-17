@@ -186,6 +186,10 @@ let ruby_operators = 1 " Breaks HEREDOCs https://github.com/vim-ruby/vim-ruby/is
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
+" nicer indent settings
+let g:ruby_indent_assignment_style = 'variable'
+let g:ruby_indent_block_style = 'do'
+
 " gh-line
 let g:gh_open_command = 'xdg-open '
 " let g:gh_open_command = 'fn() { echo "$@" | xclip -i; } fn '
