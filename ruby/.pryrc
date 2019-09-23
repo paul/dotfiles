@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-rails_info = "#{Rails.application.class.parent_name.downcase}|#{Rails.env}" if defined?(Rails)
+rails_info = "#{Rails.application.class.module_parent_name.downcase}|#{Rails.env}" if defined?(Rails)
 
 # Prompt
 Pry.config.prompt = [
