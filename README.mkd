@@ -1,0 +1,14 @@
+
+# Paul's Dotfiles
+
+## Usage:
+
+Use GNU stow to symlink each "subject" to your home directory in the right place. For example:
+
+```sh
+stow zsh
+```
+
+
+
+

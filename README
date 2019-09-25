@@ -1,4 +1,0 @@
-
-## Install italic terminfo
-
-$ tic xterm-256color-italic.terminfo
