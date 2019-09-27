@@ -14,4 +14,4 @@ ExecStop=/usr/bin/podman stop -t 30 elasticsearch
 
 Restart=always
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
