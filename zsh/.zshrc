@@ -46,13 +46,11 @@ zstyle :omz:plugins:chruby auto ~/.local/share/chruby/auto.sh
 plugins=(
   # bundler
   chruby
-  # colored-man
   docker
   gem
   git  # Adds too many dumb aliases
   git-extras
   gitfast # Completion
-  # git_remote_branch
   github
   #go
   #golang
@@ -61,7 +59,6 @@ plugins=(
   # rails # Its just dumb aliases
   # ruby  # just aliases
   # vagrant
-  # zsh-syntax-highlighting
   ssh-agent
 )
 
