@@ -336,6 +336,9 @@ let g:vim_json_syntax_conceal = 0
 " less noisy opposing parens
 hi MatchParen cterm=bold ctermbg=none ctermfg=none
 
+" Less gross spelling error highlighting
+hi SpellBad cterm=underline ctermfg=white ctermbg=black
+
 " Load all plugins now. ( from ~/.local/share/nvim/site/pack/... )
 " Plugins need to be added to runtimepath before helptags can be generated.
 packloadall
