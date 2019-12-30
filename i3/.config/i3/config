@@ -276,6 +276,7 @@ new_window normal 1
 # for the first time, manually resize them, i3 will remember the setting for floating windows
 for_window [title="Desktop — Plasma"] kill; floating enable
 for_window [class="plasmashell"] floating enable resize set 640 x 480
+for_window [class="plasmashell" window_type="notification"] move position 2950 50
 for_window [class="Plasma"] floating enable
 for_window [title="plasma-desktop"] floating enable
 for_window [title="win7"] floating enable
