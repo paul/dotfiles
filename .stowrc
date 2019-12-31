@@ -1,2 +1,2 @@
---target /home/rando
+--target ${HOME}
 -v
