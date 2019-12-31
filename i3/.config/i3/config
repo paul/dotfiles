@@ -297,5 +297,6 @@ for_window [title="Emoji Choice"] floating enable
 # Move apps to specific desktops
 assign [class="^Slack$"] workspace "10: comms"
 assign [class="^Mailspring"] workspace "10: comms"
+assign [class="^Riot"] workspace "10: comms"
 assign [class="^Google Play Music Desktop Player$"] workspace "9: tunes"
 
