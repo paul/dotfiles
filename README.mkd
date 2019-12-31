@@ -1,14 +1,82 @@
 
 # Paul's Dotfiles
 
-## Usage:
+## GNU Stow
 
-Use GNU stow to symlink each "subject" to your home directory in the right place. For example:
+I use [GNU's `stow` utility][stow] to maintain symlinks between the config
+files and directories in this repo and their expected locations within my home
+directory. Read [this post](stow-dotfiles) to see more details about how stow
+can manage your dotfiles, but essentially it creates symlinks as-needed at the
+appropriate levels.
 
-```sh
-stow zsh
+For example, if you have a structure that looks like this:
+
+```
+zsh
+├── .config
+│   ├── zsh-stuff
+│   └── ...
+├── .zsh
+│   ├── lib
+│   ├── plugins
+│   └── themes
+└── .zshrc
 ```
 
+When I do `stow zsh`, the stow utility will descend into the `zsh` directory,
+and for each level, attempt to create a symlink:
+
+```
+/home/rando/.zshrc  -> Code/dotfiles/zsh/.zshrc
+/home/rando/.zsh    -> Code/dotfiles/zsh/.zsh/
+/home/rando/.config -> Code/dotfiles/zsh/.config/
+```
+
+When it gets to `.config`, since that folder already exists, it will descend
+one level deeper, and repeat the process:
+
+```
+/home/rando/.config/zsh-stuff -> ../Code/dotfiles/base16-shell/.config/zsh-stuff/
+```
+
+Since it creates symlinks for directories as high as possible, this means you
+can create configs where the app expects them, and they'll show up in the git
+repo as unstaged files.
+
+For example, if I added a new script in `~/.config/zsh-stuff/do-cool-shit.sh`, if `cd` into the git repository I'll see the changed files:
+
+```
+## master...origin/master [ahead 1]
+ M zsh/.zshrc
+?? zsh/config/zsh-stuff/do-cool-shit.sh
+```
+
+## Usage:
+
+Clone this project somewhere, I keep mine in `~/Code/dotfiles`. Then, use the
+`stow` command to create symlinks for each project into the appropriate places
+in your homedir:
+
+```sh
+$ git clone https://github.com/paul/dotfiles.git Code/dotfiles
+$ cd Code/dotfiles
+$ stow zsh
+```
+
+To "uninstall" and delete all the symlinks created by stow, pass the `-D`
+argument:
+
+
+```sh
+stow -D zsh
+```
+
+To change where stow will create the symlinks (`$HOME` by default) or otherwise
+configure stow itself, use the [`.stowrc`
+file](https://github.com/paul/dotfiles/blob/master/.stowrc)
 
 
 
+
+[stow]: https://www.gnu.org/software/stow/
+[stow-dotfiles]: http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html
