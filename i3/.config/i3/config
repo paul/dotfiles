@@ -49,7 +49,8 @@ bindsym $mod+Shift+q kill
 # bindsym $mod+backslash exec ~/.config/rofi/rofi_run
 #
 # Open krunner with $mod+\
-bindsym $mod+backslash exec qdbus org.kde.kglobalaccel /component/krunner org.kde.kglobalaccel.Component.invokeShortcut 'run command'
+# bindsym $mod+backslash exec qdbus org.kde.kglobalaccel /component/krunner org.kde.kglobalaccel.Component.invokeShortcut 'run command'
+bindsym $mod+backslash exec krunner
 
 
 # change focus
@@ -243,6 +244,7 @@ hide_edge_borders both
 new_window normal 1
 
 # Auto start programs & applets
+exec_always --no-startup-id picom --experimental-backends
 
 # exec_always --no-startup-id ~/bin/fix-screens external
 # exec_always --no-startup-id ~/bin/fix-keyboard
@@ -276,7 +278,7 @@ new_window normal 1
 # for the first time, manually resize them, i3 will remember the setting for floating windows
 for_window [title="Desktop — Plasma"] kill; floating enable
 for_window [class="plasmashell"] floating enable resize set 640 x 480
-for_window [class="plasmashell" window_type="notification"] move position 2950 50
+for_window [class="plasmashell" window_type="notification"] move position 3080 50
 for_window [class="Plasma"] floating enable
 for_window [title="plasma-desktop"] floating enable
 for_window [title="win7"] floating enable
