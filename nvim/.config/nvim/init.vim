@@ -271,8 +271,10 @@ let g:ale_fixers = {
 \   'rust':       ['rustfmt'],
 \   'go':         ['gofmt'],
 \   'elm':        ['elm-format'],
-\   'javascript': ['eslint', 'prettier'],
+\   'javascript': ['prettier', 'eslint'],
 \}
+
+let g:ale_ruby_rubocop_options = '--force-exclusions'
 
 let g:airline#extensions#ale#enabled = 1
 
