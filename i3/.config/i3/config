@@ -278,7 +278,7 @@ exec_always --no-startup-id picom --experimental-backends
 # for the first time, manually resize them, i3 will remember the setting for floating windows
 for_window [title="Desktop — Plasma"] kill; floating enable
 for_window [class="plasmashell"] floating enable resize set 640 x 480
-for_window [class="plasmashell" window_type="notification"] move position 3080 50
+for_window [class="plasmashell" window_type="notification"] move position 2960 50
 for_window [class="Plasma"] floating enable
 for_window [title="plasma-desktop"] floating enable
 for_window [title="win7"] floating enable
@@ -300,5 +300,6 @@ for_window [title="Emoji Choice"] floating enable
 assign [class="^Slack$"] workspace "10: comms"
 assign [class="^Mailspring"] workspace "10: comms"
 assign [class="^Riot"] workspace "10: comms"
+assign [class="^Zulip"] workspace "10: comms"
 assign [class="^Google Play Music Desktop Player$"] workspace "9: tunes"
 
