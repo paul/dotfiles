@@ -1,6 +1,6 @@
 --database postgresql
---skip-test-unit
 --skip-test
+--skip-system-test
 --skip-javascript
 
 
