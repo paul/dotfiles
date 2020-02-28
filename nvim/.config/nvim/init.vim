@@ -271,7 +271,7 @@ let g:ale_fixers = {
 \   'rust':       ['rustfmt'],
 \   'go':         ['gofmt'],
 \   'elm':        ['elm-format'],
-\   'javascript': ['prettier'],
+\   'javascript': ['eslint', 'prettier'],
 \}
 
 let g:airline#extensions#ale#enabled = 1
