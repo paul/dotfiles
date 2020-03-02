@@ -7,7 +7,7 @@
 #
 # http://getgb.io/
 #
-layout_gb() {
+layout_golang() {
   export GOPATH="$PWD/vendor:$PWD"
   PATH_add "$PWD/vendor/bin"
   PATH_add bin

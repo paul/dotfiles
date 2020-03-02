@@ -136,14 +136,12 @@ export QMAKE=/usr/bin/qmake-qt5
 export GOPATH=$HOME/Code/go
 
 # npm -g installs for my user instead
-NPM_PACKAGES="${HOME}/.npm-packages"
-PATH="$PATH:$NPM_PACKAGES/bin"
-
+NPM_PACKAGES="${HOME}/node_modules"
 
 # Always my sure my paths are at the front
 typeset -U path # make path unique
 function fix_path() {
-  path=(./bin node_modules/bin ~/bin ~/.local/bin ~/node_modules/bin "$path[@]")
+  path=(./bin ./node_modules/bin ~/bin ~/.local/bin $NPM_PACKAGES/bin "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
