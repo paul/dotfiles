@@ -274,7 +274,7 @@ let g:ale_fixers = {
 \   'javascript': ['prettier', 'eslint'],
 \}
 
-let g:ale_ruby_rubocop_options = '--force-exclusions'
+let g:ale_ruby_rubocop_options = '--force-exclusion'
 
 let g:airline#extensions#ale#enabled = 1
 
