@@ -1,14 +1,16 @@
 
 alias t="tail -f"
 
-alias ls='ls -1Fh --color --group-directories-first'
-alias l=ls
-alias ll='ls -al'
+alias ls='exa --classify --color=auto --group-directories-first'
+alias l='ls --oneline'
+alias ll='ls --all --long --links --git'
 
 alias grep='grep --color=tty'
 
 alias vim=nvim
 alias gvim=nvim
+
+alias cat=bat
 
 # alias gvim=mvim
 # alias vim='mvim -v'
