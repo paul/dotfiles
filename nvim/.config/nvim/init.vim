@@ -62,6 +62,7 @@ Plug 'othree/es.next.syntax.vim'
 Plug 'othree/yajs.vim'
 Plug 'reasonml-editor/vim-reason-plus'
 Plug 'rust-lang/rust.vim'
+Plug 'slim-template/vim-slim'
 
 call plug#end()
 
