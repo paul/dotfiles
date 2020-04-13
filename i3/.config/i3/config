@@ -179,66 +179,57 @@ bindsym $mod+r mode "resize"
 
 # Colors
 
-# Base16 Oceanic Next
-set $base00 #1b2b34
-set $base01 #343d46
-set $base02 #4f5b66
-set $base03 #65737e
-set $base04 #a7adba
-set $base05 #c0c5ce
-set $base06 #cdd3de
-set $base07 #d8dee9
-set $base08 #ec5f67
-set $base09 #f99157
-set $base0A #fac863
-set $base0B #99c794
-set $base0C #5fb3b3
-set $base0D #6699cc
-set $base0E #c594c5
-set $base0F #ab7967
+# # Base16 Oceanic Next
+# set $base00 #1b2b34
+# set $base01 #343d46
+# set $base02 #4f5b66
+# set $base03 #65737e
+# set $base04 #a7adba
+# set $base05 #c0c5ce
+# set $base06 #cdd3de
+# set $base07 #d8dee9
+# set $base08 #ec5f67
+# set $base09 #f99157
+# set $base0A #fac863
+# set $base0B #99c794
+# set $base0C #5fb3b3
+# set $base0D #6699cc
+# set $base0E #c594c5
+# set $base0F #ab7967
+#
+# # Property Name         Border  BG      Text    Indicator Child Border
+# client.focused          $base0D $base0D $base00 $base0D $base0D
+# client.focused_inactive $base01 $base01 $base05 $base03 $base01
+# client.unfocused        $base01 $base00 $base05 $base01 $base01
+# client.urgent           $base08 $base08 $base00 $base08 $base08
+# client.placeholder      $base00 $base00 $base05 $base00 $base00
+# client.background       $base07
 
-set $Black          #1B2B34
-set $grey1          #343D46
-set $grey2          #4F5B66
-set $Bright_Black   #65737E
-set $grey3          #A7ADBA
-set $White          #C0C5CE
-set $grey4          #CDD3DE
-set $Bright_White   #D8DEE9
-set $Bright_Red     #EC5F67
-set $Red            #EC5F67
-set $Orange         #F99157
-set $Bright_Yellow  #FAC863
-set $Yellow         #FAC863
-set $Bright_Green   #99C794
-set $Green          #99C794
-set $Bright_Cyan    #5FB3B3
-set $Cyan           #5FB3B3
-set $Blue           #6699CC
-set $Bright_Blue    #6699CC
-set $Bright_Magenta #C594C5
-set $Magenta        #C594C5
-set $Brown          #AB7967
+# Base 16 Sensual
+set $base00 #161925
+set $base01 #1A1E2D
+set $base02 #23283B
+set $base03 #435A63
+set $base04 #92A1A2
+set $base05 #D2DDE7
+set $base06 #DCE6E7
+set $base07 #DCE6E7
+set $base08 #FF557F
+set $base09 #F67400
+set $base0A #FDBC4B
+set $base0B #17A262
+set $base0C #0088A3
+set $base0D #3DAEE9
+set $base0E #8181D1
+set $base0F #B65619
 
-
-
-# Basic color configuration using the Base16 variables for windows and borders.
-#PropertyName           Border        BG     Text   Indicator     Child Border
-# client.focused          $Bright_Black $Blue  $Black $Bright_Black $Bright_Black
-# client.focused_inactive $grey1        $grey2 $White $Yellow       $grey1
-# client.unfocused        $grey1        $Black $White $Red          $grey1
-# client.urgent           $grey1        $Black $Red   $Red          $grey1
-# client.placeholder      $Black        $Black $White $Black        $Black
-# client.background       $Bright_Black
-
-# Basic color configuration using the Base16 variables for windows and borders.
 # Property Name         Border  BG      Text    Indicator Child Border
-client.focused          $base0D $base0D $base00 $base0D $base0D
-client.focused_inactive $base01 $base01 $base05 $base03 $base01
-client.unfocused        $base01 $base00 $base05 $base01 $base01
-client.urgent           $base08 $base08 $base00 $base08 $base08
-client.placeholder      $base00 $base00 $base05 $base00 $base00
-client.background       $base07
+client.focused          $base0E $base0E $base00 $base0E   $base0E
+client.focused_inactive $base02 $base02 $base05 $base03   $base01
+client.unfocused        $base01 $base00 $base05 $base01   $base01
+client.urgent           $base08 $base08 $base00 $base08   $base08
+client.placeholder      $base0C $base00 $base05 $base00   $base00
+client.background       $base00
 
 hide_edge_borders both
 new_window normal 1
