@@ -46,6 +46,11 @@
 
   pf = push --force-with-lease
 
+  bl = "!git for-each-ref --sort=-committerdate refs/heads \
+    --format='%(color:green)%(committerdate:relative)|%(HEAD)%(color:yellow)%(refname:short)|%(color:magenta)%(authorname)%(color:reset)|%(subject)' \
+    --color=always \
+    | column -ts'|' -T4 -c$(($(tput cols) + 30))"
+
   # commiting
   c     = commit -m
   ca    = commit --amend
