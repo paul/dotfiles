@@ -1,18 +1,6 @@
 # frozen_string_literal: true
 
-rails_info = "#{Rails.application.class.module_parent_name.downcase}|#{Rails.env}" if defined?(Rails)
-
-# Prompt
-Pry.config.prompt = [
-  proc do |conf|
-    tree = conf.binding_stack.map { |stack| Pry.view_clip stack.eval("self") } * " / "
-    info = [rails_info, tree].compact * "|"
-    "[#{info}]> "
-  end
-]
-
-# History
-Pry.config.history.file = %(#{ENV['HOME']}/.irb-save-history) # Keep IRB and Pry history the same.
+Pry.config.prompt = Pry::Prompt[:rails]
 
 # Aliases
 Pry.commands.alias_command "w", "whereami"
@@ -48,4 +36,3 @@ end
 
 # Editors
 Pry.config.editor = "nvim"
-
