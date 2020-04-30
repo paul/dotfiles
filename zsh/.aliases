@@ -1,9 +1,9 @@
 
 alias t="tail -f"
 
-alias ls='exa --classify --color=auto --group-directories-first'
-alias l='ls --oneline'
-alias ll='ls --all --long --links --git'
+alias ls='exa --classify --color=auto --group-directories-first --oneline'
+alias l='ls'
+alias ll='exa --classify --color=auto --group-directories-first --all --long --links --git'
 
 alias grep='grep --color=tty'
 
