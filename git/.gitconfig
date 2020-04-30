@@ -127,7 +127,7 @@
 
   # Delete any branches that have been merged into current branch
   # See also: https://gist.github.com/robmiller/5133264
-  cleanup-branches = "!git branch --merged | grep -v '\\*' | xargs git branch -d"
+  cleanup-branches = "!git branch --merged | grep -v '\\*' | grep -v '\\+' | xargs git branch -d"
 
 [format]
   pretty = %C(magenta reverse)%h%Creset %Cgreen[%cr]%Creset (%an) %s
