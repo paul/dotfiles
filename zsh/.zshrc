@@ -29,6 +29,9 @@ if [[ `uname` == "Darwin" ]]; then
 	OSX=1
 fi
 
+# Disable the ^S shortcut in terminals
+stty -ixon
+
 # Set to this to use case-sensitive completion
 # export CASE_SENSITIVE="true"
 
@@ -59,7 +62,7 @@ plugins=(
   # rails # Its just dumb aliases
   # ruby  # just aliases
   # vagrant
-  ssh-agent
+  # ssh-agent
 )
 
 if [[ "$OSX" == "1" ]]; then
@@ -80,10 +83,10 @@ source ~/.aliases
 eval `dircolors $HOME/.dir_colors`
 
 # Base16 Shell
-BASE16_SHELL="$HOME/.config/base16-shell/"
-[ -n "$PS1" ] && \
-    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-        eval "$("$BASE16_SHELL/profile_helper.sh")"
+# BASE16_SHELL="$HOME/.config/base16-shell/"
+# [ -n "$PS1" ] && \
+#     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+#         eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 # automatically enter directories without cd
 setopt auto_cd
@@ -136,12 +139,12 @@ export QMAKE=/usr/bin/qmake-qt5
 export GOPATH=$HOME/Code/go
 
 # npm -g installs for my user instead
-NPM_PACKAGES="${HOME}/node_modules"
+export NPM_PACKAGES="${HOME}/node_modules"
 
 # Always my sure my paths are at the front
 typeset -U path # make path unique
 function fix_path() {
-  path=(./bin ./node_modules/bin ~/bin ~/.local/bin $NPM_PACKAGES/bin "$path[@]")
+  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin ./node_modules/bin $NPM_PACKAGES/bin "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
