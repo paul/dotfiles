@@ -45,8 +45,12 @@ Plug 'rhysd/committia.vim'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'ryanoasis/vim-devicons'
 
-" Syntax plugins
+" Colors
 Plug 'chriskempson/base16-vim'
+" Plug 'junegunn/seoul256.vim'
+" Plug 'cocopon/iceberg.vim'
+
+" Syntax plugins
 
 Plug 'cespare/vim-toml'
 Plug 'ekalinin/Dockerfile.vim'
@@ -73,13 +77,19 @@ runtime! plugin/sensible.vim
 
 syntax on
 
+set t_Co=256
 set background=dark
 let base16colorspace=256
 colorscheme base16-oceanicnext
+" let g:seoul256_background = 235
+" let g:seoul256_srgb = 1
+" colo seoul256
+" colo iceberg
+
 
 " Add a ruler at 80 and 120 columns
 set colorcolumn=80,120
-hi ColorColumn ctermbg=234 guibg=#1D1E2C
+hi ColorColumn ctermbg=234
 
 set autoread                   " automatically reload files if they change on disk
 set autowriteall               " Save files when switching buffers
@@ -187,6 +197,8 @@ let ruby_operators = 1 " Breaks HEREDOCs https://github.com/vim-ruby/vim-ruby/is
 " spellcheck inside strings
 let ruby_spellcheck_strings = 1
 
+let ruby_minlines = 1000
+
 " nicer indent settings
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
@@ -225,7 +237,7 @@ endif
 
 " Airline
 let g:airline_powerline_fonts=1
-let g:airline_theme='base16_tomorrow'
+let g:airline_theme='base16'
 let g:airline#extensions#tabline#enabled = 1
 
 " Hide the filetype section (section 'y')
@@ -248,8 +260,8 @@ nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>[ <Plug>AirlineSelectPrevTab
 nmap <leader>] <Plug>AirlineSelectNextTab
 
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+" let g:airline#extensions#tabline#left_sep = ''
+" let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 
 " ale linter
@@ -279,6 +291,9 @@ let g:ale_ruby_rubocop_options = '--force-exclusion'
 
 let g:airline#extensions#ale#enabled = 1
 
+" highlight ALEErrorSign ctermbg=18 ctermfg=09
+" highlight ALEWarningSign ctermbg=18 ctermfg=03
+
 " coc
 " Use tab/shift-tab to autocomplete
 inoremap <silent><expr> <TAB>
@@ -306,6 +321,11 @@ set shortmess+=c
 set signcolumn=yes
 " Smaller updatetime for CursorHold & CursorHoldI
 set updatetime=300
+
+" Declare CoC extensions
+let g:coc_global_extensions = [
+  \ 'coc-eslint'
+  \ ]
 
 
 " tickfmt
@@ -337,7 +357,7 @@ nmap <Leader>a <Plug>(EasyAlign)
 let g:vim_json_syntax_conceal = 0
 
 " less noisy opposing parens
-hi MatchParen cterm=bold ctermbg=none ctermfg=none
+" hi MatchParen cterm=bold ctermbg=none ctermfg=none
 
 " Less gross spelling error highlighting
 hi SpellBad cterm=underline ctermfg=white ctermbg=black
