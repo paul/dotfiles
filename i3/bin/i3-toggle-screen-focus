@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Adds 100ms to execution time 😕
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "i3ipc"
+end
+
+i3 = I3Ipc::Connection.new
+
+active_workspace = i3.workspaces.find { |ws| ws.focused == true }
+
+screens = i3.outputs.select { |out| out.active == true }
+active_screen_idx = screens.find_index { |sc| sc.current_workspace == active_workspace.name }
+
+next_idx = active_screen_idx + 1
+next_idx = 0 if next_idx >= screens.size # wrap to the beginning of list
+
+next_screen = screens[next_idx]
+
+i3.command("workspace number #{next_screen.current_workspace}")

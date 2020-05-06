@@ -52,7 +52,15 @@ bindsym $mod+Shift+q kill
 # bindsym $mod+backslash exec qdbus org.kde.kglobalaccel /component/krunner org.kde.kglobalaccel.Component.invokeShortcut 'run command'
 bindsym $mod+backslash exec krunner
 
+# Focus direction will wrap within this screen rather jumping to containers on
+# an adjacent screen
 focus_wrapping workspace
+
+# Don't move the most to the center of the screen when focus changes to another
+mouse_warping none
+
+# Clicking on a notification will switch to the workspace with the app
+focus_on_window_activation focus # default: smart
 
 # change focus
 bindsym $mod+h focus left
@@ -60,23 +68,23 @@ bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
-# bindsym $mod+Left focus left
-# bindsym $mod+Down focus down
-# bindsym $mod+Up focus up
-# bindsym $mod+Right focus right
-
 # move focused window
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# alternatively, you can use the cursor keys:
-# bindsym $mod+Shift+Left move left
-# bindsym $mod+Shift+Down move down
-# bindsym $mod+Shift+Up move up
-# bindsym $mod+Shift+Right move right
+# Move container to another display
+bindsym $mod+Left  move container to output left
+bindsym $mod+Down  move container to output down
+bindsym $mod+Up    move container to output up
+bindsym $mod+Right move container to output right
+
+# Move entire workspace to another display
+bindsym $mod+Shift+Left  move workspace to output left
+bindsym $mod+Shift+Down  move workspace to output down
+bindsym $mod+Shift+Up    move workspace to output up
+bindsym $mod+Shift+Right move workspace to output right
 
 # split in horizontal orientation
 bindsym $mod+b split h
@@ -107,6 +115,8 @@ bindsym $mod+a focus parent
 # backtick
 bindsym $mod+grave workspace back_and_forth
 
+bindsym $mod+Tab exec --no-startup-id ~/bin/i3-toggle-screen-focus
+
 # switch to workspace
 bindsym $mod+1 workspace number 1: surfs
 bindsym $mod+2 workspace number 2
@@ -119,6 +129,8 @@ bindsym $mod+8 workspace number 8: blah
 bindsym $mod+9 workspace number 9: tunes
 bindsym $mod+0 workspace number 10: comms
 
+workspace "1: surfs" output DisplayPort-0
+workspace "8: blah" output DisplayPort-0
 workspace "9: tunes" output DisplayPort-1
 workspace "10: tunes" output DisplayPort-1
 
@@ -133,11 +145,6 @@ bindsym $mod+Shift+7 move container to workspace number 7
 bindsym $mod+Shift+8 move container to workspace number 8
 bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
-
-bindsym $mod+Shift+Left  move container to output left
-bindsym $mod+Shift+Down  move workspace to output down
-bindsym $mod+Shift+Up    move workspace to output up
-bindsym $mod+Shift+Right move workspace to output right
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
