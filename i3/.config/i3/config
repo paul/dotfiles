@@ -296,12 +296,16 @@ for_window [class="Klipper"] floating enable
 for_window [class="Plasmoidviewer"] floating enable
 for_window [class="(?i)*nextcloud*"] floating disable
 # Don't focus notification windows
-no_focus [class="plasmashell"]
+no_focus [class="plasmashell" window_type="notification"]
 
 exec --no-startup-id feh --bg-scale ~/Nextcloud/Backgrounds/Widescreen/Star\ Wars\ The\ Last\ Jedi\ IMAX\ posters\ by\ Dan\ Mumford\ \ -\ Imgur.jpg
 
 for_window [id="0x5e00054"] floating enable resize set 120 80
 for_window [title="Emoji Choice"] floating enable
+
+# zoom "bob is the host" popup
+# Others have WM_NAME "Zoom - whatever" or "Zoom"
+for_window [class="zoom" title="^zoom$"] floating enable
 
 # Move apps to specific desktops
 assign [class="^Slack$"]                            workspace "10: comms"
@@ -311,4 +315,4 @@ assign [class="^Zulip"]                             workspace "10: comms"
 assign [class="^Google Play Music Desktop Player$"] workspace "9: tunes"
 assign [class="^Spotify"]                           workspace "9: tunes"
 assign [class="^$ksysguard"]                        workspace "9: tunes"
-assign [class="^$zoom$"]                            workspace "8: blah"
+assign [class="^$[Zz]oom"]                          workspace "8: blah"
