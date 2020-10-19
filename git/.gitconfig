@@ -6,6 +6,7 @@
   pager = less --quit-if-one-screen --no-init
   excludesfile = /home/rando/.gitignore.global
   askpass = /usr/bin/ksshaskpass
+  attributesfile = /home/rando/.gitattributes
   ; askpass = /usr/bin/ssh-askpass
 [merge]
   tool = kdiff3
