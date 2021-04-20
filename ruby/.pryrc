@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Pry.config.prompt = Pry::Prompt[:rails]
+Pry.config.prompt = Pry::Prompt[:default]
 
 # Aliases
 Pry.commands.alias_command "w", "whereami"
