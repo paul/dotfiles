@@ -22,9 +22,10 @@ alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
 alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade && sudo apt autoremove'
 
 # alias open=xdg-open
-function open () {
-  detach xdg-open "$*"
-}
+# function open () {
+#   detach xdg-open "$*"
+# }
+alias open=kde-open5
 
 # Git
 alias git=hub
