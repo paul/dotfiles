@@ -50,3 +50,6 @@ Thumbs.db
 
 .env.local
 .byebug_history
+
+# git worktree
+work

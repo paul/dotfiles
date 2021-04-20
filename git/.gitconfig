@@ -68,6 +68,9 @@
   # Rebase commits on current branch, without adding in new commits from master
   rbb = "!git rebase -i `git merge-base master HEAD`"
 
+  # worktree
+  wt = worktree
+
   #
   # Working with branches
   #
