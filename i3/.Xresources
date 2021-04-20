@@ -9,7 +9,7 @@ Xft.hinting: 1
 Xft.antialias: 1
 Xft.rgba: rgb
 
-URxvt*font: xft:mononoki Nerd Font:style=UniqueID:size=11
+URxvt*font: xft:mononoki Nerd Font Mono:style=Regular:size=11
 /* URxvt*font: xft:AnonymicePowerline Nerd Font:size=11,xft:AnonymicePowerline Nerd Font */
 URxvt*letterSpace: -1
 URxvt.buffered: false
