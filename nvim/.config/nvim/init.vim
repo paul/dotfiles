@@ -5,11 +5,13 @@
 call plug#begin('~/.config/nvim/plugins')
 " Do :PlugInstall after adding things to this list
 
-Plug 'vimwiki/vimwiki'
+" Plug 'vimwiki/vimwiki'
 
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'            " Allow surround to be repeated with .
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-markdown'
@@ -45,10 +47,15 @@ Plug 'rhysd/committia.vim'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'ryanoasis/vim-devicons'
 
+" Textareas in firefox use nvim
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+
 " Colors
 Plug 'chriskempson/base16-vim'
 " Plug 'junegunn/seoul256.vim'
 " Plug 'cocopon/iceberg.vim'
+" Plug 'ayu-theme/ayu-vim'
+" Plug 'morhetz/gruvbox'
 
 " Syntax plugins
 
@@ -68,6 +75,12 @@ Plug 'reasonml-editor/vim-reason-plus'
 Plug 'rust-lang/rust.vim'
 Plug 'slim-template/vim-slim'
 
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'jparise/vim-graphql'
+
 call plug#end()
 
 
@@ -78,6 +91,7 @@ runtime! plugin/sensible.vim
 syntax on
 
 set t_Co=256
+" set termguicolors     " enable true colors support
 set background=dark
 let base16colorspace=256
 colorscheme base16-oceanicnext
@@ -85,7 +99,14 @@ colorscheme base16-oceanicnext
 " let g:seoul256_srgb = 1
 " colo seoul256
 " colo iceberg
-
+" let ayucolor="light"  " for light version of theme
+" let ayucolor="mirage" " for mirage version of theme
+" let ayucolor="dark"   " for dark version of theme
+" colorscheme ayu
+" let g:gruvbox_contrast_dark='soft'
+" let g:gruvbox_italic=1
+" let g:gruvbox_italicize_comments=1
+" autocmd vimenter * ++nested colorscheme gruvbox " set colorscheme after all plugins have loaded
 
 " Add a ruler at 80 and 120 columns
 set colorcolumn=80,120
@@ -95,6 +116,9 @@ set autoread                   " automatically reload files if they change on di
 set autowriteall               " Save files when switching buffers
 
 set wrap                       " wrap lines
+set linebreak                  " wrap at whole words
+set showbreak=⏎
+
 set expandtab
 set softtabstop=2
 set tabstop=2
@@ -135,6 +159,9 @@ set undoreload=10000
 " Try to show more context when scrolling
 set scrolloff=5
 set sidescrolloff=10
+
+set splitbelow
+set splitright
 
 " There are not word dividers
 set iskeyword+=$
@@ -183,6 +210,9 @@ map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<
 " On window resize, re-balance the splits
 autocmd VimResized * wincmd =
 
+" Use Esc to exit terminal mode in a terminal window
+" :tnoremap <Esc> <C-\><C-n>
+
 command! BW :bn|:bd#
 
 "
@@ -230,9 +260,15 @@ cnoreabbrev Rg FzfRg
 cnoreabbrev Ag FzfRg
 
 if executable('rg')
-  let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden --glob "!.git/*"'
+  let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden --glob "!.git/*" --glob "!work/*"'
   set grepprg=rg\ --vimgrep
-  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+  "command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+  " Redefine FzfFiles to sort by mtime rather than path length
+  " -- not possible because rg won't sort the whole thing, just each directory level
+  " let $FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden --glob "!.git/*" --glob "!work/*" --sortr modified'
+  " command! -bang -nargs=? -complete=dir Files
+  "     \ call fzf#vim#files(<q-args>, {'options': ['--tiebreak=index']}, <bang>0)
+
 endif
 
 " Airline
@@ -287,7 +323,8 @@ let g:ale_fixers = {
 \   'javascript': ['prettier', 'eslint'],
 \}
 
-let g:ale_ruby_rubocop_options = '--force-exclusion'
+" Lets ALE/Rubocop add frozen_string_literal comments
+let g:ale_ruby_rubocop_auto_correct_all = 1
 
 let g:airline#extensions#ale#enabled = 1
 
@@ -324,9 +361,16 @@ set updatetime=300
 
 " Declare CoC extensions
 let g:coc_global_extensions = [
-  \ 'coc-eslint'
+  \ 'coc-tsserver'
   \ ]
 
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
 
 " tickfmt
 let g:tick_fmt_command = "~/Code/go/bin/tickfmt"
@@ -355,6 +399,23 @@ nmap <Leader>a <Plug>(EasyAlign)
 " vim-json
 " Disable quote concealing
 let g:vim_json_syntax_conceal = 0
+
+" firevim
+if exists('g:started_by_firenvim')
+let g:firenvim_config = {
+    \ 'globalSettings': {
+        \ 'alt': 'all',
+    \  },
+    \ 'localSettings': {
+        \ '.*': {
+            \ 'cmdline': 'neovim',
+            \ 'priority': 0,
+            \ 'selector': 'textarea',
+            \ 'takeover': 'never',
+        \ },
+    \ }
+\ }
+endif
 
 " less noisy opposing parens
 " hi MatchParen cterm=bold ctermbg=none ctermfg=none

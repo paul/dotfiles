@@ -1,6 +1,9 @@
 {
   //"suggest.timeout": 1000,
   "suggest.noselect": false,
-  "suggest.autoTrigger": "none"
+  "suggest.autoTrigger": "none",
+  "rust-analyzer.inlayHints.enable": false,
+  "rust-analyzer.inlayHints.typeHints": false,
+  "rust-analyzer.inlayHints.chainingHints": false
 }
 
