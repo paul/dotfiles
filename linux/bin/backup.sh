@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 set -euo pipefail
-# set -vx
+set -vx
 
 REPO=9669@usw-s009.rsync.net:backups/borg-repo
 MACHINE=$(hostname -s)
@@ -16,11 +16,13 @@ borg create -v --stats                      \
   --exclude '/home/*/*.dump'                \
   --exclude '/home/*/*.rdb'                 \
   --exclude '/home/rando/Dropbox'           \
+  --exclude '/home/rando/NextCloud'         \
   --exclude '/home/rando/.cache'            \
   --exclude '/home/rando/Downloads'         \
-  --exclude '/home/rando/*/Cache/*'
+  --exclude '/home/rando/*/Cache/*'         \
+  --exclude '/home/rando/.local/share/akonadi/*' \
+  --exclude '/home/rando/.local/share/containers'
 
 borg prune -v --list --stats $REPO --prefix ${MACHINE}- --save-space \
   --keep-daily=7 --keep-weekly=4 --keep-monthly=12
-
 
