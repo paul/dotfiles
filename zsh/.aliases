@@ -39,6 +39,7 @@ alias b=bundle
 alias be='bundle exec'
 
 alias h=heroku
+alias heroku="TERM=xterm-256color heroku"
 
 alias ssh="TERM=screen-256color ssh"
 
