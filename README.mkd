@@ -5,7 +5,7 @@
 
 I use [GNU's `stow` utility][stow] to maintain symlinks between the config
 files and directories in this repo and their expected locations within my home
-directory. Read [this post](stow-dotfiles) to see more details about how stow
+directory. Read [this post][stow-dotfiles] to see more details about how stow
 can manage your dotfiles, but essentially it creates symlinks as-needed at the
 appropriate levels.
 
