@@ -1,4 +1,4 @@
-local o = vim.o
+local o = vim.opt
 local g = vim.g
 local cmd = vim.cmd
 local env = vim.env
@@ -6,8 +6,6 @@ local env = vim.env
 require('plugins')
 
 -- Options
-
-
 o.autoread = true                   -- automatically reload files if they change on disk
 o.autowriteall = true               -- Save files when switching buffers
 
@@ -19,7 +17,7 @@ o.expandtab = true
 o.softtabstop = 2
 o.tabstop = 2
 o.shiftwidth = 2
-o.backspace = 'indent,eol,start' -- allow backspacing over everything in insert mode
+o.backspace = 'indent,eol,start'    -- allow backspacing over everything in insert mode
 o.autoindent = true                 -- always set autoindenting on
 o.number = true                     -- always show line numbers
 o.shiftround = true                 -- use multiple of shiftwidth when indenting with '<' and '>'
@@ -56,13 +54,18 @@ o.splitbelow = true
 o.splitright = true
 
 -- There are not word dividers
-o.iskeyword = o.iskeyword .. '$' .. '_'
+o.iskeyword:append('$')
+o.iskeyword:append('_')
+
 
 -- let mapleader="\<Space>"
 g.mapleader = [[ ]]
 
 -- yank/put use the OS clipboard
-o.clipboard = o.clipboard .. 'unnamedplus'
+--o.clipboard = o.clipboard .. 'unnamedplus'
+--o.clipboard:append('unnamedplus')
+-- table.insert(o.clipboard, 'unnamedplus')
+o.clipboard = 'unnamedplus'
 
 --
 -- Commands
@@ -91,12 +94,58 @@ map_key('n', '<C-k>', '<C-w>k', {})
 map_key('n', '<C-l>', '<C-w>l', {})
 map_key('n', '<C-tab>', '<C-w>p', {})
 
-map_key('n', '<leader>[', ':bp<cr>', {})
-map_key('n', '<leader>]', ':bn<cr>', {})
+-- Using barbar instead
+-- next/previous buffer
+-- map_key('n', '<leader>[', ':bp<cr>', {})
+-- map_key('n', '<leader>]', ':bn<cr>', {})
+
+-- last used buffer
+-- map_key('n', '<leader>`', ':b#<cr>', {})
 
 --
 -- Plugins
 --
+
+-- cmp
+
+-- Set completeopt to have a better completion experience
+vim.o.completeopt = 'menuone,noselect'
+
+local cmp = require'cmp'
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    }),
+    ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
+  },
+  formatting = {
+    format = function(entry, vim_item)
+    vim_item.menu = ({
+      buffer = "[Buffer]",
+      nvim_lsp = "[LSP]",
+      luasnip = "[LuaSnip]",
+      nvim_lua = "[Lua]",
+      latex_symbols = "[Latex]",
+    })[entry.source.name]
+    return vim_item
+    end,
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+  }
+})
 
 -- LSP
 
@@ -118,7 +167,95 @@ map_key('n', '<leader>]', ':bn<cr>', {})
 
 -- Hide inline error display (using ALE for that)
 vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
-require'lspconfig'.solargraph.setup{}
+
+-- Ruby
+require'lspconfig'.solargraph.setup{
+  cmd = { "bundle", "exec", "solargraph", "stdio" }
+}
+
+-- Go 
+require'lspconfig'.gopls.setup{}
+
+-- Rust
+require'lspconfig'.rust_analyzer.setup{}
+local opts = {
+  tools = { -- rust-tools options
+    autoSetHints = true,
+    hover_with_actions = true,
+    inlay_hints = {
+      show_parameter_hints = false,
+      parameter_hints_prefix = "",
+      other_hints_prefix = "",
+    },
+  },
+
+  -- all the opts to send to nvim-lspconfig
+  -- these override the defaults set by rust-tools.nvim
+  -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
+  server = {
+    -- on_attach is a callback called when the language server attachs to the buffer
+    -- on_attach = on_attach,
+    settings = {
+      -- to enable rust-analyzer settings visit:
+      -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+      ["rust-analyzer"] = {
+        -- enable clippy on save
+        checkOnSave = {
+          command = "clippy"
+        },
+      }
+    }
+  },
+}
+
+require('rust-tools').setup(opts)
+
+local nvim_lsp = require('lspconfig')
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  --Enable completion triggered by <c-x><c-o>
+  -- -- using cmp instead for completion --
+  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local opts = { noremap=true, silent=true }
+
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { "solargraph", "rust_analyzer" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    },
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  }
+end
 
 -- ALE
 
@@ -148,86 +285,35 @@ g.ale_fixers = {
 g.ale_ruby_rubocop_auto_correct_all = 1
 
 
+-- Fixes ALE gutter colors on some themes
 -- highlight ALEErrorSign ctermbg=18 ctermfg=09
 -- highlight ALEWarningSign ctermbg=18 ctermfg=03
 
--- Bufferline
-require('bufferline').setup{
-  options = {
-    show_buffer_close_icons = false,
-    show_close_icon = false,
-    separator_style = "slant",
-    numbers = "ordinal",
-    number_style = "superscript",
-    mappings = true  -- <leader>-# to go to tab
+-- Barbar
+map_key('n', '<leader>[', ':BufferPrevious<CR>', { silent = true })
+map_key('n', '<leader>]', ':BufferNext<CR>', { silent = true })
+map_key('n', '<leader>{', ':BufferMovePrevious<CR>', { silent = true })
+map_key('n', '<leader>}', ':BufferMoveNext<CR>', { silent = true })
 
-  }
-}
+map_key('n', '<leader>1', ':BufferGoto 1<CR>', { silent = true })
+map_key('n', '<leader>2', ':BufferGoto 2<CR>', { silent = true })
+map_key('n', '<leader>3', ':BufferGoto 3<CR>', { silent = true })
+map_key('n', '<leader>4', ':BufferGoto 4<CR>', { silent = true })
+map_key('n', '<leader>5', ':BufferGoto 5<CR>', { silent = true })
+map_key('n', '<leader>6', ':BufferGoto 6<CR>', { silent = true })
+map_key('n', '<leader>7', ':BufferGoto 7<CR>', { silent = true })
+map_key('n', '<leader>8', ':BufferGoto 8<CR>', { silent = true })
+map_key('n', '<leader>9', ':BufferGoto 9<CR>', { silent = true })
 
--- compe
+-- magic buffer closer without messing with window layout
+map_key('n', '<leader>c', ':BufferClose<CR>', { silent = true })
 
-o.completeopt = "menuone,noselect"
-require'compe'.setup({
-  enabled = true,
-  autocomplete = false, -- don't open menu automatically
-  source = {
-    path = { priority = 20 },
-    buffer = { priority = 1 },
-    nvim_lsp = { priority = 10 },
-  },
-})
--- vim.cmd[[inoremap <silent><expr> <C-Space> compe#complete()]]
--- vim.cmd[[inoremap <silent><expr> <CR>      compe#confirm(lexima#expand('<LT>CR>', 'i'))]]
--- vim.cmd[[inoremap <silent><expr> <C-e>     compe#close('<C-e>')]]
--- vim.cmd[[inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })]]
--- vim.cmd[[inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })]]
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-        return true
-    else
-        return false
-    end
-end
-
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  -- elseif vim.fn.call("vsnip#available", {1}) == 1 then
-  --   return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  -- elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-  --   return t "<Plug>(vsnip-jump-prev)"
-  else
-    return t "<S-Tab>"
-  end
-end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+-- pick buffer by stable key
+map_key('n', '<leader>b', ':BufferPick<CR>', { silent = true })
 
 
 -- gitsigns
 require('gitsigns').setup()
-
 
 -- lualine
 require('lualine').setup {
@@ -255,8 +341,12 @@ map_key('n', '<Leader>a', '<Plug>(EasyAlign)', {})
 -- Disable quote concealing
 g.vim_json_syntax_conceal = 0
 
+--
 -- Theme
-vim.g.tokyonight_style = "night"
+--
+
+--   tokyonight
+g.tokyonight_style = "night"
 vim.cmd[[colorscheme tokyonight]]
 
 -- Todo is black on yellow bg, and looks terrible for ALEWarningSign
