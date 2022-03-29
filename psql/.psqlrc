@@ -1,8 +1,16 @@
+\set QUIET 1
+
 \pset null ␀
 \pset format wrapped
+\pset linestyle unicode
+\pset border 2
+
 \set HISTSIZE 20000
 \encoding unicode
 
 \x auto
 \timing on
 
+\setenv PAGER pspg
+
+\unset QUIET
