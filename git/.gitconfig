@@ -7,13 +7,8 @@
   excludesfile = /home/rando/.gitignore.global
   askpass = /usr/bin/ksshaskpass
   attributesfile = /home/rando/.gitattributes
+  difftool = true
   ; askpass = /usr/bin/ssh-askpass
-[merge]
-  tool = kdiff3
-  conflictstyle = diff3 # show original content before conflicts
-[diff]
-  wordRegex = [^[:space:]] # For Github-style word diffs
-  algorithm = patience     # combine "functions" together in diff
 [branch]
   mergeoptions = no-ff
   autosetupmerge = always
@@ -34,12 +29,13 @@
   p     = pull
   co    = checkout
   ci    = commit -a
-  lol   = log --pretty=oneline --abbrev-commit --graph --decorate
   a     = add
   st    = status -sb
-  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  dft   = difftool
 
   lg    = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+  lol   = log --pretty=oneline --abbrev-commit --graph --decorate
+  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
   addw  = "!git diff -w --no-color | git apply --cached --ignore-whitespace"
 
@@ -47,6 +43,7 @@
 
   pf = push --force-with-lease
 
+  # Branch List with age and details
   bl = "!git for-each-ref --sort=-committerdate refs/heads \
     --format='%(color:green)%(committerdate:relative)|%(HEAD)%(color:yellow)%(refname:short)|%(color:magenta)%(authorname)%(color:reset)|%(subject)' \
     --color=always \
@@ -161,12 +158,6 @@
 
 [hub]
   protocol = https
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 [user]
   name = Paul Sadauskas
   email = psadauskas@gmail.com
@@ -185,3 +176,30 @@
 [gpg]
   program = gpg2 ; fedora
   ; program = gpg  ; ubuntu
+[init]
+	defaultBranch = main
+
+[merge]
+  tool = kdiff3
+  conflictstyle = diff3 # show original content before conflicts
+[diff]
+  wordRegex = [^[:space:]] # For Github-style word diffs
+  algorithm = patience     # combine "functions" together in diff
+	; tool = nvimdiff
+  tool = difftastic
+
+[difftool]
+  prompt = false
+
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+[difftool "nvimdiff"]
+  cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[difftool "difftastic"]
+        cmd = difft "$LOCAL" "$REMOTE"
