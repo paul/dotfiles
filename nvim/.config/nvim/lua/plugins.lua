@@ -9,10 +9,9 @@ return require('packer').startup(function()
   use { 'tpope/vim-markdown' }
   use { 'vim-ruby/vim-ruby' }
   use { 'tpope/vim-rails' }
-  use { 'tpope/vim-endwise' }
   use { 'slim-template/vim-slim' }
   use { 'jez/vim-github-hub' }
-  use { 'cespare/vim-toml'}
+  use { 'cespare/vim-toml', branch = 'main'}
   use { 'fatih/vim-go' }
   use { 'hashivim/vim-terraform'}
   use { 'mechatroner/rainbow_csv' }
@@ -61,6 +60,7 @@ return require('packer').startup(function()
   use { 'tpope/vim-eunuch' }     -- Vim sugar for unix commands
 
   use { 'junegunn/vim-easy-align' }
+  use { 'tpope/vim-endwise' }
 
   -- LSP
   use { 'neovim/nvim-lspconfig' }
