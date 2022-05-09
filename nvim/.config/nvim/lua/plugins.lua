@@ -2,8 +2,9 @@
 return require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
-  -- Syntax/Languages
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+
+  -- Syntax/Languages
   use { 'tpope/vim-cucumber' }
   use { 'tpope/vim-markdown' }
   use { 'vim-ruby/vim-ruby' }
@@ -15,6 +16,21 @@ return require('packer').startup(function()
   use { 'fatih/vim-go' }
   use { 'hashivim/vim-terraform'}
   use { 'mechatroner/rainbow_csv' }
+  use { 'vim-crystal/vim-crystal' }
+
+  -- HTML
+  use { 'hail2u/vim-css3-syntax' }
+  use { 'gko/vim-coloresque' }
+  use { 'tpope/vim-haml' }
+  use { 'mattn/emmet-vim' }
+
+  -- Javascript/Typescript
+  use { 'jelera/vim-javascript-syntax' }
+  -- use { 'pangloss/vim-javascript' }
+  use { 'leafgarland/typescript-vim' }
+  use { 'HerringtonDarkholme/yats.vim' } -- Typescript
+
+  use { 'evanleck/vim-svelte', requires = 'othree/html5.vim' }
 
   -- UI
   -- use { 'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'}
