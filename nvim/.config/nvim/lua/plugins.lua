@@ -17,7 +17,7 @@ return require('packer').startup(function()
   use { 'mechatroner/rainbow_csv' }
   use { 'vim-crystal/vim-crystal' }
 
-  -- HTML
+  -- HTML 
   use { 'hail2u/vim-css3-syntax' }
   use { 'gko/vim-coloresque' }
   use { 'tpope/vim-haml' }
