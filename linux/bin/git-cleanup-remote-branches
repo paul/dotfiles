@@ -4,6 +4,8 @@
 # Author: Rob Miller <rob@bigfish.co.uk>
 # Adapted from the original by Yorick Sijsling
 
+set -euxo pipefail
+
 git checkout master &> /dev/null
 
 # Make sure we're working with the most up-to-date version of master.
@@ -16,7 +18,7 @@ git remote prune origin
 # List all the branches that have been merged fully into master, and
 # then delete them. We use the remote master here, just in case our
 # local master is out of date.
-git branch --merged origin/master | grep -v 'master$' | xargs git branch -d
+git branch --merged origin/master | grep -v 'master$' | grep -v '\A\*' | xargs git branch -d
 
 # Now the same, but including remote branches.
 MERGED_ON_REMOTE=`git branch -r --merged origin/master | sed 's/ *origin\///' | grep -v 'master$'`
