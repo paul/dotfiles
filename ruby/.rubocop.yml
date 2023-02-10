@@ -1,6 +1,13 @@
 inherit_from:
   - https://relaxed.ruby.style/rubocop.yml
 
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  NewCops: enable
+  TargetRailsVersion: 6.1
+  TargetRubyVersion: 3.1
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes

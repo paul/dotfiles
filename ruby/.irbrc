@@ -14,14 +14,14 @@ rescue LoadError
   puts "missing #{gem} gem"
 end
 
-try_require "wirble" do
-  Wirble.init
-  Wirble.colorize
-end
+# try_require "wirble" do
+#   Wirble.init
+#   Wirble.colorize
+# end
 
-try_require "hirb" do
-  Hirb::View.enable
-end
+# try_require "hirb" do
+#   Hirb::View.enable
+# end
 
 try_require "ap", "awesome_print"
 

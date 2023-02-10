@@ -1,6 +1,6 @@
 --database postgresql
 --skip-test
 --skip-system-test
---skip-javascript
-
-
+--skip-action-text
+--javascript=importmap
+--css=bulma
