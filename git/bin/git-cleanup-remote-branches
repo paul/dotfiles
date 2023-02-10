@@ -18,7 +18,7 @@ git remote prune origin
 # List all the branches that have been merged fully into master, and
 # then delete them. We use the remote master here, just in case our
 # local master is out of date.
-git branch --merged origin/master | grep -v 'master$' | grep -v '\A\*' | xargs git branch -d
+# git branch --merged origin/master | grep -v 'master$' | grep -v '\A\*' | grep -v '^+' | xargs git branch -d
 
 # Now the same, but including remote branches.
 MERGED_ON_REMOTE=`git branch -r --merged origin/master | sed 's/ *origin\///' | grep -v 'master$'`
