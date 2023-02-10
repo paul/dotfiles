@@ -1,23 +1,35 @@
 
-alias t="tail -f"
+if [[ `uname` == "Darwin" ]]; then
+	OSX=1
+fi
 
-alias ls='exa --classify --color=auto --group-directories-first --oneline'
-alias l='ls'
-alias ll='exa --classify --color=auto --group-directories-first --all --long --links --git'
+alias t="tail -f"
 
 alias grep='grep --color=tty'
 
+if (( $+commands[nvim] )); then
 alias vim=nvim
 alias gvim=nvim
+fi
 
+# Alias to rust alternatives
+if (( $+commands[exa] )); then
+alias ls='exa --classify --color=auto --group-directories-first --oneline'
+alias l='ls'
+alias ll='exa --classify --color=auto --group-directories-first --all --long --links --git'
+fi
+
+if (( $+commands[bat] )); then
 alias cat=bat
+fi
 
-# alias gvim=mvim
-# alias vim='mvim -v'
+if [[ "$OSX" == "1" ]]; then
 
+else 
 # Linux
 
 alias sc='sudo systemctl'
+alias dnf='sudo dnf'
 alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
 alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade && sudo apt autoremove'
 
@@ -26,10 +38,12 @@ alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade &
 #   detach xdg-open "$*"
 # }
 alias open=kde-open5
+fi
+  
 
 # Git
-alias git=hub
 alias g=git
+alias git=hub
 
 # Rails
 alias r=rails
