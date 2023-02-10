@@ -13,6 +13,8 @@
   mergeoptions = no-ff
   autosetupmerge = always
   autosetuprebase = always
+[checkout]
+  defaultRemote = origin
 [pull]
   rebase = true
 [color]
@@ -58,12 +60,12 @@
 
   # rebasing
   rb = rebase
-  rbm = rebase --interactive master
+  rbm = rebase --interactive main
   rbi = rebase --interactive
   rbc = rebase --continue
   rba = rebase --abort
   # Rebase commits on current branch, without adding in new commits from master
-  rbb = "!git rebase -i `git merge-base master HEAD`"
+  rbb = "!git rebase -i `git merge-base main HEAD`"
 
   # worktree
   wt = worktree
