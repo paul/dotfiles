@@ -81,7 +81,8 @@ if [[ "$OSX" == "1" ]]; then
 fi
 
 source ~/.aliases
-eval `dircolors $HOME/.dir_colors`
+
+(( $+commands[dircolors] )) && eval `dircolors $HOME/.dir_colors`
 
 # Base16 Shell
 # BASE16_SHELL="$HOME/.config/base16-shell/"
@@ -119,14 +120,7 @@ export RUBY_GC_HEAP_INIT_SLOTS=600000
 # Newline before every prompt
 precmd() { print "" }
 
-eval "$(direnv hook zsh)"
-
-if [[ "$OSX" == "1" ]]; then
-	LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
-	if [ -f $LUNCHY_DIR/lunchy-completion.zsh ]; then
-		. $LUNCHY_DIR/lunchy-completion.zsh
-	fi
-fi
+(( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 
 FZF_DEFAULT_COMMAND='rg --files --hidden'
 
