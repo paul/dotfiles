@@ -1,0 +1,6 @@
+.config/nvim/plugins
+.local/share/nvim/lspinstall/
+.local/share/nvim/site/pack/packer/
+.local/share/nvim/undo/
+.local/share/nvim/lsp_servers/
+.local/share/nvim/lazy
