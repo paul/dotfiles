@@ -27,10 +27,17 @@ return {
         async = true,
         -- timeout_ms = 2000,
       },
+      diagnostics = {
+        virtual_text = {
+          -- others show on cursor focus
+          severity = vim.diagnostic.severity.ERROR,
+          source = "if_many",
+        }
+      },
       servers = {
         ruby_ls = {},
         standardrb = { autostart = false }
-      }
+      },
     },
   },
 }
