@@ -1,12 +1,17 @@
 inherit_from:
   - https://relaxed.ruby.style/rubocop.yml
 
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
 AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   NewCops: enable
-  TargetRailsVersion: 6.1
-  TargetRubyVersion: 3.1
+  TargetRailsVersion: 7.0
+  TargetRubyVersion: 3.2
 
 Style/StringLiterals:
   Enabled: true
