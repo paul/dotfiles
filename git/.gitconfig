@@ -159,7 +159,7 @@
   username = paul
 
 [hub]
-  protocol = https
+	protocol = https
 [user]
   name = Paul Sadauskas
   email = psadauskas@gmail.com
