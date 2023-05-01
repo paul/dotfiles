@@ -1,0 +1,12 @@
+bundler
+debug
+amazing_print
+progress_bar
+solargraph
+ruby-lsp
+rubocop
+rubocop-rails
+rubocop-rspec
+rubocop-performance
+reek
+standardrb
