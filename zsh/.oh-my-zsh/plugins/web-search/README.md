@@ -25,9 +25,10 @@ $ google oh-my-zsh
 Available search contexts are:
 
 | Context               | URL                                      |
-|-----------------------|------------------------------------------|
+| --------------------- | ---------------------------------------- |
 | `bing`                | `https://www.bing.com/search?q=`         |
 | `google`              | `https://www.google.com/search?q=`       |
+| `brs` or `brave`      | `https://search.brave.com/search?q=`     |
 | `yahoo`               | `https://search.yahoo.com/search?p=`     |
 | `ddg` or `duckduckgo` | `https://www.duckduckgo.com/?q=`         |
 | `sp` or `startpage`   | `https://www.startpage.com/do/search?q=` |
@@ -40,6 +41,9 @@ Available search contexts are:
 | `givero`              | `https://www.givero.com/search?q=`       |
 | `stackoverflow`       | `https://stackoverflow.com/search?q=`    |
 | `wolframalpha`        | `https://wolframalpha.com/input?i=`      |
+| `archive`             | `https://web.archive.org/web/*/`         |
+| `scholar`             | `https://scholar.google.com/scholar?q=`  |
+| `ask`                 | `https://www.ask.com/web?q=`             |
 
 Also there are aliases for bang-searching DuckDuckGo:
 
@@ -51,3 +55,27 @@ Also there are aliases for bang-searching DuckDuckGo:
 | `map`     | `!m`  |
 | `image`   | `!i`  |
 | `ducky`   | `!`   |
+
+### Custom search engines
+
+If you want to add other search contexts to the plugin, you can use the
+`$ZSH_WEB_SEARCH_ENGINES` variable. Set it before Oh My Zsh is sourced,
+with the following format:
+
+```zsh
+ZSH_WEB_SEARCH_ENGINES=(
+    <context> <URL>
+    <context> <URL>
+)
+```
+
+where `<context>` is the name of the search context, and `<URL>` a URL of
+the same type as the search contexts above. For example, to add `reddit`,
+you'd do:
+
+```zsh
+ZSH_WEB_SEARCH_ENGINES=(reddit "https://www.reddit.com/search/?q=")
+```
+
+These custom search engines will also be turned to aliases, so you can
+both do `web_search reddit <query>` or `reddit <query>`.

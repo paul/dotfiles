@@ -4,14 +4,15 @@ Faster alternative to the main SVN plugin implementation. Works with svn 1.6 and
 Use as a drop-in replacement to the svn plugin, not as complementary.
 
 To use it, add `svn-fast-info` to the plugins array in your zshrc file:
+
 ```zsh
 plugins=(... svn-fast-info)
 ```
 
-It's faster because his efficient use of svn (single svn call) which saves a lot on a huge codebase
+It's faster because it has an efficient use of svn (single svn call) which saves a lot on a huge codebase.
 It displays the current status of the local files (added, deleted, modified, replaced, or else...)
 
-Use `svn_prompt_info` method to display the svn repository status in your theme. 
+Use `svn_prompt_info` method to display the svn repository status in your theme.
 
 ## Functions
 
