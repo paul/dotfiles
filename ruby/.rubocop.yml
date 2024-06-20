@@ -1,8 +1,9 @@
+---
 inherit_from:
   - https://relaxed.ruby.style/rubocop.yml
+# - .rubocop.rails.yml # Uncomment if using Rails
 
 require:
-  - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
 
@@ -10,9 +11,153 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   NewCops: enable
-  TargetRailsVersion: 7.0
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.3
+  Exclude:
+    - bin/**/*
+    - node_modules/**/*
+    - tmp/**/*
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Enabled: true
+  Max: 100
+  AllowedPatterns:
+    - "\\A#  "
+  Exclude:
+    - db/migrate/*.rb
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented_relative_to_receiver
+
+# `expect { }.to change { }` is fine
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
+
+# Shadowing outer local variables with block parameters is often useful to
+# not reinvent a new name for the same thing, it highlights the relation
+# between the outer variable and the parameter. The cases where it's actually
+# confusing are rare, and usually bad for other reasons already, for example
+# because the method is too long.
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  AutoCorrect: false
+
+Lint/UselessAssignment:
+  AutoCorrect: false
+
+Metrics/BlockLength:
+  Exclude:
+    - config/routes.rb
+    - db/migrate/*.rb
+    - lib/tasks/**/*
+    - Gemfile
+    - Guardfile
+    - shared_context
+    - feature
+    - app/admin/*
+  AllowedMethods:
+    - configure
+    - context
+    - define
+    - describe
+    - factory
+    - it
+    - namespace
+    - specify
+    - task
+    - shared_examples_for
+    - shared_context
+    - feature
+    - define_type
+
+Metrics/ClassLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
+# Avoid writing accessors in Ruby, but this catches too many false positives
+Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/FileName:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  EnforcedStyleForLeadingUnderscores: optional
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: ex
+
+RSpec/ExampleLength:
+  Exclude:
+    - spec/system/**/*_spec.rb
+
+RSpec/ExpectChange:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - spec/system/**/*_spec.rb
+
+RSpec/NotToNot:
+  Enabled: false
+
+Style/EmptyLiteral:
+  Enabled: false
+
+Style/EmptyMethod:
+  AutoCorrect: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  SafeAutoCorrect: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+  Exclude:
+    - lib/tasks/**/*.rake
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/StringChars:
+  Enabled: true
 
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  MinSize: 4
+
+Style/TopLevelMethodDefinition:
+  Enabled: true
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma

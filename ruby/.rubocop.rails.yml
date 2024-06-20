@@ -1,0 +1,17 @@
+---
+require:
+  - rubocop-rails
+
+AllCops:
+  TargetRailsVersion: 7.1
+  Exclude:
+    - vendor/**/*
+    - spec/fixtures/**/*
+    - bin/**/*
+    - script/**/*
+    - node_modules/**/*
+    - public/**/*
+    - tmp/**/*
+
+Rails/TimeZone:
+  Enabled: false
