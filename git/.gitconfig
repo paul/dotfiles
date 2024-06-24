@@ -3,11 +3,12 @@
   path = ~/.gitconfig.local
 [core]
   editor = nvim
-  pager = diff-so-fancy | less --tabs=4 -RFX
   excludesfile = /home/rando/.gitignore.global
   askpass = /usr/bin/ksshaskpass
   attributesfile = /home/rando/.gitattributes
-  difftool = true
+  ; difftool = true
+  ; pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = less --tabs=4 -RFX
   ; askpass = /usr/bin/ssh-askpass
 [branch]
   mergeoptions = no-ff
@@ -146,6 +147,8 @@
   pretty = %Cblue%h%Creset %Cgreen[%cr]%Creset (%an) %s
 [push]
   default = simple
+[blame]
+  ignoreRevsFile = .git-blame-ignore-revs
 [sendemail]
   smtpserver = smtp.gmail.com
   smtpserverport = 587
@@ -180,7 +183,8 @@
   ; program = gpg  ; ubuntu
 [init]
 	defaultBranch = main
-
+[pager]
+  difftool = true
 [merge]
   tool = kdiff3
   conflictstyle = diff3 # show original content before conflicts
@@ -188,11 +192,10 @@
   wordRegex = [^[:space:]] # For Github-style word diffs
   algorithm = patience     # combine "functions" together in diff
 	; tool = nvimdiff
-  tool = difftastic
-
+  ; tool = difftastic
+  ; external = difft
 [difftool]
   prompt = false
-
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path =
