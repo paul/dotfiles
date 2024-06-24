@@ -1,0 +1,69 @@
+format = """
+[$status](bg:236)\
+[$directory](bg:236)\
+[  ](fg:244 bg:236)\
+[$git_branch $git_status $git_state](bg:236)\
+[](fg:236)\
+$fill\
+[](fg:236)\
+[$cmd_duration](bg:236)\
+[$ruby](bg:236)\
+[$nodejs](bg:236)\
+[$rust](bg:236)\
+[$time](bg:236)\
+\n$character\
+"""
+add_newline = true
+
+# palette = oceanic-next
+#
+# [palettes.oceanic-next]
+
+[fill]
+symbol = ' '
+
+[status]
+disabled = false
+
+[directory]
+style = "blue bg:236"
+format = "[  $path]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = ""
+style = "green bg:236"
+format = '[$symbol $branch]($style)'
+
+[git_status]
+style = "green bg:236"
+conflicted = " [✘](fg:red)"
+up_to_date = " "
+ahead = "⇡$count"
+behind = "⇣$count"
+format = "[$ahead_behind$up_to_date$conflicted]($style)"
+
+[cmd_duration]
+min_time = 500
+style = "fg:248 bg:236"
+format = " [$duration ](style) [](fg:244 bg:236)"
+
+[ruby]
+symbol = ""
+style = "fg:168 bg:236"
+format = " [$version $symbol]($style) [](fg:244 bg:236)"
+
+[nodejs]
+symbol = ""
+style = "fg:70 bg:236"
+format = " [$version $symbol]($style) [](fg:244 bg:236)"
+
+[rust]
+symbol = ""
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "fg:66 bg:236"
+format = ' [$time  ]($style)'

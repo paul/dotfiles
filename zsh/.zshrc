@@ -1,14 +1,5 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
-
-export ZSH_THEME="powerlevel10k/powerlevel10k"
 
 if [[ `uname` == "Darwin" ]]; then
 	OSX=1
@@ -73,11 +64,15 @@ source ~/.aliases
 
 (( $+commands[dircolors] )) && eval `dircolors $HOME/.dir_colors`
 
-# Base16 Shell
-# BASE16_SHELL="$HOME/.config/base16-shell/"
-# [ -n "$PS1" ] && \
-#     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-#         eval "$("$BASE16_SHELL/profile_helper.sh")"
+# Always my sure my paths are at the front
+typeset -U path # make path unique
+function fix_path() {
+  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin ~/.local/share/npm/bin /usr/pgsql-16/bin "$path[@]")
+}
+
+if [[ ! "$preexec_functions" == *fix_path* ]]; then
+  preexec_functions+=("fix_path")
+fi
 
 # automatically enter directories without cd
 setopt auto_cd
@@ -100,11 +95,13 @@ export RUBY_GC_HEAP_INIT_SLOTS=600000
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
+# FZF
 FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 # Fedora provides a package
 [ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
 
+# JQ
 # JQ colors has null the same as background for some reason
 # null:false:true:number:string:array:object
 export JQ_COLORS="1;30:0;37:0;37:0;34:0;33:0;37:0;37"
@@ -112,26 +109,15 @@ export JQ_COLORS="1;30:0;37:0;37:0;34:0;33:0;37:0;37"
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
 
+# GO
 export GOPATH=$HOME/Code/go
 
+# NPM
 # npm -g installs for my user instead
 export NPM_PACKAGES="${HOME}/node_modules"
 
-# Always my sure my paths are at the front
-typeset -U path # make path unique
-function fix_path() {
-  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin ~/.local/share/npm/bin /usr/pgsql-16/bin "$path[@]")
-}
-
-if [[ ! "$preexec_functions" == *fix_path* ]]; then
-  preexec_functions+=("fix_path")
-fi
-
 # Don't show less when < 1 page of output
 # export LESS="--quit-if-one-screen $LESS"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 #compdef gt
 ###-begin-gt-completions-###
@@ -153,3 +139,5 @@ _gt_yargs_completions()
 compdef _gt_yargs_completions gt
 ###-end-gt-completions-###
 
+# Starship prompt
+eval "$(starship init zsh)"
