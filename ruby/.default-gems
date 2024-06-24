@@ -9,4 +9,4 @@ rubocop-rails
 rubocop-rspec
 rubocop-performance
 reek
-standardrb
+yard

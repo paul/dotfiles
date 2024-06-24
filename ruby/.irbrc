@@ -1,10 +1,8 @@
-
 # frozen_string_literal: true
 
 # ARGV << "--readline"
 # IRB.conf[:USE_READLINE] = true
 
-require "pp"
 require "rubygems"
 
 def try_require(lib, gem = lib)
@@ -23,16 +21,17 @@ end
 #   Hirb::View.enable
 # end
 
-try_require "ap", "awesome_print"
+try_require "ap", "amazing_print"
 
 require "irb/completion"
-require "irb/ext/save-history" do
-  IRB.conf[:SAVE_HISTORY] = 1000
-  IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
-end
+
+IRB.conf[:SAVE_HISTORY] = 1000
+IRB.conf[:HISTORY_FILE] = "#{Dir.home}/.irb-save-history"
 
 IRB.conf[:PROMPT_MODE]  = :SIMPLE
 IRB.conf[:AUTO_INDENT]  = true
+
+IRB.conf[:USE_READLINE] = true
 
 class Object
   def wtf?(m)
@@ -55,8 +54,3 @@ if ENV["RAILS_ENV"] || defined? Rails
   # Set default prompt
   IRB.conf[:PROMPT_MODE] = :CUSTOM
 end
-
-# try_require 'pry' do
-#   Pry.start
-#   exit
-# end
