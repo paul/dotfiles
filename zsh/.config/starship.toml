@@ -32,6 +32,8 @@ symbol = ' '
 
 [status]
 disabled = false
+format = "[$symbol]($style)"
+symbol = "✘"
 
 [directory]
 style = "blue bg:236"
