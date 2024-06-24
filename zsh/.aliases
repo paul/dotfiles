@@ -13,10 +13,10 @@ alias gvim=nvim
 fi
 
 # Alias to rust alternatives
-if (( $+commands[exa] )); then
-alias ls='exa --classify --color=auto --group-directories-first --oneline'
+if (( $+commands[eza] )); then
+alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
 alias l='ls'
-alias ll='exa --classify --color=auto --group-directories-first --all --long --links --git'
+alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
 fi
 
 if (( $+commands[bat] )); then
