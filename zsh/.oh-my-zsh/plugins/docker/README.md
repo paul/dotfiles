@@ -30,6 +30,15 @@ file**, but be aware of the side effects:
 > zstyle ':completion:*:*:docker-*:*' option-stacking yes
 > ```
 
+### Use old-style completion
+
+If the current completion does not work well for you, you can enable legacy completion instead with the
+following setting. See https://github.com/ohmyzsh/ohmyzsh/issues/11789 for more information.
+
+```zsh
+zstyle ':omz:plugins:docker' legacy-completion yes
+```
+
 ## Aliases
 
 | Alias   | Command                       | Description                                                                              |
@@ -52,13 +61,15 @@ file**, but be aware of the side effects:
 | dnls    | `docker network ls`           | List all networks the engine daemon knows about, including those spanning multiple hosts |
 | dnrm    | `docker network rm`           | Remove one or more networks                                                              |
 | dpo     | `docker container port`       | List port mappings or a specific mapping for the container                               |
+| dps     | `docker ps`                   | List all the running docker containers                                                   |
+| dpsa    | `docker ps -a`                | List all running and stopped containers                                                  |
 | dpu     | `docker pull`                 | Pull an image or a repository from a registry                                            |
 | dr      | `docker container run`        | Create a new container and start it using the specified command                          |
 | drit    | `docker container run -it`    | Create a new container and start it in an interactive shell                              |
 | drm     | `docker container rm`         | Remove the specified container(s)                                                        |
 | drm!    | `docker container rm -f`      | Force the removal of a running container (uses SIGKILL)                                  |
 | dst     | `docker container start`      | Start one or more stopped containers                                                     |
-| drs     | `docker container restart`    | Restart one or more containers
+| drs     | `docker container restart`    | Restart one or more containers                                                           |
 | dsta    | `docker stop $(docker ps -q)` | Stop all running containers                                                              |
 | dstp    | `docker container stop`       | Stop one or more running containers                                                      |
 | dtop    | `docker top`                  | Display the running processes of a container                                             |
