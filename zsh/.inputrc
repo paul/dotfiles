@@ -3,3 +3,8 @@ set colored-stats on
 set completion-ignore-case on
 set mark-symlinked-directories on
 set visible-stats on
+
+# arrow up
+"\e[A":history-search-backward
+# arrow down
+"\e[B":history-search-forward

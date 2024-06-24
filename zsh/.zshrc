@@ -1,36 +1,24 @@
-# Path to your oh-my-zsh configuration.
-export ZSH=$HOME/.oh-my-zsh
-export ZSH_CUSTOM=$HOME/.zsh
-
-export BULLETTRAIN_CONTEXT_DEFAULT_USER=rando
-
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-  export BULLETTRAIN_CONTEXT_SHOW=true
-  export BULLETTRAIN_IS_SSH_CLIENT=true
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export BULLETTRAIN_PROMPT_ORDER=(
-  status
-  context
-  dir
-  ruby
-  git
-)
+# Path to your oh-my-zsh configuration.
+export ZSH=$HOME/.oh-my-zsh
 
-# if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-#   source /etc/profile.d/vte.sh
-# fi
-
-# Set to the name theme to load.
-# Look in ~/.zsh/themes/
-export ZSH_THEME="bullet-train"
+export ZSH_THEME="powerlevel10k/powerlevel10k"
 
 if [[ `uname` == "Darwin" ]]; then
 	OSX=1
 fi
 
 # Disable the ^S shortcut in terminals
-stty -ixon
+stty -ixon <$TTY >$TTY
+
+# Allow C-\ to be used for other things than SIGQUIT 
+stty quit undef <$TTY >$TTY
 
 # Set to this to use case-sensitive completion
 # export CASE_SENSITIVE="true"
@@ -41,16 +29,14 @@ stty -ixon
 # Uncomment following line if you want to disable colors in ls
 # export DISABLE_LS_COLORS="true"
 
-zstyle :omz:plugins:chruby path ~/.local/share/chruby/chruby.sh
-zstyle :omz:plugins:chruby auto ~/.local/share/chruby/auto.sh
+# Skip all plugin aliases
+zstyle ':omz:plugins:*' aliases no
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   # asdf
   # bundler
-  chruby
-  docker
+  # chruby
+  # docker
   gem
   # git  # Adds too many dumb aliases
   git-extras
@@ -60,10 +46,13 @@ plugins=(
   #golang
   gpg-agent
   heroku
+  mise
   # rails # Its just dumb aliases
   # ruby  # just aliases
   # vagrant
   # ssh-agent
+
+  auto-notify # https://github.com/MichaelAquilina/zsh-auto-notify
 )
 
 if [[ "$OSX" == "1" ]]; then
@@ -103,29 +92,22 @@ export BROWSER=vivaldi-stable
 zstyle :omz:plugins:ssh-agent identities id_rsyncnet
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-[ -f /usr/local/share/zsh/site-functions/_aws ] && source /usr/local/share/zsh/site-functions/_aws
-
 export RUBY_GC_MALLOC_LIMIT=1000000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
-# < 2.1.0
-#export RUBY_HEAP_MIN_SLOTS=800000
-#export RUBY_FREE_MIN=600000
-# >= 2.1.0
 export RUBY_GC_HEAP_FREE_SLOTS=800000
 export RUBY_GC_HEAP_INIT_SLOTS=600000
 
-# Newline before every prompt
-precmd() { print "" }
-
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 # Fedora provides a package
 [ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
+
+# JQ colors has null the same as background for some reason
+# null:false:true:number:string:array:object
+export JQ_COLORS="1;30:0;37:0;37:0;34:0;33:0;37:0;37"
 
 # For capybara-qt-webkit
 export QMAKE=/usr/bin/qmake-qt5
@@ -138,7 +120,7 @@ export NPM_PACKAGES="${HOME}/node_modules"
 # Always my sure my paths are at the front
 typeset -U path # make path unique
 function fix_path() {
-  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin ~/.local/share/npm/bin "$path[@]")
+  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin ~/.local/share/npm/bin /usr/pgsql-16/bin "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
@@ -148,15 +130,26 @@ fi
 # Don't show less when < 1 page of output
 # export LESS="--quit-if-one-screen $LESS"
 
-# Allow C-\ to be used for other things than SIGQUIT
-stty quit undef
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# export NVS_HOME="$HOME/.nvs"
-# [ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh"
-
-# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# ASDF
-[ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
-[ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ] && . /opt/homebrew/opt/asdf/libexec/asdf.sh
+#compdef gt
+###-begin-gt-completions-###
+#
+# yargs command completion script
+#
+# Installation: gt completion >> ~/.zshrc
+#    or gt completion >> ~/.zprofile on OSX.
+#
+_gt_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" gt --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _gt_yargs_completions gt
+###-end-gt-completions-###
 
