@@ -55,7 +55,11 @@ alias be='bundle exec'
 alias h=heroku
 alias heroku="TERM=xterm-256color heroku"
 
-alias ssh="TERM=screen-256color ssh"
+# alias ssh="TERM=screen-256color ssh"
+
+# Kitty 
+alias ssh="kitten ssh"
+# alias rg="kitten hyperlinked_grep"
 
 # Docker
 alias dc=docker-compose
