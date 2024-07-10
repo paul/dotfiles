@@ -37,7 +37,7 @@ return {
         lua = { "stylua" },
         javascript = { "standardjs" },
         ruby = { "rubocop" },
-        eruby = { "erb_format" },
+        eruby = { "erb_lint" },
       },
       log_level = vim.log.levels.DEBUG,
       -- Customize formatters
@@ -97,6 +97,7 @@ return {
         ruby_lsp = {},
         -- standardrb = { autostart = false },
         rubocop = { mason = false, enabled = false, autostart = false },
+        solargraph = { mason = false, enabled = false, autostart = false },
       },
     },
   },
