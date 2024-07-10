@@ -61,12 +61,12 @@
 
   # rebasing
   rb = rebase
-  rbm = rebase --interactive main
+  rbm = "!git rebase --interactive $(git default-branch)"
   rbi = rebase --interactive
   rbc = rebase --continue
   rba = rebase --abort
   # Rebase commits on current branch, without adding in new commits from master
-  rbb = "!git rebase -i `git merge-base main HEAD`"
+  rbb = "!git rebase -i `git merge-base $(git default-branch) HEAD`"
 
   # worktree
   wt = worktree
@@ -89,6 +89,9 @@
   # a development branch and a master branch and they could conceivably go
   # out of sync
   recreate = "!f() { [[ -n $@ ]] && git checkout \"$@\" && git unpublish && git checkout master && git branch -D \"$@\" && git checkout -b \"$@\" && git publish; }; f"
+
+  # Default "upstream" branch name (master, main, staging, etc...)
+	default-branch = !git symbolic-ref refs/remotes/origin/HEAD | cut -d/ -f4
 
   # Fire up your difftool (e.g. Kaleidescope) with all the changes that
   # are on the current branch.
