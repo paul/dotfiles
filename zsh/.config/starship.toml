@@ -36,7 +36,7 @@ format = "[$symbol]($style)"
 symbol = "✘"
 
 [directory]
-style = "blue bg:236"
+style = "fg:32 bg:236"
 format = "[  $path]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
