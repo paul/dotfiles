@@ -1,0 +1,7 @@
+klass = defined?(AmazingPrint) ? AmazingPrint : AwesomePrint
+
+klass.defaults = {
+  indent: -2,
+  ruby19_syntax: true,
+  index: false
+}
