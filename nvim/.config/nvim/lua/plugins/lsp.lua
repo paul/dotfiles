@@ -31,6 +31,14 @@ return {
             "$FILENAME",
           },
         },
+        ruboclean = {
+          condition = function(ctx)
+            return vim.fs.basename(ctx.filename) ~= ".rubocop.yml"
+          end,
+          command = "ruboclean",
+          args = { "$FILENAME", "--preserve-comments", "--preserve-paths", "--silent" },
+          stdin = false,
+        },
       },
       -- Define your formatters
       formatters_by_ft = {
@@ -38,14 +46,9 @@ return {
         javascript = { "standardjs" },
         ruby = { "rubocop" },
         eruby = { "erb_lint" },
+        yaml = { "ruboclean" },
       },
       log_level = vim.log.levels.DEBUG,
-      -- Customize formatters
-      -- formatters = {
-      --   shfmt = {
-      --     prepend_args = { "-i", "2" },
-      --   },
-      -- },
       -- Don't set format-on-save, LazyVim handles it
       -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
       -- LazyVim uses these instead
@@ -98,6 +101,14 @@ return {
         -- standardrb = { autostart = false },
         rubocop = { mason = false, enabled = false, autostart = false },
         solargraph = { mason = false, enabled = false, autostart = false },
+        yamlls = {
+          redhat = { telemetry = { enabled = false } },
+          yaml = {
+            format = {
+              enable = true,
+            },
+          },
+        },
       },
     },
   },
