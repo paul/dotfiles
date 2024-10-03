@@ -33,7 +33,7 @@ return {
         },
         ruboclean = {
           condition = function(ctx)
-            return vim.fs.basename(ctx.filename) ~= ".rubocop.yml"
+            return vim.fs.basename(ctx.filename) == ".rubocop.yml"
           end,
           command = "ruboclean",
           args = { "$FILENAME", "--preserve-comments", "--preserve-paths", "--silent" },
@@ -52,7 +52,7 @@ return {
       -- Don't set format-on-save, LazyVim handles it
       -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
       -- LazyVim uses these instead
-      format = {
+      default_format_opts = {
         -- timeout_ms = 5000,
         -- async = true,
       },

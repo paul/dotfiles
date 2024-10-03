@@ -6,7 +6,7 @@ return {
 
       -- By default, looks for files in the "root" dir, which is annoying in a monorepo
       -- Look in the cwd instead
-      { "<leader><space>", Util.telescope("files", { cwd = false }), desc = "Find files (cwd)" },
-    }
-  }
+      { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
+    },
+  },
 }
