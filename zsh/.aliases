@@ -1,49 +1,50 @@
-
-if [[ `uname` == "Darwin" ]]; then
-	OSX=1
+if [[ $(uname) == "Darwin" ]]; then
+  OSX=1
 fi
 
 alias t="tail -f"
 
 alias grep='grep --color=tty'
 
-if (( $+commands[nvim] )); then
-alias vim=nvim
-alias gvim=nvim
+if (($ + commands[nvim])); then
+  alias vim=nvim
+  alias gvim=nvim
 fi
 
 # Alias to rust alternatives
-if (( $+commands[eza] )); then
-alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
-alias l='ls'
-alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
+if (($ + commands[eza])); then
+  alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
+  alias l='ls'
+  alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
 fi
 
-if (( $+commands[bat] )); then
-alias cat=bat
+if (($ + commands[bat])); then
+  alias cat=bat
 fi
 
 if [[ "$OSX" == "1" ]]; then
 
-else 
-# Linux
+else
+  # Linux
 
-alias sc='sudo systemctl'
-alias dnf='sudo dnf'
-alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
-alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade && sudo apt autoremove'
+  alias sc='sudo systemctl'
+  alias jc='sudo journalctl'
+  alias scu='systemctl --user'
 
-# alias open=xdg-open
-# function open () {
-#   detach xdg-open "$*"
-# }
-alias open=kde-open5
+  alias dnf='sudo dnf'
+  alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
+  alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade && sudo apt autoremove'
+
+  if (($ + commands['kde-open5'])); then
+    alias open=kde-open5
+  fi
 fi
-  
 
 # Git
 alias g=git
-alias git=hub
+if (($ + commands[hub])); then
+  alias git=hub
+fi
 
 # Rails
 alias r=rails
@@ -57,10 +58,14 @@ alias heroku="TERM=xterm-256color heroku"
 
 # alias ssh="TERM=screen-256color ssh"
 
-# Kitty 
-alias ssh="kitten ssh"
-# alias rg="kitten hyperlinked_grep"
+# Kitty
+if (($ + commands[kitty])); then
+  alias ssh="kitten ssh"
+  # alias rg="kitten hyperlinked_grep"
+fi
 
 # Docker
 alias dc=docker-compose
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
+
+# vi: ft=sh
