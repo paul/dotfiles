@@ -2,7 +2,5 @@
 --skip-test
 --skip-system-test
 --skip-action-text
---no-skip-javascript
---asset-pipeline=propshaft
 --javascript=importmap
---css=bulma
+--css=sass
