@@ -73,7 +73,7 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     opts = {
-      -- automatic_installation = { exclude = { "rubocop" } },
+      -- automatic_installation = { exclude = { "rubocop", "ruby-lsp" } },
       automatic_installation = false,
     },
   },
@@ -97,10 +97,12 @@ return {
         },
       },
       servers = {
-        ruby_lsp = {},
+        ruby_lsp = { mason = false },
         -- standardrb = { autostart = false },
         rubocop = { mason = false, enabled = false, autostart = false },
         solargraph = { mason = false, enabled = false, autostart = false },
+        erb_formatter = { mason = false, enabled = false, autostart = false },
+        erb_lint = { mason = false, enabled = false, autostart = false },
         yamlls = {
           redhat = { telemetry = { enabled = false } },
           yaml = {
