@@ -116,6 +116,11 @@ export GOPATH=$HOME/Code/go
 # npm -g installs for my user instead
 export NPM_PACKAGES="${HOME}/node_modules"
 
+# Podman
+# By default, its stores in $XDG_RUNTIME_DIR, which on fedora is /run/user/1000, which is tmpfs and
+# gets emptied every reboot. Store it somewhere more permanent.
+REGISTRY_AUTH_FILE=$HOME/.config/containers/auth.json
+
 # Don't show less when < 1 page of output
 # export LESS="--quit-if-one-screen $LESS"
 
