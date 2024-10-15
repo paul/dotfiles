@@ -26,5 +26,12 @@ cd dotfiles
 
 stow nvim ruby zsh
 
-# Setup Lazyvim
+# Setup zsh
+# Install starship
+curl -sS https://starship.rs/install.sh -o install-starship.sh
+sh install-starship.sh -y
+rm install-starship.sh
+
+# Setup Neovim
+# Install lazyvim plugins
 $HOME/bin/nvim --headless -c 'luafile install-lazynvim.lua' -c 'qall'
