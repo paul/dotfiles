@@ -32,8 +32,8 @@ return {
           },
         },
         ruboclean = {
-          condition = function(ctx)
-            return vim.fs.basename(ctx.filename) == ".rubocop.yml"
+          condition = function(self, ctx)
+            return string.find(vim.fs.basename(ctx.filename), ".rubocop.yml$")
           end,
           command = "ruboclean",
           args = { "$FILENAME", "--preserve-comments", "--preserve-paths", "--silent" },
