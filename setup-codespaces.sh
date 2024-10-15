@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -euxo pipefail
+set -eux
 
 if [ -z "$USER" ]; then
   USER=$(id -un)

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -euxo pipefail
+set -eux
 
 if [ -n "${CODESPACES}" ]; then
   ./setup-codespaces.sh
