@@ -6,19 +6,19 @@ alias t="tail -f"
 
 alias grep='grep --color=tty'
 
-if (($ + commands[nvim])); then
+if command -v nvim 2>&1 >/dev/null; then
   alias vim=nvim
   alias gvim=nvim
 fi
 
 # Alias to rust alternatives
-if (($ + commands[eza])); then
+if command -v eza 2>&1 >/dev/null; then
   alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
   alias l='ls'
   alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
 fi
 
-if (($ + commands[bat])); then
+if command -v bat 2>&1 >/dev/null; then
   alias cat=bat
 fi
 
@@ -35,14 +35,14 @@ else
   alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
   alias aptup='sudo apt update && sudo apt list --upgradable && sudo apt upgrade && sudo apt autoremove'
 
-  if (($ + commands['kde-open5'])); then
-    alias open=kde-open5
+  if command -v kde-open 2>&1 >/dev/null; then
+    alias open=kde-open
   fi
 fi
 
 # Git
 alias g=git
-if (($ + commands[hub])); then
+if command -v hub 2>&1 >/dev/null; then
   alias git=hub
 fi
 
@@ -59,8 +59,8 @@ alias heroku="TERM=xterm-256color heroku"
 # alias ssh="TERM=screen-256color ssh"
 
 # Kitty
-if (($ + commands[kitty])); then
-  alias ssh="kitten ssh"
+if command -v kitty 2>&1 >/dev/null; then
+  # alias ssh="kitten ssh"
   # alias rg="kitten hyperlinked_grep"
 fi
 
@@ -68,4 +68,4 @@ fi
 alias dc=docker-compose
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 
-# vi: ft=sh
+# vi: ft=zsh
