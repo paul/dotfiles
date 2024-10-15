@@ -14,13 +14,32 @@ export SUDO_ASKPASS=/bin/true
 # Change shell to zsh
 sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
 
+# Install useful packages
 sudo apt-get update
+sudo apt-get install tree
 
 # Install neovim
 sudo apt-get install -y libfuse2
 # Ubuntu is the worst
 curl -L -o nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-install -D nvim.appimage $HOME/bin/nvim
+sudo install -vD -m 755 nvim.appimage /usr/local/bin/nvim
+rm nvim.appimage
+
+# Eza (better ls)
+wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
+sudo install -vD -m 775 eza /usr/local/bin
+rm eza
+
+# Hub CLI
+wget -c https://github.com/mislav/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz -O - | tar xz
+sudo ./hub-linux-amd64-2.14.2/install
+rm -rf hub-linux-amd64-2.14.2
+
+# zoxide
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+# direnv
+curl -sfL https://direnv.net/install.sh | bash
 
 cd dotfiles
 
