@@ -2,10 +2,6 @@
 
 set -eux
 
-if [ -z "$USER" ]; then
-  USER=$(id -un)
-fi
-
 if [ ! -d $HOME/dotfiles ]; then
   mv /workspaces/.codespaces/.persistedshare/dotfiles $HOME/dotfiles
 fi
@@ -18,6 +14,8 @@ export SUDO_ASKPASS=/bin/true
 # Change shell to zsh
 sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
 
+sudo apt-get update
+
 # Install neovim
 sudo apt-get install -y libfuse2
 # Ubuntu is the worst
@@ -29,4 +27,4 @@ cd dotfiles
 stow nvim ruby zsh
 
 # Setup Lazyvim
-$HOME/bin/nvim --headless -c 'luafile install.lua' -c 'qall'
+$HOME/bin/nvim --headless -c 'luafile install-lazynvim.lua' -c 'qall'
