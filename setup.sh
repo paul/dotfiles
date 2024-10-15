@@ -2,4 +2,6 @@
 
 set -euxo pipefail
 
-printf 'Hello!'
+if [ -n "${CODESPACES}" ]; then
+  ./setup-codespaces.sh
+fi
