@@ -1,12 +1,11 @@
+amazing_print
 bundler
 debug
-amazing_print
+overmind
 progress_bar
-solargraph
-ruby-lsp
+reek
 rubocop
+rubocop-performance
 rubocop-rails
 rubocop-rspec
-rubocop-performance
-reek
-yard
+ruby-lsp

@@ -1,6 +1,4 @@
---database=postgresql
 --skip-test
 --skip-system-test
---skip-action-text
 --javascript=importmap
 --css=sass
