@@ -122,7 +122,7 @@ export NPM_PACKAGES="${HOME}/node_modules"
 REGISTRY_AUTH_FILE=$HOME/.config/containers/auth.json
 
 # Don't show less when < 1 page of output
-# export LESS="--quit-if-one-screen $LESS"
+export LESS="--quit-if-one-screen $LESS"
 
 #compdef gt
 ###-begin-gt-completions-###

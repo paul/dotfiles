@@ -68,4 +68,16 @@ fi
 alias dc=docker-compose
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 
+# Codespaces
+
+setopt rcquotes
+alias cs-current-branch="git branch --show-current"
+alias cs-current-display-name="cs-current-branch | cut -d ''-'' -f 3-"
+alias cs-current-repo="gh repo view --json nameWithOwner -t '{{.nameWithOwner}}'"
+alias cs-current-name='gh cs ls --json displayName,name --jq ".[] | select(.displayName == \"$(cs-current-branch | cut -d ''-'' -f 3-)\") | .name"'
+
+# Create codespace for branch
+alias cscreate='gh cs create --branch $(cs-current-branch) --display-name $(cs-current-display-name) --repo $(cs-current-repo)'
+alias cssh='gh cs ssh --codespace $(cs-current-name)'
+
 # vi: ft=zsh
