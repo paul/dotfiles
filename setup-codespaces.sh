@@ -16,10 +16,9 @@ sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
 
 # Install useful packages
 sudo apt-get update
-sudo apt-get install tree
+sudo apt-get install tree libfuse2 stow
 
 # Install neovim
-sudo apt-get install -y libfuse2
 # Ubuntu is the worst
 curl -L -o nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 sudo install -vD -m 755 nvim.appimage /usr/local/bin/nvim
@@ -40,6 +39,9 @@ curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh 
 
 # direnv
 curl -sfL https://direnv.net/install.sh | bash
+
+# lazydocker
+curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
 
 cd dotfiles
 
