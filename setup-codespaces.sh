@@ -11,12 +11,15 @@ cd $HOME
 # Make passwordless sudo work
 export SUDO_ASKPASS=/bin/true
 
+# Apt shouldn't ask any questions
+export DEBIAN_FRONTEND=noninteractive
+
 # Change shell to zsh
 sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
 
 # Install useful packages
-sudo apt-get update
-sudo apt-get install tree libfuse2 stow
+sudo -E apt-get update
+sudo -E apt-get install -y tree libfuse2 stow
 
 # Install neovim
 # Ubuntu is the worst
