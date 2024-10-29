@@ -20,6 +20,10 @@ fi
 
 if command -v bat 2>&1 >/dev/null; then
   alias cat=bat
+
+  # View manpages with color
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+  export MANROFFOPT="-c"
 fi
 
 if [[ "$OSX" == "1" ]]; then
