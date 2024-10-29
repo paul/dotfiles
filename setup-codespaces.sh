@@ -48,7 +48,7 @@ curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/i
 
 cd dotfiles
 
-stow nvim ruby zsh
+stow nvim ruby zsh git
 
 # Setup zsh
 # Install starship
@@ -59,3 +59,7 @@ rm install-starship.sh
 # Setup Neovim
 # Install lazyvim plugins
 $HOME/bin/nvim --headless -c 'luafile install-lazynvim.lua' -c 'qall'
+
+# Setup Direnv
+cd /workspaces/${RepositoryName}
+direnv allow
