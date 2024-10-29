@@ -1,5 +1,6 @@
 format = """
 [$status](bg:236)\
+[$hostname](bg:236)\
 [$directory](bg:236)\
 [  ](fg:244 bg:236)\
 [$git_branch $git_status $git_state](bg:236)\
@@ -34,6 +35,12 @@ symbol = ' '
 disabled = false
 format = "[$symbol]($style)"
 symbol = "✘"
+
+[hostname]
+ssh_only = true
+ssh_symbol = '🌐'
+style = 'dimmed green bg:236'
+format = '[$ssh_symbol$hostname]($style)'
 
 [directory]
 style = "fg:32 bg:236"
