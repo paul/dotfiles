@@ -22,7 +22,7 @@ return {
           args = {
             "exec",
             "rubocop",
-            "--server",
+            "--no-server",
             "--autocorrect-all",
             "--format",
             "quiet",
