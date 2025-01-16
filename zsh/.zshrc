@@ -81,7 +81,7 @@ cdpath=(~/Code)
 unsetopt correct_all
 
 export EDITOR=nvim
-export BROWSER=vivaldi-stable
+export BROWSER=firefox
 
 # Enable ssh-agent identities
 zstyle :omz:plugins:ssh-agent identities id_rsyncnet
