@@ -12,16 +12,14 @@ return {
       formatters = {
         erb_lint = {
           command = "bundle",
-          args = { "exec", "erblint", "--autocorrect", "$FILENAME" },
+          args = { "exec", "erb_lint", "--autocorrect", "$FILENAME" },
           cwd = require("conform.util").root_file({ ".erb-lint.yml" }),
           stdin = false,
         },
         rubocop = {
           -- This is the normal args, but with -a replaced with --autocorrect-all
-          command = "bundle",
+          command = "rubocop",
           args = {
-            "exec",
-            "rubocop",
             "--no-server",
             "--autocorrect-all",
             "--format",
@@ -97,7 +95,16 @@ return {
         },
       },
       servers = {
-        ruby_lsp = { mason = false },
+        ruby_lsp = {
+          mason = false,
+          init_options = {
+            addon_settings = {
+              enabledFeatures = {
+                formatting = false,
+              },
+            },
+          },
+        },
         -- standardrb = { autostart = false },
         rubocop = { mason = false, enabled = false, autostart = false },
         solargraph = { mason = false, enabled = false, autostart = false },
