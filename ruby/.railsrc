@@ -1,4 +1,6 @@
+--template=~/Code/rails-template.rb
 --skip-test
 --skip-system-test
+--skip-jbuilder
 --javascript=importmap
 --css=sass
