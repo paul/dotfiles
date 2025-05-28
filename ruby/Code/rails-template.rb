@@ -5,11 +5,13 @@ gem "progress_bar"
 gem_group :development, :test do
   gem "awesome_print"
 
+  # Testing
   gem "rspec"
   gem "rspec-rails"
 
   gem "factory_bot_rails"
 
+  # Linting
   gem "bundle-audit",         require: false
   gem "database_consistency", require: false
   gem "reek",                 require: false
@@ -25,4 +27,6 @@ gem_group :development do
   gem "rails-erd"
 
   gem "overmind"
+
+  gem "ruby-lsp", require: false
 end

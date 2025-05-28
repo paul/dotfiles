@@ -34,8 +34,10 @@ IRB.conf[:AUTO_INDENT]  = true
 IRB.conf[:USE_READLINE] = true
 
 class Object
-  def wtf?(m)
-    method(m).source_location
+  unless method_defined?(:wtf?)
+    def wtf?(m)
+      method(m).source_location
+    end
   end
 end
 
@@ -49,7 +51,7 @@ if ENV["RAILS_ENV"] || defined? Rails
     PROMPT_I: "[#{env.capitalize}]>> ",
     PROMPT_S: nil,
     PROMPT_C: "?> ",
-    RETURN: "=> %s\n"
+    RETURN:   "=> %s\n",
   }
   # Set default prompt
   IRB.conf[:PROMPT_MODE] = :CUSTOM
