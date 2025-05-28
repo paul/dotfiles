@@ -49,7 +49,7 @@ curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/i
 
 cd dotfiles
 
-stow nvim ruby zsh git
+stow nvim ruby # zsh git
 
 # Setup zsh
 # Install starship
