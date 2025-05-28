@@ -6,6 +6,9 @@ function bundle_exec(original_opts)
 end
 
 return {
+  -- Mason 2.0 breaks stuff, revisit when LazyVim updates (2025-05-08)
+  { "mason-org/mason.nvim", version = "^1.0.0" },
+  { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
   {
     "stevearc/conform.nvim",
     opts = {
@@ -41,7 +44,8 @@ return {
       -- Define your formatters
       formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "standardjs" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
         ruby = { "rubocop" },
         eruby = { "erb_lint" },
         yaml = { "ruboclean" },
@@ -64,7 +68,7 @@ return {
         markdown = { "vale" },
         -- ruby = { "rubocop" },
         eruby = { "erb_lint" },
-        javascript = { "standardjs" },
+        javascript = { "prettier" },
       },
     },
   },
