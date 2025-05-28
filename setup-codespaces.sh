@@ -59,7 +59,7 @@ rm install-starship.sh
 
 # Setup Neovim
 # Install lazyvim plugins
-$HOME/bin/nvim --headless -c 'luafile install-lazynvim.lua' -c 'qall'
+/usr/local/bin/nvim --headless -c 'luafile install-lazynvim.lua' -c 'qall'
 
 # Setup Direnv
 cd /workspaces/${RepositoryName}
