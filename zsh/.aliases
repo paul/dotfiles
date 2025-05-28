@@ -2,7 +2,6 @@ if [[ $(uname) == "Darwin" ]]; then
   OSX=1
 fi
 
-alias t="tail -f"
 
 alias grep='grep --color=tty'
 
@@ -11,7 +10,7 @@ if command -v nvim 2>&1 >/dev/null; then
   alias gvim=nvim
 fi
 
-# Alias to rust alternatives
+# Aliases to rust alternatives, if they exist
 if command -v eza 2>&1 >/dev/null; then
   alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
   alias l='ls'
@@ -25,6 +24,19 @@ if command -v bat 2>&1 >/dev/null; then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
   export MANROFFOPT="-c"
 fi
+
+# There seems to be a bug in tailspin 
+# https://github.com/bensadeh/tailspin/issues/211
+# if command -v tspin 2>&1 >/dev/null; then
+#   alias tail="tspin"
+#   alias t="tspin -f"
+# else
+  alias t="tail -f"
+# fi
+
+# if command -v ov 2>&1 >/dev/null; then
+#   export PAGER=ov
+# fi
 
 if [[ "$OSX" == "1" ]]; then
 
@@ -68,17 +80,21 @@ if command -v kitty 2>&1 >/dev/null; then
   # alias rg="kitten hyperlinked_grep"
 fi
 
+# Postgres 
+if command -v pspg 2>&1 >/dev/null; then
+  export PSQL_PAGER="pspg -X -b"
+fi
+
 # Docker
 alias dc=docker-compose
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 
 # Codespaces
-
 setopt rcquotes
 alias cs-current-branch="git branch --show-current"
-alias cs-current-display-name="cs-current-branch | cut -d ''-'' -f 3-"
+alias cs-current-display-name="cs-current-branch | sed 's/MAIN-[[:digit:]]\+-//g' | head -c 48"
 alias cs-current-repo="gh repo view --json nameWithOwner -t '{{.nameWithOwner}}'"
-alias cs-current-name='gh cs ls --json displayName,name --jq ".[] | select(.displayName == \"$(cs-current-branch | cut -d ''-'' -f 3-)\") | .name"'
+alias cs-current-name='gh cs ls --json displayName,name --jq ".[] | select(.displayName == \"$(cs-current-display-name)\") | .name"'
 
 # Create codespace for branch
 alias cscreate='gh cs create --branch $(cs-current-branch) --display-name $(cs-current-display-name) --repo $(cs-current-repo)'
