@@ -26,7 +26,7 @@ sudo -E apt-get install -y tree libfuse2 stow kitty fzf
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 sudo rm -rf /opt/nvim
 sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-sudo ln -s /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
 
 # Eza (better ls)
 wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
