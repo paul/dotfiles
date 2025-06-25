@@ -111,7 +111,7 @@ return {
         },
         -- standardrb = { autostart = false },
         rubocop = { mason = false, enabled = false, autostart = false },
-        solargraph = { mason = false, enabled = false, autostart = false },
+        -- solargraph = { mason = false, enabled = false, autostart = false },
         erb_formatter = { mason = false, enabled = false, autostart = false },
         erb_lint = { mason = false, enabled = false, autostart = false },
         yamlls = {
