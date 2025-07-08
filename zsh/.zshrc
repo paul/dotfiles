@@ -47,7 +47,7 @@ plugins=(
 )
 
 if [[ "$OSX" == "1" ]]; then
-	plugins+=(brew osx)
+	plugins+=(brew)
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -94,6 +94,7 @@ export RUBY_GC_HEAP_INIT_SLOTS=600000
 
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+(( $+commands[atuin] )) && eval "$(atuin init zsh)"
 
 # FZF
 FZF_DEFAULT_COMMAND='rg --files --hidden'

@@ -75,8 +75,8 @@ alias heroku="TERM=xterm-256color heroku"
 # alias ssh="TERM=screen-256color ssh"
 
 # Kitty
-if command -v kitty 2>&1 >/dev/null; then
-  # alias ssh="kitten ssh"
+if [ "$TERM" = "xterm-kitty" ]; then
+  alias ssh="kitty +kitten ssh"
   # alias rg="kitten hyperlinked_grep"
 fi
 
