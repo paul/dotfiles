@@ -19,7 +19,7 @@ sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
 
 # Install useful packages
 sudo -E apt-get update
-sudo -E apt-get install -y tree libfuse2 stow
+sudo -E apt-get install -y tree libfuse2 stow kitty fzf
 
 # Install neovim
 # Ubuntu is the worst
