@@ -6,9 +6,6 @@ function bundle_exec(original_opts)
 end
 
 return {
-  -- Mason 2.0 breaks stuff, revisit when LazyVim updates (2025-05-08)
-  { "mason-org/mason.nvim", version = "^1.0.0" },
-  { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
   {
     "stevearc/conform.nvim",
     opts = {
@@ -40,22 +37,29 @@ return {
           args = { "$FILENAME", "--preserve-comments", "--preserve-paths", "--silent" },
           stdin = false,
         },
+        ameba = {
+          command = "ameba",
+          args = { "--silent", "--fix", "$FILENAME" },
+          cwd = require("conform.util").root_file({ "shard.yml" }),
+          stdin = false,
+        },
       },
       -- Define your formatters
       formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
+        javascript = { "biome" },
+        typescript = { "biome" },
         ruby = { "rubocop" },
         eruby = { "erb_lint" },
         yaml = { "ruboclean" },
+        crystal = { "crystal", "ameba" },
       },
       log_level = vim.log.levels.DEBUG,
       -- Don't set format-on-save, LazyVim handles it
       -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
       -- LazyVim uses these instead
       default_format_opts = {
-        -- timeout_ms = 5000,
+        timeout_ms = 10000,
         -- async = true,
       },
     },
@@ -68,12 +72,12 @@ return {
         markdown = { "vale" },
         -- ruby = { "rubocop" },
         eruby = { "erb_lint" },
-        javascript = { "prettier" },
+        javascript = { "biomejs" },
       },
     },
   },
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     opts = {
       -- automatic_installation = { exclude = { "rubocop", "ruby-lsp" } },
       automatic_installation = false,
