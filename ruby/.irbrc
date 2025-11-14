@@ -39,6 +39,11 @@ class Object
       method(m).source_location
     end
   end
+  unless method_defined?(:my_methods)
+    def my_methods
+      (methods - Object.methods).sort
+    end
+  end
 end
 
 if ENV["RAILS_ENV"] || defined? Rails
