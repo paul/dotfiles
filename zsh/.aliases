@@ -86,7 +86,7 @@ if command -v pspg 2>&1 >/dev/null; then
 fi
 
 # Docker
-alias dc=docker-compose
+alias dc=docker compose
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 
 # Codespaces
