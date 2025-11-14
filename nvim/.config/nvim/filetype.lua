@@ -4,4 +4,7 @@ vim.filetype.add({
   pattern = {
     [".env.*"] = "sh",
   },
+  filename = {
+    Caddyfile = "caddy",
+  },
 })

@@ -4,7 +4,8 @@ return {
     opts = {
       ensure_installed = {
         "ruby",
-      }
-    }
-  }
+        "caddy",
+      },
+    },
+  },
 }
