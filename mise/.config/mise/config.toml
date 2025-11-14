@@ -1,0 +1,9 @@
+[tools]
+crystal = "latest"
+php = "latest"
+pnpm = "latest"
+python = "3.11"
+ruby = "latest"
+
+[env]
+RUBY_YJIT_ENABLE = "1"
