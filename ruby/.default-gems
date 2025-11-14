@@ -9,3 +9,4 @@ rubocop-performance
 rubocop-rails
 rubocop-rspec
 ruby-lsp
+yard
