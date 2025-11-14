@@ -49,6 +49,7 @@ Thumbs.db
 /elm-stuff
 
 .env.local
+!.env.local.example
 .byebug_history
 
 # git worktree
