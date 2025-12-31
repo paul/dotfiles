@@ -15,6 +15,8 @@ if command -v eza 2>&1 >/dev/null; then
   alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
   alias l='ls'
   alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
+else
+  print "eza not installed"
 fi
 
 if command -v bat 2>&1 >/dev/null; then
@@ -23,6 +25,8 @@ if command -v bat 2>&1 >/dev/null; then
   # View manpages with color
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
   export MANROFFOPT="-c"
+else
+  print "bat not installed"
 fi
 
 # There seems to be a bug in tailspin 
@@ -60,6 +64,8 @@ fi
 alias g=git
 if command -v hub 2>&1 >/dev/null; then
   alias git=hub
+else
+  print "hub not installed"
 fi
 
 # Rails
@@ -83,10 +89,12 @@ fi
 # Postgres 
 if command -v pspg 2>&1 >/dev/null; then
   export PSQL_PAGER="pspg -X -b"
+else
+  print "pspg not installed"
 fi
 
 # Docker
-alias dc=docker compose
+alias dc="docker compose"
 alias docker-gc="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 
 # Codespaces
