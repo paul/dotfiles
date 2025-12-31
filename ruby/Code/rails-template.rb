@@ -72,7 +72,7 @@ after_bundle do
     git commit: "-a -m 'Generate #{install} files'"
   end
 
-  file ".annotaterb.yml", <<~YAML
+  file ".annotaterb.yml", <<~YAML, force: true
     ---
     :position: bottom
     :position_in_additional_file_patterns: bottom
