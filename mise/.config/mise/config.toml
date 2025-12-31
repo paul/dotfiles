@@ -1,9 +1,12 @@
 [tools]
-crystal = "latest"
-php = "latest"
-pnpm = "latest"
-python = "3.11"
-ruby = "latest"
+# crystal = "latest"
+# php = "latest"
+# pnpm = "latest"
+# python = "3.11"
+ruby = "4.0.0"
+
+eza = "latest"
+usage = "latest"
 
 [env]
 RUBY_YJIT_ENABLE = "1"
