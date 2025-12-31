@@ -6,35 +6,33 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = {
-      strategies = {
+      interactions = {
         chat = {
-          adapter = "gemini",
-          slash_commands = {
-            ["file"] = {
-              -- Location to the slash command in CodeCompanion
-              callback = "strategies.chat.slash_commands.file",
-              description = "Select a file using Telescope",
-              opts = {
-                provider = "telescope", -- Other options include 'default', 'mini_pick', 'fzf_lua', snacks
-                contains_code = true,
-              },
-            },
+          adapter = {
+            name = "openai",
+            model = "gpt-5.2",
           },
         },
         inline = {
-          adapter = "gemini",
+          adapter = "openai",
+        },
+        cmd = {
+          adapter = "openai",
+        },
+        background = {
+          adapter = "openai",
         },
       },
-      extensions = {
-        mcphub = {
-          callback = "mcphub.extensions.codecompanion",
-          opts = {
-            show_result_in_chat = true, -- Show mcp tool results in chat
-            make_vars = true, -- Convert resources to #variables
-            make_slash_commands = true, -- Add prompts as /slash commands
-          },
-        },
-      },
+      -- extensions = {
+      --   mcphub = {
+      --     callback = "mcphub.extensions.codecompanion",
+      --     opts = {
+      --       show_result_in_chat = true, -- Show mcp tool results in chat
+      --       make_vars = true, -- Convert resources to #variables
+      --       make_slash_commands = true, -- Add prompts as /slash commands
+      --     },
+      --   },
+      -- },
       opts = {
         log_level = "DEBUG",
       },
@@ -55,7 +53,7 @@ return {
     --cmd = "MCPHub",  -- lazy load
     build = "npm install -g mcp-hub@latest", -- Installs required mcp-hub npm module
     -- uncomment this if you don't want mcp-hub to be available globally or can't use -g
-    -- build = "bundled_build.lua",  -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
+    -- build = "bundled_build.lua", -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
     config = function()
       require("mcphub").setup({
         extensions = {
@@ -79,15 +77,15 @@ return {
           codecompanion = { "codecompanion" },
         },
         providers = {
-          copilot = {
-            transform_items = function(ctx, items)
-              for _, item in ipairs(items) do
-                item.kind_icon = ""
-                item.kind_name = "Copilot"
-              end
-              return items
-            end,
-          },
+          -- copilot = {
+          --   transform_items = function(ctx, items)
+          --     for _, item in ipairs(items) do
+          --       item.kind_icon = ""
+          --       item.kind_name = "Copilot"
+          --     end
+          --     return items
+          --   end,
+          -- },
         },
       },
     },
