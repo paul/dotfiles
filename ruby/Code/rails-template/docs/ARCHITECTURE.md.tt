@@ -1,0 +1,444 @@
+# Architecture Reference
+
+This document describes patterns that are **not yet adopted** in <%= app_const_base %> but should be
+introduced when the need arises. Each section describes when to reach for the pattern and how to
+implement it.
+
+For patterns already in use (transactions, validation, form objects, models, Phlex), see STYLE.md.
+
+---
+
+## Philosophy
+
+The broader architecture this app is built toward is **railway-oriented programming** on the
+`dry-rb` ecosystem. Beyond the transaction and validation patterns already in use, the full vision
+includes:
+
+1. **Dependency injection via containers.** Classes receive collaborators through `Dry::Container` +
+   `Dry::AutoInject`, not through direct class references. This enables testing without
+   monkey-patching.
+2. **Domain events decouple side-effects.** When a transaction completes, `broadcast` steps fire
+   events. Subscribers react independently.
+3. **Tagged failure tuples for structured matching.** `Failure[:request_error, response]`,
+   `Failure[:parse_error, details]` -- enabling clean pattern matching on the tag without inspecting
+   the payload type.
+
+---
+
+## Dependency Injection
+
+**When to adopt:** When a domain aspect integrates an external service, or when you need to swap
+collaborators in tests without mocking.
+
+### Container Pattern
+
+Each domain module defines a container:
+
+```ruby
+module Messaging
+  module Container
+    extend Dry::Container::Mixin
+
+    register(:dispatch) { Messaging::Egress::Dispatch }
+    register(:client)   { SomeClient }
+  end
+
+  Deps = Container.injector
+end
+```
+
+### Root Container
+
+```ruby
+module <%= app_const_base %>
+  module Container
+    extend Dry::Container::Mixin
+
+    register(:http)          { <%= app_const_base %>::HTTP }
+    register(:instrumenter)  { ActiveSupport::Notifications }
+    register(:logger)        { Rails.logger }
+  end
+
+  Deps = Container.injector
+end
+```
+
+### Usage in Classes
+
+```ruby
+class SomeAdapter
+  include <%= app_const_base %>::Deps[:http, :instrumenter]
+  include Messaging::Deps[:client]
+
+  def call
+    response = http.get("https://api.example.com")
+    instrumenter.instrument("request.some_adapter", response: response)
+  end
+end
+```
+
+### Registering Classes vs Instances
+
+Register **classes** (not instances) when the object needs runtime credentials:
+
+```ruby
+register(:twilio_client) { TwilioClient }  # the CLASS
+# Later: twilio_client.new(credentials: creds)
+```
+
+Register **instances** for singletons that don't vary per call:
+
+```ruby
+register(:http) { <%= app_const_base %>::HTTP }  # already a connection-pooled singleton
+```
+
+---
+
+## Client / Adapter Pattern
+
+**When to adopt:** When integrating external HTTP APIs (payment providers, notification services,
+etc.).
+
+Three-layer architecture for external service communication:
+
+```
+Adapter/Gateway  (translates provider domain to app domain, wraps in monads)
+    |
+Client           (HTTP transport, maps to provider's API domain 1:1)
+    |
+HTTP library     (e.g. http.rb with connection pooling)
+```
+
+### Clients (`app/aspects/<domain>/client.rb`)
+
+Low-level HTTP wrappers that **map as closely as possible to the external provider's domain and API
+surface**. If the provider's API has a `POST /v2/messages` endpoint, the client should have a
+`create_message` method. If the provider calls them "campaigns", the client uses that word, not the
+app's internal terminology.
+
+Clients handle:
+
+- Authentication (headers, tokens, OAuth flows)
+- URL construction and request serialization
+- Instrumentation via `ActiveSupport::Notifications`
+- Custom error classes that wrap the raw HTTP response
+
+Clients do NOT contain business logic. They do NOT return monads. They raise on HTTP errors or
+return raw response objects. They speak the provider's language.
+
+```ruby
+class SomeServiceClient
+  include <%= app_const_base %>::Deps[:http, :instrumenter]
+
+  CREDENTIALS_SCHEMA = Dry::Schema.JSON do
+    required(:api_token).filled(:string)
+  end
+
+  def initialize(credentials:, **deps)
+    @credentials = CREDENTIALS_SCHEMA.call(credentials).to_h
+    super(**deps)
+  end
+
+  def create_resource(params)
+    instrumenter.instrument("request.some_service", params: params) do |payload|
+      response = client.post(endpoint, json: params)
+      payload[:response] = response
+      raise ClientError, response unless response.status.success?
+      response
+    end
+  end
+
+  private
+
+  def client
+    http.auth("Bearer #{@credentials[:api_token]}")
+  end
+end
+```
+
+### Adapters (`app/aspects/<domain>/adapter.rb`)
+
+Adapters **translate between the provider's domain concepts and the application's domain concepts**,
+wrapping everything in monadic return types. Where the client speaks the provider's language, the
+adapter speaks the app's language.
+
+Adapters:
+
+- Accept app-domain objects (models, records, users)
+- Translate them into provider-domain parameters
+- Call the client
+- Translate provider-domain responses back into app-domain results
+- Wrap success/failure in `Success`/`Failure` monads
+
+### Aspect Structure with External Services
+
+When integrating external services, each aspect should grow to include:
+
+```
+app/aspects/<domain>/
+  container.rb           # Dry::Container for this domain
+  deps.rb                # Dry::AutoInject injector for this domain
+  client.rb              # HTTP transport, maps to provider's API 1:1
+  adapter.rb             # Translates provider domain to app domain, wraps in monads
+  data_models/           # Structured API response parsing (Dry::Schema-based)
+  *_log_subscriber.rb    # LogSubscribers for this domain's instrumentation
+```
+
+---
+
+## Data Models
+
+**When to adopt:** When consuming external API responses that need structured parsing and
+validation.
+
+Use a `DataModel` base class (`app/lib/data_model.rb`) for structured parsing, validation, and
+ActiveRecord integration:
+
+- Validates and coerces API response payloads using `Dry::Schema.Params`
+- Supports per-provider key transformation (e.g. camelCase to snake_case)
+- Provides attribute-style access (`movie.title`) and hash-style access (`movie[:title]`)
+- Converts to monads via `to_monad` -- `Success(self)` when valid, `Failure(self)` when invalid
+- Integrates with ActiveRecord via `to_type` -- store parsed API JSON directly in a model column
+- Supports nesting via a `data_model` macro in the Dry::Schema DSL
+
+```ruby
+module SomeService
+  module DataModels
+    class Resource < DataModel
+      key_coercer ->(key) { key.to_s.underscore.to_sym }
+
+      schema do
+        required(:id).filled(:integer)
+        required(:name).filled(:string)
+        optional(:created_at).maybe(:date)
+      end
+    end
+  end
+end
+
+# Use as an ActiveRecord attribute type:
+class MyRecord < ApplicationRecord
+  attribute :service_data, SomeService::DataModels::Resource.to_type
+  delegate_missing_to :service_data
+end
+
+# In adapters, parse and validate responses monadically:
+def parse_data(data_model, data)
+  data_model.new(data).to_monad
+    .or { |failure| Failure[:parse_error, failure] }
+end
+```
+
+---
+
+## Domain Events
+
+**When to adopt:** When side-effects need to be decoupled from the transaction that triggers them
+(e.g., sending notifications after a record is created, updating search indexes after publishing).
+
+### Event Definition
+
+```ruby
+class RecordChangeEvent < ApplicationEvent
+  event %i[publish unpublish archive] do
+    required(:record).filled
+    optional(:user).maybe(type?: User)
+  end
+
+  subscribe NotifyOwner,        on: :publish
+  subscribe UpdateSearchIndex,  on: %i[publish unpublish], async: true
+end
+```
+
+### Publishing from Transactions
+
+Use the `broadcast` step:
+
+```ruby
+broadcast RecordChangeEvent, :publish
+broadcast RecordChangeEvent, -> (record:, **) { record.state }  # dynamic event name
+```
+
+Create `app/events/` when first introducing this pattern.
+
+---
+
+## Authorization
+
+**When to adopt:** When authorization logic is needed beyond simple role checks in
+`before_action`.
+
+Use Action Policy. It integrates well with this architecture: policies are plain Ruby classes,
+authorization can be called from transactions via the `authorize` step, and scoping works naturally
+with query objects.
+
+Add the `action_policy` gem and create policies in `app/policies/`:
+
+```ruby
+class WidgetPolicy < ApplicationPolicy
+  def edit?
+    user.admin? && record.user == user
+  end
+
+  relation_scope do |relation|
+    if user.admin?
+      relation.where(user: user)
+    else
+      relation.published
+    end
+  end
+end
+```
+
+Use in transactions via the `authorize` step:
+
+```ruby
+authorize :widget, :edit?
+```
+
+Use in controllers for read operations:
+
+```ruby
+def index
+  widgets = authorized_scope(Widget.all)
+  render Views::Widgets::Index.new(widgets:)
+end
+```
+
+---
+
+## Opaque IDs
+
+**When to adopt:** When adding public-facing APIs, or when security concerns warrant hiding raw
+integer primary keys.
+
+Use Sqids. Add the `sqids` gem and update `ApplicationRecord`:
+
+```ruby
+class ApplicationRecord < ActiveRecord::Base
+  def self.by_param(param)
+    find(decode_sqid(param))
+  end
+
+  def to_param
+    respond_to?(:slug) ? slug : sqid
+  end
+
+  def sqid
+    encode_sqid(id)
+  end
+end
+```
+
+Then update controllers to use `Model.by_param(params[:id])` instead of `Model.find(params[:id])`.
+
+---
+
+## Named Failure Handling
+
+**When to adopt:** When controllers need to handle different failure types differently (e.g.,
+validation failures vs. authorization failures vs. unexpected errors).
+
+Adopt the block-based pattern for result matching:
+
+```ruby
+def close
+  Records::Close.call(options) do |result|
+    result.success            { render_record }
+    result.failure(:validate) { render_record }
+    result.failure(:authorize){ head :not_found }
+    result.failure            { render failure: result }
+  end
+end
+```
+
+---
+
+## Custom Types
+
+**When to adopt:** When you find yourself repeating type coercion/constraints across multiple
+schemas.
+
+```ruby
+module <%= app_const_base %>
+  module Types
+    include Dry.Types()
+
+    StrippedString = Types::String.constructor(&:strip)
+    Email = Types::String.constrained(format: URI::MailTo::EMAIL_REGEXP)
+  end
+end
+```
+
+---
+
+## Pretty Printers
+
+**When to adopt:** When console/log readability of dry-rb objects becomes a pain point.
+
+Create pretty-print overrides in `lib/pretty_printers/` for `Success`, `Failure`, `Some`, `None`,
+`Dry::Validation::Result`, and `Dry::Schema::Result`. Load them early:
+
+```ruby
+# config/initializers/00_requires.rb
+Rails.root.glob("lib/pretty_printers/*.rb").each { |file| require file }
+```
+
+---
+
+## StimulusData Helper
+
+**When to adopt:** When Stimulus data attributes become fiddly to manage in templates.
+
+Add `app/lib/stimulus_data.rb`:
+
+```ruby
+sd = StimulusData.new("loader", values: { url: "/messages" })
+# data-controller="loader" data-loader-url-value="/messages"
+
+sd.with(target: :spinner)
+# data-loader-target="spinner"
+
+sd.with(action: :showSpinner)
+# data-action="loader#showSpinner"
+
+# Works with Phlex, ERB, tag builders:
+tag.div(data: sd)
+```
+
+---
+
+## Component Resolution via Container
+
+**When to adopt:** When polymorphic component rendering is needed (rendering different components
+based on data type).
+
+```ruby
+module Components
+  class Container
+    extend Dry::Container::Mixin
+
+    namespace :list_view_item do
+      register("widget.typeA") { Widgets::Components::TypeAListItem }
+      register("widget.typeB") { Widgets::Components::TypeBListItem }
+    end
+  end
+end
+```
+
+---
+
+## New Project Checklist
+
+**When starting a new project using this architecture, copy these files from an existing project.
+These are reusable library files that are not generated -- they must be copied manually.**
+
+| File | Purpose |
+|------|---------|
+| `app/lib/data_model.rb` | Base class for structured API response parsing with Dry::Schema |
+| `app/lib/stimulus_data.rb` | Ergonomic Stimulus data attribute builder |
+| `lib/pretty_printers/*.rb` | Pretty-print overrides for Dry::Monads, Dry::Validation |
+| `config/initializers/00_requires.rb` | Early-load pretty printers |
+| `config/initializers/subscribers.rb` | Force-load log subscriber files in dev/test |
+
+**After all files have been copied into the new project, delete this section.**

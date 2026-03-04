@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+module Views
+  class Base < Components::Base
+    extend Dry::Core::ClassAttributes
+
+    defines :page_title
+    defines :current_tab
+
+    defines :layout
+    layout Views::Layouts::ApplicationLayout
+
+    delegate :current_tab, :layout, to: :class
+
+    def page_title
+      value = self.class.page_title
+      case value
+      when String then value
+      when Proc then instance_exec(&value)
+      when nil then "<%= app_const_base %>"
+      else
+        raise "I dunno how to handle page_title of #{value.class}  #{value.inspect}"
+      end
+    end
+
+    def around_template
+      render self.class.layout.new(page: self) do
+        super
+      end
+    end
+  end
+end

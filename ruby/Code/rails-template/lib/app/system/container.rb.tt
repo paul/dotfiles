@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+require "dry/system/container"
+
+module <%= app_const_base %>
+  module System
+    class Container < Dry::System::Container
+      configure do |config|
+        config.name = :<%= app_name %>
+        config.root = Rails.root
+        config.inflector = ActiveSupport::Inflector
+        config.provider_dirs = [Rails.root.join("config/system/boot")]
+      end
+
+      class << self
+        def started?(name)
+          providers[name]&.started?
+        end
+
+        def refresh_provider_files
+          providers.provider_files.each { |boot_file| Kernel.load(boot_file) }
+          self
+        end
+      end
+    end
+  end
+end

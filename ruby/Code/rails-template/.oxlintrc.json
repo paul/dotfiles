@@ -1,0 +1,24 @@
+{
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "no-unused-expressions": "off",
+    "unicorn/filename-case": "off",
+    "unicorn/no-empty-file": "off"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true
+  },
+  "globals": {
+    "Stimulus": "readonly"
+  },
+  "ignorePatterns": [
+    "vendor/**",
+    "public/**",
+    "node_modules/**"
+  ]
+}

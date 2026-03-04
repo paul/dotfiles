@@ -1,0 +1,196 @@
+---
+inherit_from:
+  - https://relaxed.ruby.style/rubocop.yml
+
+require:
+  - ./lib/rubocop/cop/<%= app_name %>/initializer_dependencies
+  - ./lib/rubocop/cop/<%= app_name %>/transaction_best_practice
+  - ./lib/rubocop/cop/phlex/block_style
+
+plugins:
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - vendor/**/*
+    - spec/fixtures/**/*
+    - bin/**/*
+    - public/**/*
+    - tmp/**/*
+    - db/schema.rb
+    - db/*_schema.rb
+
+Layout:
+  Severity: error
+
+Lint:
+  Severity: error
+
+Rails:
+  Enabled: true
+
+Lint/EmptyBlock:
+  Severity: warning
+  Exclude:
+    - spec/factories
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Enabled: true
+  Max: 120
+  AllowedPatterns:
+    - "\\A#  "
+  Exclude:
+    - db/migrate/*.rb
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented_relative_to_receiver
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
+
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  AutoCorrect: false
+
+Lint/UnusedMethodArgument:
+  AutoCorrect: false
+
+Lint/UselessAssignment:
+  AutoCorrect: false
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: ex
+
+Naming/VariableNumber:
+  EnforcedStyle: snake_case
+
+# Rspec
+RSpec/BeEq:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/EmptyExampleGroup:
+  AutoCorrect: false
+  Exclude:
+    - spec/factories/**/*.rb
+
+RSpec/EmptyHook:
+  AutoCorrect: false
+
+RSpec/ExampleLength:
+  Max: 10
+  Exclude:
+    - spec/system/**/*.rb
+
+RSpec/ExpectChange:
+  EnforcedStyle: block
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/Focus:
+  Severity: error
+  AutoCorrect: false
+
+RSpec/IdenticalEqualityAssertion:
+  Enabled: true
+
+RSpec/ImplicitExpect:
+  EnforcedStyle: should
+
+RSpec/IndexedLet:
+  Max: 2
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/NoExpectationExample:
+  AutoCorrect: false
+
+RSpec/NotToNot:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  EnforcedInflector: active_support
+
+Rails/Output:
+  AutoCorrect: false
+  Exclude:
+    - "**/lib/**/*.rb"
+
+Rails/TimeZone:
+  Enabled: false
+
+<%= app_const_base %>/InitializerDependencies:
+  Enabled: true
+
+<%= app_const_base %>/TransactionBestPractice:
+  Enabled: true
+
+Phlex/BlockStyle:
+  Enabled: true
+  Include:
+    - app/components/**/*.rb
+    - app/views/**/*.rb
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+Style/FormatStringToken:
+  MaxUnannotatedPlaceholdersAllowed: 2
+
+Style/EmptyMethod:
+  AutoCorrect: false
+
+Style/GuardClause:
+  AutoCorrect: false
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+  Enabled: true
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Enabled: true
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Enabled: true

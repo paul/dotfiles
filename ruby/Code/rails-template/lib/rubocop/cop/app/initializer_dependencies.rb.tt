@@ -1,0 +1,55 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Cop
+    module <%= app_const_base %>
+      class InitializerDependencies < RuboCop::Cop::Base
+        extend AutoCorrector
+
+        MSG = "use `**deps` for passing injected dependencies"
+
+        def_node_matcher :injection_container?, <<~PATTERN
+          (send _ :include (send #import_module? :[] ...) ...)
+        PATTERN
+
+        def_node_search :init_method, "(def :initialize ...)"
+
+        def_node_matcher :calls_super?, "`(super (_ (kwsplat ...)))"
+        def_node_search  :kwrest_arg, "(kwrestarg _)"
+        def_node_search  :variable_usage, "(lvar %1)"
+
+        def on_class(node)
+          return unless body = node.body&.children
+          return unless body.any? { |child| injection_container?(child) }
+          return unless initializer = body.find { |child| child.is_a?(AST::DefNode) && child.method_name == :initialize }
+
+          arg = kwrest_arg(initializer.arguments).first
+
+          unless arg
+            return add_offense(initializer,
+                               message: "must add `**deps` and pass injected dependencies to super",)
+          end
+          unless calls_super?(initializer)
+            return add_offense(initializer,
+                               message: "must pass `**deps` injected dependencies to super",)
+          end
+          return if arg.name == :deps
+
+          add_offense(arg, message: "use `**deps` for passing injected dependencies") do |corrector|
+            corrector.replace(arg, "**deps")
+
+            variable_usage(initializer.body, arg.name).each do |var|
+              corrector.replace(var, "deps")
+            end
+          end
+        end
+
+        private
+
+        def import_module?(name)
+          /(.*::)?Import\Z/.match(name.source)
+        end
+      end
+    end
+  end
+end

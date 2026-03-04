@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+<%= app_const_base %>::Container.register_provider(:core) do
+  start do
+    register(:logger, Rails.logger)
+    register(:rails_env, Rails.env)
+    register(:notifications, ActiveSupport::Notifications)
+    register(:inflector, ActiveSupport::Inflector)
+    register(:cache, Rails.cache)
+  end
+end

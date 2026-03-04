@@ -1,0 +1,53 @@
+# frozen_string_literal: true
+
+require Rails.root.join("lib/<%= app_name %>/system/container")
+
+module <%= app_const_base %>
+  module DrySystem
+    module_function
+
+    def finalize!
+      was_reloading = reloading?
+      stop_features if was_reloading
+
+      container = Class.new(<%= app_const_base %>::System::Container)
+
+      container.use :env, inferrer: -> { Rails.env }
+
+      set_or_reload(:Container, container)
+      set_or_reload(:Deps, container.injector)
+
+      container.refresh_provider_files if was_reloading
+      container.finalize!(freeze: !Rails.env.test?)
+    end
+
+    def stop_features
+      container.providers.providers.each_key do |feature|
+        container.stop(feature) if container.started?(feature)
+      end
+    end
+
+    def container
+      <%= app_const_base %>.const_get(:Container, false)
+    end
+
+    def reloading?
+      <%= app_const_base %>.const_defined?(:Container, false)
+    end
+
+    def set_or_reload(const_name, value)
+      remove_constant(const_name)
+      <%= app_const_base %>.const_set(const_name, value)
+    end
+
+    def remove_constant(const_name)
+      <%= app_const_base %>.__send__(:remove_const, const_name) if <%= app_const_base %>.const_defined?(const_name, false)
+    end
+  end
+end
+
+<%= app_const_base %>::DrySystem.finalize!
+
+Rails.application.config.to_prepare do
+  <%= app_const_base %>::DrySystem.finalize!
+end

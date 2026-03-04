@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
+def source_paths
+  dir = File.dirname(File.expand_path(__FILE__))
+  [File.join(dir, "rails-template"), dir]
+end
+
 # Functional
 gem "dry-auto_inject"
 gem "dry-container"
+gem "dry-initializer"
 gem "dry-monads"
 gem "dry-schema"
+gem "dry-system"
 gem "dry-transaction"
 gem "dry-transaction-extra"
 gem "dry-types"
@@ -24,18 +31,24 @@ gem_group :development, :test do
   # Livereload
   gem "hotwire-spark"
 
+  # Component previews
+  gem "lookbook"
+
   # Testing
   gem "rspec"
   gem "rspec-rails"
+
+  gem "capybara"
+  gem "cuprite"
 
   gem "factory_bot_rails"
   gem "faker"
 
   # Linting
-  gem "bundle-audit",         require: false
   gem "database_consistency", require: false
   gem "reek",                 require: false
   gem "rubocop",              require: false
+  gem "rubocop-capybara",     require: false
   gem "rubocop-factory_bot",  require: false
   gem "rubocop-performance",  require: false
   gem "rubocop-rails",        require: false
@@ -53,157 +66,229 @@ gem_group :development do
   gem "ruby-lsp", require: false
 end
 
-after_bundle do
-  # Set version constraints on gems
-  run "pessimize -c minor --no-backup"
+run "bundle install"
 
-  git :init
+# Set version constraints on gems
+run "pessimize -c minor --no-backup"
+
+# Append optional gems as comments — uncomment and `bundle install` as needed
+append_to_file "Gemfile", <<~RUBY
+
+  # Optional — uncomment and run `bundle install` as needed:
+  # gem "literal"
+  # gem "lucide-rails"
+  # gem "pagy"
+  # gem "commonmarker"
+  # gem "marksmith"
+  # gem "image_processing", "~> 1.14"
+RUBY
+
+git :init
+git add: "."
+git commit: "-a -m 'Initial commit'"
+
+%i[
+  rspec:install
+  phlex:install
+  erd:install
+  annotate_rb:install
+].each do |install|
+  generate install
   git add: "."
-  git commit: "-a -m 'Initial commit'"
-
-  %i[
-    rspec:install
-    phlex:install
-    erd:install
-    annotate_rb:install
-  ].each do |install|
-    generate install
-    git add: "."
-    git commit: "-a -m 'Generate #{install} files'"
-  end
-
-  file ".annotaterb.yml", <<~YAML, force: true
-    ---
-    :position: bottom
-    :position_in_additional_file_patterns: bottom
-    :position_in_class: bottom
-    :position_in_factory: bottom
-    :position_in_fixture: bottom
-    :position_in_routes: bottom
-    :position_in_serializer: bottom
-    :position_in_test: bottom
-    :classified_sort: true
-    :exclude_controllers: true
-    :exclude_factories: false
-    :exclude_fixtures: false
-    :exclude_helpers: true
-    :exclude_scaffolds: true
-    :exclude_serializers: false
-    :exclude_sti_subclasses: false
-    :exclude_tests: false
-    :force: false
-    :format_markdown: false
-    :format_rdoc: false
-    :format_yard: false
-    :frozen: false
-    :ignore_model_sub_dir: false
-    :ignore_unknown_models: false
-    :include_version: false
-    :show_check_constraints: false
-    :show_complete_foreign_keys: false
-    :show_foreign_keys: true
-    :show_indexes: true
-    :simple_indexes: false
-    :sort: false
-    :timestamp: false
-    :trace: false
-    :with_comment: true
-    :with_column_comments: true
-    :with_table_comments: true
-    :active_admin: false
-    :command:
-    :debug: false
-    :hide_default_column_types: ""
-    :hide_limit_column_types: ""
-    :timestamp_columns:
-      - created_at
-      - updated_at
-      - discarded_at
-    :ignore_columns:
-    :ignore_routes:
-    :models: true
-    :routes: false
-    :skip_on_db_migrate: false
-    :target_action: :do_annotations
-    :wrapper:
-    :wrapper_close:
-    :wrapper_open:
-    :classes_default_to_s: []
-    :additional_file_patterns: []
-    :model_dir:
-      - app/models
-    :require: []
-    :root_dir:
-      - ""
-  YAML
-
-  git add: ".annotaterb.yml"
-  git commit: "-a -m 'Add annotaterb config'"
-
-  environment <<~RUBY
-    # Always use UTC
-    ENV["TZ"] = "UTC"
-    config.time_zone = "UTC"
-
-    config.generators do |g|
-      g.test_framework :rspec
-
-      g.helper false
-      g.system_tests false
-
-      # Don't generate specs for these
-      g.model_specs false
-      g.controller_specs false
-      g.helper_specs false
-      g.routing_specs false
-      g.view_specs false
-
-      g.after_generate do |files|
-        # If we generated with -p (pretend), the files won't exist, so no need to process them
-        parsable_files = files.filter { |file| File.exist?(file) && file.end_with?(".rb") }
-        next if parsable_files.empty?
-
-        # After generating files, automatically fix them with rubocop
-        system(
-          *%w[bundle
-              exec
-              rubocop
-              --autocorrect-all
-              --fail-level=E
-              --format=quiet
-              --no-display-cop-names],
-          *parsable_files,
-          exception: true,
-        )
-
-        # Annotate any models/fixtures/factores we generate after the migration has run
-        system(*%w[bundle exec annotaterb models], exception: true)
-      end
-    end
-  RUBY
-
-  git add: "config/application.rb"
-  git commit: "-a -m 'Update generators config'"
-
-  create_file ".envrc", <<~SH
-    # Load .env variables automatically with direnv
-    # http://direnv.net/
-
-    if [ -e ./.env ]
-    then
-      dotenv
-    fi
-
-    if [ -e ./.env.local ]
-    then
-      dotenv .env.local
-    fi
-  SH
-
-  create_file ".env", ""
-  create_file ".env.local", ""
-
-  # Force add, since these are ignored by default
-  run "git add .envrc .env --force"
-  git commit: "-a -m 'Add stub .env files'"
+  git commit: "-a -m 'Generate #{install} files'"
 end
+
+# --- Linter configs ---
+template ".rubocop.yml.tt", ".rubocop.yml", force: true
+copy_file ".reek.yml"
+copy_file ".oxlintrc.json"
+copy_file ".stylelintrc.json"
+
+git add: "."
+git commit: "-a -m 'Add linter configs'"
+
+# --- annotaterb config ---
+copy_file ".annotaterb.yml", force: true
+
+git add: ".annotaterb.yml"
+git commit: "-a -m 'Add annotaterb config'"
+
+# --- Generator config + application settings ---
+environment <<~RUBY
+  # I'd rather this be in the Lookbook initializer, but that gets loaded too late
+  # https://github.com/lookbook-hq/lookbook/issues/698
+  config.autoload_paths << "\#{root}/spec/components/previews"
+
+  # Always use UTC
+  ENV["TZ"] = "UTC"
+  config.time_zone = "UTC"
+
+  config.generators do |g|
+    g.test_framework :rspec
+
+    g.helper false
+    g.system_tests false
+
+    # Don't generate specs for these
+    g.model_specs false
+    g.controller_specs false
+    g.helper_specs false
+    g.routing_specs false
+    g.view_specs false
+
+    g.after_generate do |files|
+      # If we generated with -p (pretend), the files won't exist, so no need to process them
+      parsable_files = files.filter { |file| File.exist?(file) && file.end_with?(".rb") }
+      next if parsable_files.empty?
+
+      # After generating files, automatically fix them with rubocop
+      system(
+        *%w[bundle
+            exec
+            rubocop
+            --autocorrect-all
+            --fail-level=E
+            --format=quiet
+            --no-display-cop-names],
+        *parsable_files,
+        exception: true,
+      )
+
+      # Annotate any models/fixtures/factories we generate after the migration has run
+      system(*%w[bundle exec annotaterb models], exception: true)
+    end
+  end
+RUBY
+
+# autoload_lib must follow config.load_defaults in application.rb
+inject_into_file "config/application.rb",
+                 "    config.autoload_lib(ignore: %w[assets rubocop tasks])\n\n",
+                 after: /config\.load_defaults.*\n/
+
+git add: "config/application.rb"
+git commit: "-a -m 'Update application config'"
+
+# --- BetterMigrationDefaults (adapter-specific) ---
+if options[:database] == "postgresql"
+  copy_file "lib/better_migration_defaults_postgresql.rb", "lib/better_migration_defaults.rb"
+else
+  copy_file "lib/better_migration_defaults_sqlite.rb", "lib/better_migration_defaults.rb"
+  copy_file "app/lib/string_enum.rb"
+  copy_file "lib/tasks/db.rake"
+end
+
+copy_file "lib/templates/active_record/migration/migration.rb.tt"
+copy_file "lib/templates/active_record/migration/create_table_migration.rb.tt"
+
+git add: "."
+git commit: "-a -m 'Add BetterMigrationDefaults and migration templates'"
+
+# --- Custom RuboCop cops ---
+template "lib/rubocop/cop/app/transaction_best_practice.rb.tt",
+         "lib/rubocop/cop/#{app_name}/transaction_best_practice.rb"
+template "lib/rubocop/cop/app/initializer_dependencies.rb.tt",
+         "lib/rubocop/cop/#{app_name}/initializer_dependencies.rb"
+copy_file "lib/rubocop/cop/phlex/block_style.rb"
+
+git add: "."
+git commit: "-a -m 'Add custom RuboCop cops'"
+
+# --- Form base class ---
+copy_file "app/lib/form.rb"
+
+git add: "."
+git commit: "-a -m 'Add Form base class'"
+
+# --- Spec support infrastructure (overwrite rspec:install defaults) ---
+copy_file "spec/spec_helper.rb", force: true
+copy_file "spec/rails_helper.rb", force: true
+copy_file "spec/support/shared_contexts/with_transaction_context.rb"
+copy_file "spec/support/matchers/fail_in_matcher.rb"
+copy_file "spec/support/phlex_helpers.rb"
+copy_file "spec/support/capybara_setup.rb"
+copy_file "spec/support/cuprite_setup.rb"
+copy_file "spec/support/capybara_helpers.rb"
+copy_file "spec/support/app_selector.rb"
+copy_file "spec/support/have_html_attributes_matcher.rb"
+copy_file "spec/support/test_model.rb"
+
+git add: "."
+git commit: "-a -m 'Add spec support infrastructure'"
+
+# --- CI additions (inject into Rails-generated config/ci.rb) ---
+inject_into_file "config/ci.rb", before: /^\s*step "Security/ do
+  <<~RUBY
+    # step "Style: JavaScript", "oxlint app/javascript/"
+    # step "Style: CSS/SCSS", 'bunx stylelint "app/assets/stylesheets/**/*.{css,scss}"'
+
+    step "Database: Consistency", "bin/database_consistency"
+
+  RUBY
+end
+
+git add: "config/ci.rb"
+git commit: "-a -m 'Add database consistency and linter steps to CI'"
+
+# --- Documentation ---
+template "docs/STYLE.md.tt",        "STYLE.md"
+template "docs/ARCHITECTURE.md.tt", "ARCHITECTURE.md"
+template "docs/AGENTS.md.tt",       "AGENTS.md"
+copy_file "docs/TESTING.md",        "TESTING.md"
+copy_file "docs/CONTRIBUTING.md",   "CONTRIBUTING.md"
+
+git add: "."
+git commit: "-a -m 'Add architecture and style documentation'"
+
+# --- .env stubs ---
+create_file ".envrc", <<~SH
+  # Load .env variables automatically with direnv
+  # http://direnv.net/
+
+  if [ -e ./.env ]
+  then
+    dotenv
+  fi
+
+  if [ -e ./.env.local ]
+  then
+    dotenv .env.local
+  fi
+SH
+
+create_file ".env", ""
+create_file ".env.local", ""
+
+# Force add, since these are ignored by default
+run "git add .envrc .env --force"
+git commit: "-a -m 'Add stub .env files'"
+
+# --- Phlex view layer ---
+copy_file "config/initializers/phlex.rb", force: true
+copy_file "app/components/base.rb", force: true
+template "app/views/base.rb.tt", "app/views/base.rb", force: true
+template "app/views/layouts/application_layout.rb.tt",
+         "app/views/layouts/application_layout.rb", force: true
+
+git add: "."
+git commit: "-a -m 'Set up Phlex view layer with component base classes'"
+
+# --- Dry::System container ---
+template "config/initializers/dry_system.rb.tt", "config/initializers/dry_system.rb"
+template "lib/app/system/container.rb.tt", "lib/#{app_name}/system/container.rb"
+template "config/system/boot/core.rb.tt", "config/system/boot/core.rb"
+
+git add: "."
+git commit: "-a -m 'Add Dry::System container and boot configuration'"
+
+# --- Initializers ---
+template "config/initializers/lookbook.rb.tt", "config/initializers/lookbook.rb"
+copy_file "config/initializers/dartsass.rb", force: true
+copy_file "config/initializers/subscribers.rb"
+
+# --- Lookbook route ---
+inject_into_file "config/routes.rb",
+                 "  mount Lookbook::Engine, at: \"/lookbook\"\n\n",
+                 after: "Rails.application.routes.draw do\n"
+
+git add: "."
+git commit: "-a -m 'Add lookbook, dartsass, and subscriber initializers'"

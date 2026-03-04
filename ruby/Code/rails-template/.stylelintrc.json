@@ -1,0 +1,21 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "ignoreFiles": [
+    "vendor/**",
+    "public/**",
+    "node_modules/**",
+    "app/assets/builds/**",
+    "app/assets/stylesheets/actiontext.css"
+  ],
+  "rules": {
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["layer", "starting-style"]
+      }
+    ],
+    "custom-property-empty-line-before": null,
+    "declaration-block-single-line-max-declarations": null,
+    "no-descending-specificity": null
+  }
+}

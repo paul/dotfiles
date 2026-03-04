@@ -1,0 +1,79 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Cop
+    module <%= app_const_base %>
+      class TransactionBestPractice < RuboCop::Cop::Base
+        def_node_matcher :app_transaction?, <<~PATTERN
+          (send _ :include (const _ :ApplicationTransaction))
+        PATTERN
+
+        def_node_matcher :is_block_validator?, <<~PATTERN
+          (block (send nil? :validate) ...)
+        PATTERN
+
+        def_node_matcher :is_class_validator?, <<~PATTERN
+          (send nil? :validate const)
+        PATTERN
+
+        def_node_search  :step_definitions, "(def %1 ...)"
+        def_node_matcher :step_declaration, "(send _ %steps (sym $_))",
+                         steps: Set[:step, :try, :tee, :map, :check, :merge, :tap]
+
+        def_node_search  :kwrest_arg, "(kwrestarg ...)"
+        def_node_search  :kwrest_indexed, "`(index (lvar %1) (sym $_))"
+        def_node_search  :kwrest_called, "`(send (lvar %1) :[] (sym $_))"
+
+        def on_class(node)
+          return unless body = node.body&.children
+          return unless body.any? { |child| app_transaction?(child) }
+
+          if body.none? { |child| is_block_validator?(child) || is_class_validator?(child) }
+            add_offense(node, message: "implement a validate step")
+            return
+          end
+
+          step_names = body.filter_map { |child| step_declaration(child) }
+          step_methods = step_definitions(node, Set[*step_names])
+
+          check_step_ordering(step_names, step_methods)
+
+          step_methods.each do |step|
+            check_step_practices(step)
+          end
+        end
+
+        def check_step_ordering(names, steps)
+          steps.zip(names).each do |step, name|
+            next unless step
+            next if name == step.method_name
+
+            add_offense(step, message: "place step methods in the order they are declared")
+          end
+        end
+
+        def check_step_practices(step)
+          step_args = step.arguments
+
+          rest_arg = kwrest_arg(step_args).first
+          if !rest_arg
+            add_offense(step, message: "include `**` in arguments")
+            return
+          end
+
+          kwrest_vars = kwrest_access_names(step, rest_arg)
+          return if kwrest_vars.empty?
+
+          add_offense(rest_arg, message: "name used arguments directly: #{kwrest_vars.join(', ')}")
+        end
+
+        def kwrest_access_names(step, kwrest)
+          return [] unless arg_name = kwrest.name
+          return [] unless body = step.body
+
+          (kwrest_indexed(body, arg_name) + kwrest_called(body, arg_name)).to_a.uniq
+        end
+      end
+    end
+  end
+end

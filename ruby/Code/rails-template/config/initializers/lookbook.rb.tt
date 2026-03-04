@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+Rails.application.configure do
+  config.lookbook.project_name = "<%= app_const_base %>"
+  config.lookbook.component_paths << "app/components"
+  config.lookbook.preview_paths = ["spec/components/previews"]
+
+  config.lookbook.preview_display_options = {
+    theme: ["light", "dark"],
+  }
+end

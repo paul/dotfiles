@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+module Views
+  module Layouts
+    class ApplicationLayout < Components::Base
+      include Phlex::Rails::Helpers::CSPMetaTag
+      include Phlex::Rails::Helpers::CSRFMetaTags
+      include Phlex::Rails::Helpers::ActionCableMetaTag
+      include Phlex::Rails::Helpers::JavascriptImportmapTags
+      include Phlex::Rails::Helpers::StylesheetLinkTag
+
+      attr_reader :page
+
+      def initialize(page:)
+        @page = page
+        super()
+      end
+
+      def view_template(&)
+        doctype
+        html {
+          head {
+            title { @page.page_title }
+
+            meta(name: "viewport", content: "width=device-width,initial-scale=1")
+            meta(name: "view-transition", content: "same-origin")
+            meta(name: "turbo-refresh-method", content: "morph")
+            meta(name: "turbo-refresh-scroll", content: "preserve")
+
+            csrf_meta_tags
+            csp_meta_tag
+            action_cable_meta_tag
+
+            stylesheet_link_tag :app, data: { turbo: { track: "reload" } }
+            javascript_importmap_tags
+          }
+
+          body {
+            main(id: "main", &)
+          }
+        }
+      end
+    end
+  end
+end

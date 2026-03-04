@@ -1,0 +1,308 @@
+
+# Ruby & Rails
+
+- Ruby style follows "Relaxed Ruby Style", defined in `.rubocop.yml`
+- Use `snake_case` for files and methods, `CamelCase` for classes/modules.
+- RSpec files should end in `_spec.rb` and mirror the directory they test.
+
+## Transactions
+
+Every write operation goes through a Transaction (service object). Controllers never touch models
+for mutations directly. Transactions live in `app/aspects/<domain>/` as vertical slices, or
+`app/transactions` for cross-domain or global concerns.
+
+**Business logic belongs in Transactions, not models.**
+
+- Prefer composing behavior with transaction steps over module-level helper functions. Keep logic as
+  private step helpers until reuse pressure is clear.
+- For `merge` steps: when returning a single value whose key matches the step name, return the bare
+  value (e.g. `def digest ...; "..." end`). Wrap in a hash only when you need custom key names or
+  when the value itself is a hash that must stay nested.
+- `async` steps validate twice: once before enqueue and again when the job executes. Put enqueue
+  conditions in the async target transaction's validator so stale/invalid jobs are skipped both at
+  queue time and run time.
+- When consuming a transaction result in controllers, chain directly from the call (e.g.
+  `SomeTxn.call(...).value_or(...)`) rather than assigning the transaction result to a temporary
+  variable first.
+- Transactions can accept a `Form` object as input when one is available from an HTML form
+  submission. This is convenient for chaining (`form.to_monad.bind { |f| Txn.call(form: f) }`),
+  but don't force it — if there's no HTML form involved, pass domain objects directly. Never create
+  a form object just to satisfy a transaction's interface.
+- Param normalization and coercion belong in form objects, not in transactions. When a form is
+  available, the transaction should read clean data from it (e.g., `form.parameters`), not
+  re-parse raw params.
+
+## Form Objects
+
+Forms are exclusively for backing HTML forms. Use `Form` (`app/lib/form.rb`) for **update
+operations** where Rails form builder integration is needed. Use transactions for **create
+operations** where dry-schema validation is primary.
+
+A `Form` wraps AR models via `wrap(Model, :attr1, :attr2)`, delegating getters/setters:
+
+```ruby
+class Plans::UpdateForm < Form
+  wrap Plan, :name, :summary, :description
+
+  validates :name, presence: true
+end
+
+# In controllers:
+form = Plans::UpdateForm.new(plan:)
+form.merge(params[:plan].to_unsafe_h)
+
+if form.save
+  redirect_to edit_plan_path(plan)
+end
+```
+
+### Monadic Interface
+
+All form objects support `to_monad`, returning `Success(self)` when valid or `Failure[self, errors:]`
+when invalid. This enables monadic chaining from form to transaction in controllers:
+
+```ruby
+MyForm
+  .new(record:, params: params[:record]&.to_unsafe_h)
+  .to_monad
+  .bind { |form| Records::Update.call(record:, user: current_user, form:) }
+  .fmap { redirect_to record_path(record), notice: t(".success") }
+  .or { redirect_to record_path(record), alert: t(".failure") }
+```
+
+### Custom Form Objects
+
+Not all form objects need to extend `Form`. When the domain doesn't map cleanly to ActiveRecord
+attribute delegation (e.g., JSON parameter transformation), implement a standalone form that
+duck-types the monadic interface:
+
+- `initialize(**args)` -- accepts and normalizes params
+- `valid?` -- returns boolean
+- `errors` -- returns `ActiveModel::Errors`
+- `to_monad` -- returns `Success(self)` or `Failure[self, errors:]`
+
+The form is responsible for all param normalization and coercion. Controllers and transactions
+should not contain that logic.
+
+## Models
+
+Models should primarily define:
+
+- Associations
+- Scopes
+- String enums via `string_enum`
+- Minimal AR validations (only what mirrors DB constraints)
+
+**Business logic belongs in Transactions, not models.**
+
+## Database Performance
+
+- Prefer simpler, direct queries over eager loading when the code is clearer and the path is not proven hot.
+- Add eager loading or query consolidation only when profiling or observed behavior shows a real performance problem.
+- Still avoid pathological query loops in high-volume paths.
+
+### String Enums
+
+Use string-valued enums, never Rails' default integer-valued enums:
+
+```ruby
+string_enum :state, %w[pending active completed failed], default: :pending
+string_enum :role,  %w[guest user admin],                default: :guest
+```
+
+### Better Migration Defaults
+
+All migrations should `use BetterMigrationDefaults`, which provides:
+
+- **`timestamps`** -- NOT NULL with `now()` default, plus automatic `discarded_at` for soft deletes
+- **`references`** -- defaults to `null: false` and `on_delete: :cascade`
+- **Index naming** -- Postgres-style names instead of Rails' truncated names
+
+_Use the generator_ (`rails g migration`) instead of writing the migration file directly.
+
+```ruby
+class CreateWidgets < ActiveRecord::Migration[8.0]
+  using BetterMigrationDefaults
+
+  def change
+    create_table :widgets do |t|
+      t.references :user
+      t.column :state, :string, null: false, default: "pending"
+      t.timestamps
+    end
+  end
+end
+```
+
+## Aspects (Vertical Slices)
+
+The `app/aspects/` directory organizes code by domain, not by technical role. Each aspect co-locates
+transactions, forms, and Phlex components for a single domain concept:
+
+```
+app/aspects/
+  orders/
+    create.rb                          # Transaction
+    update_form.rb                     # Form object
+    components/
+      summary_component.rb             # Domain-specific Phlex component
+```
+
+## Phlex
+
+Using Phlex for view components and views.
+
+Use Phlex Kit style to render components. Instead of `render MyComponent.new(...)`, call the
+component as a method: `MyComponent(...)`. Both `Views` and `Components` modules extend
+`Phlex::Kit`, so any nested component can be rendered by its relative module path:
+
+```ruby
+# Instead of:
+render Views::Layouts::Head.new(title: "<%= app_const_base %>")
+render Components::UI::Logo.new
+
+# Use Kit style:
+Layouts::Head(title: "<%= app_const_base %>")
+UI::Logo()
+```
+
+When a component takes a block, pass it directly:
+
+```ruby
+Layouts::PageFooter() do |footer|
+  footer.link "FAQ", href: "#faq"
+end
+```
+
+### Page Views
+
+Page-level views inherit from `Views::Base`, which wraps content in a layout. Controllers set
+`layout false` since Phlex handles layouts. Use class attributes for page metadata:
+
+```ruby
+module Views
+  module Widgets
+    class Show < Views::Base
+      page_title "Widget Details"
+      current_tab :widgets
+    end
+  end
+end
+```
+
+Views should be **thin compositors**. A view's job is to arrange the page layout using UI components
+for structure and Application Components for domain content. Views should not contain business logic,
+data formatting, or domain-aware rendering -- push that into Application Components instead.
+
+```ruby
+# Good -- view composes components, delegates domain logic
+def view_template
+  div(class: "with-sidebar") {
+    div { ::Widgets::Components::Detail(widget:) }
+    div { ::Widgets::Components::ActionSidebar(widget:) }
+  }
+end
+
+# Bad -- view reaches into domain objects and builds UI inline
+def view_template
+  UI::DetailPanel() do |panel|
+    widget.attributes.each { |k, v| panel.row(label: k, value: v) }
+  end
+end
+```
+
+### Components
+
+All components inherit from `Components::Base`, which provides:
+
+- `Dry::Initializer` for typed params and options with `Dry::Types` coercion
+- `mix()` for merging default and user-provided HTML attributes
+- `tokens()` for conditional CSS class lists
+- Dev-mode HTML comments marking component boundaries
+
+There are two kinds of components:
+
+**UI Components** (`app/components/ui/`) are generic, reusable building blocks with no domain
+knowledge. A `UI::Sidebar` knows how to render a sticky aside with a flex-column layout; it knows
+nothing about domain objects. UI components get Lookbook previews
+(`spec/components/previews/`) so designers and developers can browse them in isolation.
+
+**Application Components** live inside an aspect (`app/aspects/<domain>/components/`) and understand
+the domain. They compose UI components internally and render domain-specific details. Application
+components do **not** get Lookbook previews -- they are exercised through their page views and
+system specs.
+
+#### Component Method Order
+
+Use a consistent method order in all components:
+
+1. `initialize`
+2. `view_template` (first method after `initialize`)
+3. Slot DSL methods (e.g. `item`, `row`, `review`)
+4. `private`
+5. `default_attrs` (first private method)
+6. Remaining private helper/render methods
+
+## Javascript
+
+- Use Turbo for most things
+- Use Stimulus for sprinkles of interactivity (but only if CSS isn't capable)
+- Never React/Vue or other heavy frameworks
+- JavaScript is linted with [Oxlint](https://oxc.rs/docs/guide/usage/linter) (`oxlint`).
+  All JS files must pass with no errors or warnings.
+
+### Stimulus CSS Classes
+
+Never hardcode CSS class names in Stimulus controllers. Use the
+[Stimulus CSS classes API](https://stimulus.hotwired.dev/reference/css-classes) so class name
+strings live in Ruby-land and are passed via `data-<controller>-<name>-class` attributes:
+
+```javascript
+// Controller declares logical class names:
+static classes = ["active", "visible"]
+
+// Uses them via this.activeClass, this.visibleClass:
+this.element.classList.add(this.activeClass)
+```
+
+```ruby
+# Component passes the actual CSS class values:
+ACTIVE_CLASS = "my-component-active"
+
+div(data: {
+  controller: "my-controller",
+  my_controller_active_class: ACTIVE_CLASS,
+})
+```
+
+## CSS & Stylesheets
+
+We follow a "vanilla CSS is enough" approach: modern CSS features replace preprocessors and heavy
+tooling.
+
+- CSS and SCSS files are linted with [Stylelint](https://stylelint.io/) (`bin/stylelint`).
+  All stylesheets must pass with no errors or warnings.
+
+## Testing
+
+- System specs should be smoke tests: verify core navigation, authorization, and primary user flows.
+- Avoid asserting static HTML details (exact copy, headings, decorative UI text, badge labels, etc.) in
+  system specs; they are too slow and brittle for presentational checks.
+- Put detailed presentation assertions in faster specs (component, request, or unit-level) whenever
+  possible.
+- Do not add controller specs or model specs. If behavior is complex enough to need dedicated tests,
+  that logic belongs in transactions/forms/components (or other domain objects), not in controllers
+  or Active Record models.
+
+## Anti-Patterns
+
+1. **DO NOT** put business logic in models. Models are data + associations + scopes.
+2. **DO NOT** raise exceptions for expected business failures. Return `Failure(reason)`.
+3. **DO NOT** skip the `validate` step in transactions.
+4. **DO NOT** reach for `allow(...).to receive(...)` as a first instinct in tests. Use dependency
+   injection instead (see TESTING.md).
+5. **DO NOT** write defensive fallback paths for failures that can't happen. If a form is always
+   valid in context or a transaction can't fail given its inputs, don't add `.or` handlers or
+   fallback methods -- it's dead code that obscures the actual flow.
+6. **DO NOT** normalize or coerce params inside transactions or controllers. That's the form
+   object's job. Controllers construct forms from `params`; transactions read clean data from forms.
