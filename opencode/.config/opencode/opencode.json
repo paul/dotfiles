@@ -10,6 +10,15 @@
     },
     "plan": {
       "model": "anthropic/claude-opus-4-6"
-    }
+    },
+    "explore": {
+      "model": "anthropic/claude-haiku-4-5"
+    },
+    "title": {
+      "model": "anthropic/claude-haiku-4-5"
+    },
+    "summary": {
+      "model": "anthropic/claude-haiku-4-5"
+    },
   }
 }
