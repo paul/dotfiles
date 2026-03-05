@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-bell@0.1.0",
+  ],
+  "mcp": {},
+  "agent": {
+    "build": {
+      "model": "anthropic/claude-sonnet-4-6"
+    },
+    "plan": {
+      "model": "anthropic/claude-opus-4-6"
+    }
+  }
+}
