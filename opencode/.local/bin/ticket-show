@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# tk-plugin: Display ticket with bat (YAML + Markdown)
+# tk-plugin-version: 1.0.0
+set -euo pipefail
+
+if [[ "${1:-}" == "--tk-describe" ]]; then
+    echo "tk-plugin: Display ticket with bat (YAML + Markdown)"
+    exit 0
+fi
+
+if [[ -z "${TK_SCRIPT:-}" ]]; then
+    if command -v tk &>/dev/null; then
+        TK_SCRIPT=$(command -v tk)
+    else
+        echo "Error: TK_SCRIPT is not set and 'tk' is not in PATH" >&2
+        exit 1
+    fi
+fi
+
+output=$("$TK_SCRIPT" super show "$@")
+
+if [[ ! -t 1 ]] || ! command -v bat &>/dev/null; then
+    printf '%s\n' "$output"
+    exit 0
+fi
+
+yaml_block=""
+markdown_block=""
+line_no=0
+delimiter_count=0
+frontmatter=0
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+    ((line_no += 1))
+
+    if (( line_no == 1 )) && [[ "$line" == "---" ]]; then
+        frontmatter=1
+    fi
+
+    if (( frontmatter == 1 && delimiter_count < 2 )); then
+        yaml_block+="$line"$'\n'
+        if [[ "$line" == "---" ]]; then
+            ((delimiter_count += 1))
+        fi
+        continue
+    fi
+
+    markdown_block+="$line"$'\n'
+done <<< "$output"
+
+bat_base_args=(--paging=never --plain)
+
+if (( frontmatter == 1 && delimiter_count == 2 )); then
+    printf '%s' "$yaml_block" | bat "${bat_base_args[@]}" --language yaml
+    if [[ -n "$markdown_block" ]]; then
+        printf '%s' "$markdown_block" | bat "${bat_base_args[@]}" --language md
+    fi
+else
+    printf '%s\n' "$output" | bat "${bat_base_args[@]}" --language md
+fi

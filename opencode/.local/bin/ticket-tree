@@ -1,0 +1,388 @@
+#!/usr/bin/env bash
+# tk-plugin: Show ticket parent/child tree
+# tk-plugin-version: 1.0.0
+set -euo pipefail
+
+usage() {
+    cat << 'EOF' >&2
+Usage: tk tree [ticket-id] [--max-depth N]
+
+Options:
+  --max-depth N, -L N  Limit depth (0 = root only)
+  --all                Include closed tickets
+  --no-color           Disable color output
+EOF
+}
+
+# Color support: enabled when stdout is a TTY and NO_COLOR is not set
+if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+    COLOR=1
+else
+    COLOR=0
+fi
+
+RESET=""
+COLOR_CYAN=""
+COLOR_BLUE=""
+COLOR_DIM=""
+
+setup_colors() {
+    if (( COLOR )); then
+        RESET="\033[0m"
+        COLOR_CYAN="\033[36m"
+        COLOR_BLUE="\033[34m"
+        COLOR_DIM="\033[2m"
+    fi
+}
+
+status_color() {
+    case "$1" in
+        in_progress) printf '%s' "$COLOR_CYAN" ;;
+        open)        printf '%s' "$COLOR_BLUE" ;;
+        *)           printf '%s' "$COLOR_DIM" ;;
+    esac
+}
+
+format_status() {
+    local status="$1"
+    local sc
+    sc=$(status_color "$status")
+    printf "${sc}%s${RESET}" "$status"
+}
+
+find_tickets_dir() {
+    [[ -n "${TICKETS_DIR:-}" ]] && { echo "$TICKETS_DIR"; return 0; }
+
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+        if [[ -d "$dir/.tickets" ]]; then
+            echo "$dir/.tickets"
+            return 0
+        fi
+        dir=$(dirname "$dir")
+    done
+
+    [[ -d "/.tickets" ]] && { echo "/.tickets"; return 0; }
+    return 1
+}
+
+resolve_query_command() {
+    if [[ -n "${TK_SCRIPT:-}" ]]; then
+        echo "$TK_SCRIPT"
+        return 0
+    fi
+
+    if command -v tk >/dev/null 2>&1; then
+        command -v tk
+        return 0
+    fi
+
+    return 1
+}
+
+extract_title() {
+    local file="$1"
+    awk '
+    BEGIN { in_front = 0 }
+    /^---$/ { in_front = !in_front; next }
+    !in_front && /^# / {
+        sub(/^# /, "")
+        print
+        exit
+    }
+    ' "$file"
+}
+
+status_priority() {
+    case "$1" in
+        in_progress) echo 0 ;;
+        open)        echo 1 ;;
+        *)           echo 2 ;;
+    esac
+}
+
+sorted_ids() {
+    # Sort a space-separated list of ticket IDs by:
+    #   1. Status priority (in_progress < open < other)
+    #   2. created_at descending (newest first)
+    local words="$1"
+    if [[ -z "$words" ]]; then
+        return 0
+    fi
+
+    local -a rows=()
+    for id in $words; do
+        local prio created
+        prio=$(status_priority "${status_by_id[$id]:-}")
+        created="${created_at_by_id[$id]:-}"
+        rows+=("${prio} ${created} ${id}")
+    done
+
+    # Sort: field 1 ascending (priority), field 2 ascending (created_at), field 3 ascending (id)
+    printf '%s\n' "${rows[@]}" | sort -k1,1n -k2,2 -k3,3 | awk '{print $NF}'
+}
+
+max_depth=-1
+root_pattern=""
+include_all=0
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --max-depth)
+            [[ $# -ge 2 ]] || { echo "Error: --max-depth requires a value" >&2; usage; exit 1; }
+            max_depth="$2"
+            shift 2
+            ;;
+        --max-depth=*)
+            max_depth="${1#--max-depth=}"
+            shift
+            ;;
+        -L)
+            [[ $# -ge 2 ]] || { echo "Error: -L requires a value" >&2; usage; exit 1; }
+            max_depth="$2"
+            shift 2
+            ;;
+        -L=*)
+            max_depth="${1#-L=}"
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        --all)
+            include_all=1
+            shift
+            ;;
+        --no-color)
+            COLOR=0
+            shift
+            ;;
+        -* )
+            echo "Error: unknown option '$1'" >&2
+            usage
+            exit 1
+            ;;
+        *)
+            if [[ -n "$root_pattern" ]]; then
+                echo "Error: too many arguments" >&2
+                usage
+                exit 1
+            fi
+            root_pattern="$1"
+            shift
+            ;;
+    esac
+done
+
+setup_colors
+
+if ! [[ "$max_depth" =~ ^-?[0-9]+$ ]]; then
+    echo "Error: --max-depth must be an integer" >&2
+    exit 1
+fi
+
+if (( max_depth < -1 )); then
+    echo "Error: --max-depth must be >= 0" >&2
+    exit 1
+fi
+
+if ! TICKETS_DIR=$(find_tickets_dir); then
+    echo "Error: no .tickets directory found (searched parent directories)" >&2
+    echo "Run 'tk create' to initialize, or set TICKETS_DIR env var" >&2
+    exit 1
+fi
+
+query_bin=$(resolve_query_command) || {
+    echo "Error: could not find tk command for querying tickets" >&2
+    exit 1
+}
+
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Error: jq is required for tk tree" >&2
+    exit 1
+fi
+
+declare -A exists_by_id=()
+declare -A parent_by_id=()
+declare -A status_by_id=()
+declare -A title_by_id=()
+declare -A created_at_by_id=()
+declare -A children_by_parent=()
+
+while IFS=$'\x1f' read -r id parent status; do
+    [[ -z "$id" ]] && continue
+
+    if (( include_all == 0 )) && [[ "$status" != "open" && "$status" != "in_progress" ]]; then
+        continue
+    fi
+
+    exists_by_id["$id"]=1
+    parent_by_id["$id"]="$parent"
+    status_by_id["$id"]="$status"
+
+    title_file="$TICKETS_DIR/${id}.md"
+    if [[ -f "$title_file" ]]; then
+        title_by_id["$id"]=$(extract_title "$title_file")
+        created_at_by_id["$id"]=$(awk '
+            BEGIN { in_front=0 }
+            /^---$/ { in_front=!in_front; next }
+            in_front && /^created:/ { sub(/^created:[[:space:]]*/, ""); print; exit }
+        ' "$title_file")
+    else
+        title_by_id["$id"]=""
+        created_at_by_id["$id"]=""
+    fi
+
+    if [[ -n "$parent" ]]; then
+        children_by_parent["$parent"]="${children_by_parent[$parent]:-} $id"
+    fi
+done < <(
+    TICKETS_DIR="$TICKETS_DIR" "$query_bin" query | jq -r '[.id, (.parent // ""), (.status // "open")] | join("\u001f")'
+)
+
+if [[ ${#exists_by_id[@]} -eq 0 ]]; then
+    exit 0
+fi
+
+format_node() {
+    local id="$1"
+    local status="${status_by_id[$id]:-unknown}"
+    local title="${title_by_id[$id]:-}"
+
+    if [[ -n "$title" ]]; then
+        printf "${COLOR_DIM}%s${RESET} %s %s" "$id" "$(format_status "$status")" "$title"
+    else
+        printf "${COLOR_DIM}%s${RESET} %s" "$id" "$(format_status "$status")"
+    fi
+}
+
+resolve_id() {
+    local pattern="$1"
+    local exact=""
+    local count=0
+
+    if [[ -n "${exists_by_id[$pattern]:-}" ]]; then
+        echo "$pattern"
+        return 0
+    fi
+
+    for id in "${!exists_by_id[@]}"; do
+        if [[ "$id" == *"$pattern"* ]]; then
+            count=$((count + 1))
+            if [[ -z "$exact" ]]; then
+                exact="$id"
+            fi
+        fi
+    done
+
+    if (( count == 1 )); then
+        echo "$exact"
+        return 0
+    fi
+
+    if (( count > 1 )); then
+        echo "Error: ambiguous ID '$pattern' matches multiple tickets" >&2
+        return 1
+    fi
+
+    echo "Error: ticket '$pattern' not found" >&2
+    return 1
+}
+
+print_subtree() {
+    local id="$1"
+    local prefix="$2"
+    local is_last="$3"
+    local depth="$4"
+    local path="$5"
+
+    local connector="├── "
+    if [[ "$is_last" == "1" ]]; then
+        connector="└── "
+    fi
+
+    if [[ "$path" == *":$id:"* ]]; then
+        printf '%s%s%s [cycle]\n' "$prefix" "$connector" "$(format_node "$id")"
+        return
+    fi
+
+    printf '%s%s%s\n' "$prefix" "$connector" "$(format_node "$id")"
+
+    if (( max_depth >= 0 && depth >= max_depth )); then
+        return
+    fi
+
+    local next_prefix="$prefix"
+    if [[ "$is_last" == "1" ]]; then
+        next_prefix+="    "
+    else
+        next_prefix+="│   "
+    fi
+
+    local new_path="${path}${id}:"
+    local children words
+    children="${children_by_parent[$id]:-}"
+    mapfile -t words < <(sorted_ids "$children")
+
+    local child_count="${#words[@]}"
+    local idx=0
+    for child in "${words[@]}"; do
+        idx=$((idx + 1))
+        local child_last=0
+        if (( idx == child_count )); then
+            child_last=1
+        fi
+        print_subtree "$child" "$next_prefix" "$child_last" $((depth + 1)) "$new_path"
+    done
+}
+
+declare -a roots=()
+
+if [[ -n "$root_pattern" ]]; then
+    root_id=$(resolve_id "$root_pattern") || exit 1
+    roots=("$root_id")
+else
+    for id in "${!exists_by_id[@]}"; do
+        parent="${parent_by_id[$id]:-}"
+        if [[ -z "$parent" || -z "${exists_by_id[$parent]:-}" ]]; then
+            roots+=("$id")
+        fi
+    done
+
+    if [[ ${#roots[@]} -eq 0 ]]; then
+        mapfile -t roots < <(sorted_ids "${!exists_by_id[*]}")
+    else
+        mapfile -t roots < <(sorted_ids "${roots[*]}")
+    fi
+fi
+
+root_total="${#roots[@]}"
+root_idx=0
+for root in "${roots[@]}"; do
+    root_idx=$((root_idx + 1))
+    printf '%s\n' "$(format_node "$root")"
+
+    if (( max_depth == 0 )); then
+        if (( root_idx < root_total )); then
+            printf '\n'
+        fi
+        continue
+    fi
+
+    mapfile -t children < <(sorted_ids "${children_by_parent[$root]:-}")
+    child_total="${#children[@]}"
+    child_idx=0
+    for child in "${children[@]}"; do
+        child_idx=$((child_idx + 1))
+        child_last=0
+        if (( child_idx == child_total )); then
+            child_last=1
+        fi
+        print_subtree "$child" "" "$child_last" 1 ":$root:"
+    done
+
+    if (( root_idx < root_total )); then
+        printf '\n'
+    fi
+done
