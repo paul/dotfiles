@@ -1,0 +1,133 @@
+#compdef tk ticket
+
+_tk_find_tickets_dir() {
+  local dir="$PWD"
+  local parent
+
+  if [[ -n "${TICKETS_DIR:-}" && -d "$TICKETS_DIR" ]]; then
+    print -r -- "$TICKETS_DIR"
+    return 0
+  fi
+
+  while [[ "$dir" != "/" ]]; do
+    if [[ -d "$dir/.tickets" ]]; then
+      print -r -- "$dir/.tickets"
+      return 0
+    fi
+    parent=$(dirname -- "$dir")
+    [[ "$parent" == "$dir" ]] && break
+    dir="$parent"
+  done
+
+  [[ -d "/.tickets" ]] && print -r -- "/.tickets"
+}
+
+_tk_ticket_ids() {
+  local tdir file name
+  tdir=$(_tk_find_tickets_dir) || return 0
+
+  local -a ids
+  for file in "$tdir"/*.md; do
+    [[ -e "$file" ]] || continue
+    name=${file##*/}
+    ids+=("${name%.md}")
+  done
+
+  (( ${#ids[@]} )) && compadd -Q -- "$@" "${ids[@]}"
+}
+
+_tk_command_names() {
+  local -a commands
+  commands=(
+    create start close reopen status dep undep link unlink
+    ready blocked closed show add-note super help
+    edit update ls list query
+  )
+  compadd -Q -- "$@" "${commands[@]}"
+}
+
+_tk_super_command_names() {
+  local -a commands
+  commands=(
+    create start close reopen status dep undep link unlink
+    ready blocked closed show add-note help
+  )
+  compadd -Q -- "$@" "${commands[@]}"
+}
+
+_tk_status_values() {
+  compadd -Q -- open in_progress closed
+}
+
+local cmd super_cmd
+
+if (( CURRENT == 2 )); then
+  _tk_command_names
+  return 0
+fi
+
+cmd="${words[2]:-}"
+super_cmd="${words[3]:-}"
+
+case "$cmd" in
+  start|close|reopen|show|add-note|edit|update)
+    (( CURRENT >= 3 )) && _tk_ticket_ids
+    ;;
+  status)
+    if (( CURRENT == 3 )); then
+      _tk_ticket_ids
+    elif (( CURRENT == 4 )); then
+      _tk_status_values
+    fi
+    ;;
+  dep)
+    if (( CURRENT == 3 )); then
+      compadd -Q -- tree cycle
+      _tk_ticket_ids
+    elif [[ "${words[3]:-}" == "tree" && CURRENT == 4 ]]; then
+      _tk_ticket_ids
+    elif [[ "${words[3]:-}" != "tree" && "${words[3]:-}" != "cycle" && CURRENT == 4 ]]; then
+      _tk_ticket_ids
+    fi
+    ;;
+  undep|unlink)
+    (( CURRENT == 3 || CURRENT == 4 )) && _tk_ticket_ids
+    ;;
+  link)
+    (( CURRENT >= 3 )) && _tk_ticket_ids
+    ;;
+  super)
+    if (( CURRENT == 3 )); then
+      _tk_super_command_names
+    else
+      case "$super_cmd" in
+        start|close|reopen|show|add-note)
+          (( CURRENT >= 4 )) && _tk_ticket_ids
+          ;;
+        status)
+          if (( CURRENT == 4 )); then
+            _tk_ticket_ids
+          elif (( CURRENT == 5 )); then
+            _tk_status_values
+          fi
+          ;;
+        dep)
+          if (( CURRENT == 4 )); then
+            compadd -Q -- tree cycle
+            _tk_ticket_ids
+          elif [[ "${words[4]:-}" == "tree" && CURRENT == 5 ]]; then
+            _tk_ticket_ids
+          elif [[ "${words[4]:-}" != "tree" && "${words[4]:-}" != "cycle" && CURRENT == 5 ]]; then
+            _tk_ticket_ids
+          fi
+          ;;
+        undep|unlink)
+          (( CURRENT == 4 || CURRENT == 5 )) && _tk_ticket_ids
+          ;;
+        link)
+          (( CURRENT >= 4 )) && _tk_ticket_ids
+          ;;
+      esac
+    fi
+    ;;
+esac
