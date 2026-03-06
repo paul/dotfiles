@@ -1,0 +1,8 @@
+{
+  "name": "opencode-obsidian-notes",
+  "version": "0.1.0",
+  "module": "index.ts",
+  "dependencies": {
+    "@opencode-ai/plugin": "1.2.20"
+  }
+}

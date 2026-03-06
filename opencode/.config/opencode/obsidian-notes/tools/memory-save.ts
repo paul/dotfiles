@@ -1,6 +1,5 @@
 import { tool } from "@opencode-ai/plugin"
-
-const VAULT = "LLM Notes"
+import { pluginConfig } from "../plugin-config"
 const NOTE_SIZE_WARN_TOKENS = 500 // suggest splitting if note exceeds this
 
 function estimateTokens(text: string): number {
@@ -8,7 +7,7 @@ function estimateTokens(text: string): number {
 }
 
 async function obsidian(...args: string[]): Promise<string> {
-  const result = await Bun.$`obsidian ${args} vault=${VAULT}`.text()
+  const result = await Bun.$`obsidian ${args} vault=${pluginConfig.vault}`.text()
   return result.trim()
 }
 
@@ -56,14 +55,19 @@ export default tool({
           "For 'append': optionally place content under this heading."
       ),
   },
-  async execute(args) {
+  async execute(args, context) {
     const { action, path: notePath, tags, content, heading } = args
 
     // Normalize: ensure .md extension
     const filePath = notePath.endsWith(".md") ? notePath : `${notePath}.md`
 
+    // Set initial metadata so the tool call is labeled in the UI immediately
+    context.metadata({
+      title: `memory-save: ${action} → ${filePath}`,
+      metadata: { action, path: filePath, tags },
+    })
+
     if (action === "create") {
-      // Build frontmatter
       const tagList = tags.map((t) => `  - "${t}"`).join("\n")
       const fullContent = `---\ntags:\n${tagList}\n---\n\n${content}`
 
@@ -74,6 +78,16 @@ export default tool({
           `content=${fullContent}`,
           "overwrite"
         )
+        context.metadata({
+          title: `memory-save: created ${filePath}`,
+          metadata: {
+            action: "create",
+            path: filePath,
+            tags,
+            tokens: `~${estimateTokens(fullContent)}`,
+            preview: content.trim().slice(0, 200) + (content.length > 200 ? "…" : ""),
+          },
+        })
         return `Created note: ${filePath} with tags: ${tags.join(", ")}`
       } catch (e) {
         return `Failed to create note: ${e}`
@@ -81,23 +95,29 @@ export default tool({
     }
 
     if (action === "append") {
-      // First, check the current size of the note
       let existingContent = ""
       try {
         existingContent = await obsidian("read", `path=${filePath}`)
       } catch {
-        // Note doesn't exist yet — fall back to create
         return `Note "${filePath}" does not exist. Use action "create" instead.`
       }
 
       const currentTokens = estimateTokens(existingContent)
       if (currentTokens > NOTE_SIZE_WARN_TOKENS) {
+        context.metadata({
+          title: `memory-save: ⚠ ${filePath} too large`,
+          metadata: {
+            action: "append",
+            path: filePath,
+            "current tokens": `~${currentTokens}`,
+            warning: "Note exceeds size threshold — consider splitting",
+          },
+        })
         return (
           `Note "${filePath}" is already ~${currentTokens} tokens. ` +
           `Consider creating a more specific note (e.g. a sub-path like "${filePath.replace(".md", "")}/specifics.md") ` +
           `to keep notes focused and retrieval precise. ` +
-          `If the content truly belongs here, re-call with action "append" and include ` +
-          `"override_size_warning": true in your reasoning — but only if there's no better home.`
+          `If the content truly belongs here, re-call with action "append" — but only if there's no better home.`
         )
       }
 
@@ -108,20 +128,11 @@ export default tool({
       try {
         await obsidian("append", `path=${filePath}`, `content=${appendText}`)
 
-        // Update tags if new ones supplied
         if (tags.length > 0) {
-          const existingTags = await obsidian(
-            "tags",
-            `path=${filePath}`,
-            "format=json"
-          )
+          const existingTagsRaw = await obsidian("tags", `path=${filePath}`, "format=json")
           let currentTags: { tag: string }[] = []
-          try {
-            currentTags = JSON.parse(existingTags)
-          } catch {}
-          const currentTagNames = currentTags.map((t) =>
-            t.tag.replace(/^#/, "")
-          )
+          try { currentTags = JSON.parse(existingTagsRaw) } catch {}
+          const currentTagNames = currentTags.map((t) => t.tag.replace(/^#/, ""))
           const allTags = Array.from(new Set([...currentTagNames, ...tags]))
           await obsidian(
             "property:set",
@@ -132,6 +143,17 @@ export default tool({
           )
         }
 
+        context.metadata({
+          title: `memory-save: appended to ${filePath}`,
+          metadata: {
+            action: "append",
+            path: filePath,
+            tags,
+            "note tokens before": `~${currentTokens}`,
+            "note tokens after": `~${estimateTokens(existingContent + appendText)}`,
+            preview: content.trim().slice(0, 200) + (content.length > 200 ? "…" : ""),
+          },
+        })
         return `Appended to note: ${filePath}`
       } catch (e) {
         return `Failed to append to note: ${e}`
@@ -150,7 +172,6 @@ export default tool({
         return `Note "${filePath}" does not exist. Use action "create" instead.`
       }
 
-      // Find and replace the section under the given heading
       const headingPattern = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
       const sectionRegex = new RegExp(
         `(${headingPattern}\\n)([\\s\\S]*?)(?=\\n#{1,6} |$)`,
@@ -158,33 +179,32 @@ export default tool({
       )
 
       if (!sectionRegex.test(existingContent)) {
-        // Heading not found — append it as a new section
         const appendText = `\n\n${heading}\n\n${content}`
         try {
-          await obsidian(
-            "append",
-            `path=${filePath}`,
-            `content=${appendText}`
-          )
+          await obsidian("append", `path=${filePath}`, `content=${appendText}`)
+          context.metadata({
+            title: `memory-save: added section to ${filePath}`,
+            metadata: { action: "replace_section", path: filePath, heading, note: "heading not found — appended as new section" },
+          })
           return `Heading "${heading}" not found in "${filePath}" — appended as new section.`
         } catch (e) {
           return `Failed to append new section: ${e}`
         }
       }
 
-      const updatedContent = existingContent.replace(
-        sectionRegex,
-        `$1${content}\n`
-      )
+      const updatedContent = existingContent.replace(sectionRegex, `$1${content}\n`)
 
-      // Write back via create with overwrite
       try {
-        await obsidian(
-          "create",
-          `path=${filePath}`,
-          `content=${updatedContent}`,
-          "overwrite"
-        )
+        await obsidian("create", `path=${filePath}`, `content=${updatedContent}`, "overwrite")
+        context.metadata({
+          title: `memory-save: updated section in ${filePath}`,
+          metadata: {
+            action: "replace_section",
+            path: filePath,
+            heading,
+            preview: content.trim().slice(0, 200) + (content.length > 200 ? "…" : ""),
+          },
+        })
         return `Updated section "${heading}" in note: ${filePath}`
       } catch (e) {
         return `Failed to update section: ${e}`
