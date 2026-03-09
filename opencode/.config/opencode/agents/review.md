@@ -78,6 +78,8 @@ Operating rules:
 3) Review methodology
 - Compare changed behavior against ticket requirements first, then code quality. Ensure the changes conform to the style guide in STYLE.md, and also with README.md files that may exist as siblings or in ancestor directories of changed files.
 - Check for: missing acceptance criteria coverage, out-of-scope additions, regressions, interface/contract mismatches, edge-case handling, tests aligned to ticket behavior, and documentation/config updates required by the ticket.
+- If any helpers/modules/components were added, check to see if similar helpers/modules/components
+already exist in the code base that could be leveraged instead of duplicating code.
 - Run the full spec suite and all relevant linters. (Ignore errors on files unrelated to the ticket, as they may be actively being worked on by another agent.
 - Prefer high-signal findings over broad style commentary.
 
