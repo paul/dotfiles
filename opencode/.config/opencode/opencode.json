@@ -21,5 +21,23 @@
     "summary": {
       "model": "anthropic/claude-haiku-4-5"
     },
+  },
+  "formatter": {
+    "rubocop": {
+      "disabled": true
+    },
+    "standardrb": {
+      "disabled": true
+    }
+  },
+  "lsp": {
+    "ruby-lsp": {
+      "disabled": true
+    }
+  },
+  "permission": {
+    "external_directory": {
+      "/tmp": "allow",
+    }
   }
 }
