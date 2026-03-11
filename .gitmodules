@@ -1,3 +1,0 @@
-[submodule "opencode/.local/share/ticket"]
-	path = opencode/.local/share/ticket
-	url = https://github.com/wedow/ticket.git
