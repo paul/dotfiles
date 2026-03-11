@@ -90,15 +90,17 @@ already exist in the code base that could be leveraged instead of duplicating co
 - Nit: optional polish.
 
 5) Output format
-Provide output in this structure:
+For each individual finding, call the `review_comment` tool with the file path, line
+numbers, severity, and comment text. This posts the finding as an inline annotation
+visible in the editor (when code-review.nvim is active), and also returns it as text
+in the session output. Do not batch findings into a single call -- one call per finding.
+
+Then provide the full summary in this structure:
 - Ticket in review: <ID/title or "unconfirmed">
 - Scope status: <confirmed|needs clarification>
 - Files reviewed: <list>
 - Files intentionally excluded (out-of-scope): <list>
-- Findings:
-  - [Severity] <file/path>: <issue>
-    - Why it matters: <ticket/quality impact>
-    - Suggested fix: <concrete action>
+- Findings: <list the findings already posted via review_comment, for reference>
 - Coverage check against acceptance criteria:
   - <criterion>: <covered|partially covered|not covered> (+ brief evidence)
 - Overall verdict: <approved|changes requested|blocked pending scope clarification>
