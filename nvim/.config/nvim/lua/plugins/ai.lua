@@ -60,10 +60,17 @@ return {
           -- When enabled, review files are prefixed with status (action-required_, waiting-review_, resolved_)
           status_management = true,
         },
+        output = {
+          format = "minimal",
+        },
       })
     end,
   },
   { "sindrets/diffview.nvim" },
+  {
+    "esmuellert/codediff.nvim",
+    cmd = "CodeDiff",
+  },
   {
     "saghen/blink.cmp",
     opts = {

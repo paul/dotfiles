@@ -74,3 +74,14 @@ opt.iskeyword:append("_")
 opt.conceallevel = 0
 
 opt.textwidth = 100
+
+-- opt.diffopt = {
+--   "internal",
+--   "algorithm:patience",
+--   "closeoff",
+--   "context:12",
+--   "filler",
+--   "indent-heuristic",
+--   "iwhitecol",
+--   "linematch:200",
+-- }
