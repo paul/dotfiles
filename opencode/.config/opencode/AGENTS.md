@@ -20,19 +20,30 @@ changes, and explicitly tell you to commit.
 
 **MANDATORY WORKFLOW:**
 
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update the issue notes** - If we discussed any changes that diverged from the ticket, add a
+1. **Mark the ticket as in_progress** - `tk start {id}`. If it belongs to an epic that isn't
+   in_progress, start it too.
+2. **Read the ticket** - Understand the ticket and any dependencies. Ask for clarification,
+   challenge assumptions that contradict the STYLE guides or best-practices.
+3. **Plan the work** - Come up with a plan of attack. If the planned work is large, offer to break
+   it up into smaller sub-tickets, to be worked in parallel if possible. Ask for approval of the
+   plan.
+4. **Update the issue notes** - If we discussed any changes that diverged from the ticket, add a
    summary of our discussion to the notes of the ticket.
-4. **Ask for feedback** - Pause and ask the user if the code changes look acceptable, incorporate
-   any feedback
-5. **Update issue status** - Close finished work, update in-progress items. If there were any
-   further notable changes from the review process to the ticket or architecture discussions,
-update the ticket notes with a summary.
-6. **Commit changes** - Be sure to follow the git commit guidelines in CONTRIBUTING.md.
-7. **Clean up** - Remove any temporary or leftover files
-8. **Verify** - All changes committed
-9. **Hand off** - Provide context for next session
+   **Do the work** - Implement the plan. If something is surprising or not what you expected, pause
+   and ask for clarification, don't brute-force a solution.
+5. **Run quality gates** (if code changed) - Tests, linters, builds
+6. **Ask for feedback** - Pause and ask the user if the code changes look acceptable, incorporate
+   any feedback. DO NOT PROCEED PAST THIS STEP WITHOUT EXPLICIT APPROVAL. If we did work in phases,
+   and I approved committing a previous phase, THAT DOES NOT CONSTITUTE APPROVAL FOR THIS PHASE.
+7. **Update issue status** - Close finished work, update in-progress items. If there were any
+   further notable changes from the review process to the ticket or architecture discussions, update
+   the ticket with a summary of our changes.
+8. **File issues for remaining work** - Create issues for anything that needs follow-up
+9. **Commit changes** - Be sure to follow the git commit guidelines in CONTRIBUTING.md. DO NOT
+   COMMIT until I have given you explicit approval to these exact changes.
+10. **Clean up** - Remove any temporary or leftover files
+11. **Verify** - All changes committed
+12. **Hand off** - Provide context for next session
 
 # Git Commits 
 
@@ -50,6 +61,7 @@ update the ticket notes with a summary.
 - Commit bodies are written as paragraphs.
   - Each paragraph is properly capitalized and reads like a page out of a book. 
   - Each paragraph is devoted to a single idea and uses proper punctuation.
+- If we worked on a ticket, include the ticket id and title in the body.
 
 # CRITICAL RULES
 

@@ -36,6 +36,9 @@
     }
   },
   "permission": {
+    "bash": {
+      "terraform*": "deny"
+    },
     "external_directory": {
       "/tmp/**": "allow",
     }
