@@ -5,11 +5,11 @@ Use **tk** (ticket) for local issue tracking. Run `tk help` to get started.
 ## Quick Reference
 
 ```bash
-tk ready                    # Find available work
-tk show <id>                # View issue details
-tk status <id> in_progress  # Claim work
-tk close <id>               # Complete work
-git commit                  # Commit the output, including the ticket.
+tk ready       # Find available work
+tk show <id>   # View issue details
+tk start <id>  # Claim work
+tk close <id>  # Complete work
+git commit     # Commit the output, including the ticket.
 ```
 
 ## Landing the Plane (Session Completion)
