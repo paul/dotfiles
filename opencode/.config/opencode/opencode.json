@@ -41,6 +41,7 @@
     },
     "external_directory": {
       "/tmp/**": "allow",
+      "/private/tmp/**": "allow",
     }
   }
 }
