@@ -36,10 +36,5 @@ tug = ["bookmark", "move", "--from", "closest_bookmark(@-)", "--to", "@-"]
 # Show only changes since trunk
 log = "(trunk()..@):: | (trunk()..@)-"
 
-[git]
-push-new-bookmarks = true
-
-
-
-
-
+[remotes.origin]
+auto-track-bookmarks = "glob:*"
