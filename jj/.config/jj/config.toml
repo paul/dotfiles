@@ -1,0 +1,45 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[user]
+name = "Paul Sadauskas"
+email = "paul@sadauskas.com"
+
+[ui]
+default-command = "log-recent"
+
+# diff-editor = "meld"
+diff-formatter = ":git"
+# merge-editor = "meld"
+pager = "delta"
+
+[aliases]
+log-recent = ["log", "-r", "default() & recent()"]
+tug = ["bookmark", "move", "--from", "closest_bookmark(@-)", "--to", "@-"]
+
+[revset-aliases]
+# the default log revset defined internally:
+# 'default()' = 'present(@) | ancestors(immutable_heads().., 2) | present(trunk())'
+# or a nicer default:
+'default()' = 'coalesce(trunk(),root())::present(@) | ancestors(visible_heads() & recent(), 2)'
+'recent()' = 'committer_date(after:"1 month ago")'
+
+# Used by `tug`
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+
+# set all remote bookmarks (commits pushed to remote branches) to be immutable
+'immutable_heads()' = "builtin_immutable_heads() | remote_bookmarks()"
+
+[template-aliases]
+'format_short_change_id(id)' = 'id.shortest()'
+
+[revsets]
+# Show only changes since trunk
+log = "(trunk()..@):: | (trunk()..@)-"
+
+[git]
+push-new-bookmarks = true
+
+
+
+
+
