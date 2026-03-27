@@ -5,6 +5,41 @@
 - Use `snake_case` for files and methods, `CamelCase` for classes/modules.
 - RSpec files should end in `_spec.rb` and mirror the directory they test.
 
+## Instance Variables and attr_reader
+
+Prefer `attr_reader` over direct ivar access (`@foo`) inside methods. Place private `attr_reader`
+declarations in the `private` section, not before it:
+
+```ruby
+# Good
+def initialize(config:, rate: "season")
+  @config = config
+  @rate   = rate
+end
+
+private
+
+attr_reader :config, :rate
+
+def build_formula
+  config.definition.formula(rate:)
+end
+
+# Bad — attr_reader above private, ivars used directly in methods
+attr_reader :config, :rate
+private     :config, :rate
+
+def build_formula
+  @config.definition.formula(rate: @rate)
+end
+```
+
+Assignment in `initialize` still uses `@` ivars directly, since readers are not writable.
+
+Using `attr_reader` rather than `@ivar` inside methods makes future refactoring easier: if the
+value later needs to come from a method (e.g. lazy computation, delegation) rather than a stored
+ivar, only the reader definition changes — not every call site.
+
 ## Transactions
 
 Every write operation goes through a Transaction (service object). Controllers never touch models
@@ -174,6 +209,30 @@ Layouts::PageFooter() do |footer|
 end
 ```
 
+### The `plain` Helper
+
+The `plain` helper writes a bare text node to the output buffer. It is **only necessary when mixing
+text with sibling elements** inside a block. When a block contains nothing but a single `plain`
+call, remove it -- Phlex automatically renders the block's return value as text content.
+
+```ruby
+# Good -- plain is required to interleave text between elements
+p {
+  strong { "Note:" }
+  plain " this is important"
+}
+
+# Good -- no plain needed; the string is the block's return value
+span { "text" }
+h1(class: "heading") { title }
+td(class: "empty") { "No data available" }
+
+# Bad -- plain is the only expression in the block, so it's unnecessary
+span { plain "text" }
+h1(class: "heading") { plain title }
+td(class: "empty") { plain "No data available" }
+```
+
 ### Page Views
 
 Page-level views inherit from `Views::Base`, which wraps content in a layout. Controllers set
@@ -283,6 +342,34 @@ tooling.
 - CSS and SCSS files are linted with [Stylelint](https://stylelint.io/) (`bin/stylelint`).
   All stylesheets must pass with no errors or warnings.
 
+See `app/assets/stylesheets/README.md` for file organization, layer conventions, token naming,
+and authoring guidelines.
+
+## Icons
+
+Use the `icon` helper from `rails-icons` for all SVG icons. It is registered as an output helper
+on `Components::Base` and available in all Phlex components and views.
+
+```ruby
+# Heroicons (default library) — specify variant explicitly
+icon "magnifying-glass", variant: "outline", class: "search-icon"
+icon "lock-closed", variant: "solid", class: "lock-icon"
+
+# Social media icons (Simple Icons, flat SVGs with no variant)
+icon "x", library: "simple_icons"
+```
+
+Icon files live in:
+
+- `app/assets/svg/icons/heroicons/` — synced via `rails generate rails_icons:sync`
+- `app/assets/svg/icons/simple_icons/` — social media brand icons
+- `app/assets/svg/icons/app_icons/` — app-specific icons with no standard-library equivalent
+
+**Use Heroicons first.** Only add to `simple_icons/` for brand logos, and to `app_icons/` for
+icons that genuinely have no standard-library equivalent — and add a comment explaining why.
+
+**Never** inline SVG path data as Ruby string constants. Use the `icon` helper instead.
+
 ## Testing
 
 - System specs should be smoke tests: verify core navigation, authorization, and primary user flows.
@@ -293,6 +380,31 @@ tooling.
 - Do not add controller specs or model specs. If behavior is complex enough to need dedicated tests,
   that logic belongs in transactions/forms/components (or other domain objects), not in controllers
   or Active Record models.
+
+## Params Parsing
+
+For non-trivial query or form params — multiple filter fields, type coercion, enum validation, or
+fallback defaults — use `Dry::Schema.Params` to define a schema. This centralises all coercion
+and default logic in one place, keeps controllers and views as clean readers, and makes the valid
+input contract explicit and testable.
+
+```ruby
+# app/lib/params/widget_schema.rb
+module Params
+  WidgetSchema = Dry::Schema.Params do
+    optional(:status).value(Types::Coercible::String.enum("active", "inactive").default("active"))
+    optional(:page).value(Types::Coercible::Integer.constrained(gt: 0).default(1))
+    optional(:sort_order).maybe(:string)
+  end
+end
+
+# In the controller:
+@params = Params::WidgetSchema.call(params.to_h).to_h
+```
+
+When a new schema needs a coerce-or-default behaviour that isn't covered by an existing type,
+add a named type to your application's `Types` module and reuse it across schemas. Prefer reusing
+types over inlining type expressions directly in schema definitions.
 
 ## Anti-Patterns
 
