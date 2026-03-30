@@ -1,5 +1,6 @@
 ---
 description: Start a session by looking up a ticket ($1 = ticket ID)
+agent: plan
 ---
 
 You are starting a new work session for ticket `$1`.

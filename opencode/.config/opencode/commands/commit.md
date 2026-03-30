@@ -1,5 +1,6 @@
 ---
 description: Make a single commit following CONTRIBUTING.md conventions
+agent: build
 ---
 
 You have been granted permission to make **one (1) commit** as part of this command. This is a
