@@ -63,13 +63,6 @@ changes, and explicitly tell you to commit.
   - Each paragraph is devoted to a single idea and uses proper punctuation.
 - If we worked on a ticket, include the ticket id and title in the body.
 
-# Code Review
-
-When the `@review` agent returns findings, it outputs structured `FINDING` blocks. After the
-subagent completes, the **parent session** is responsible for posting each finding as an inline
-annotation by calling `review-comment` once per `FINDING` block. The subagent does not have access
-to the `review-comment` tool.
-
 # CRITICAL RULES
 
 - Work is NOT complete until `git commit` succeeds
