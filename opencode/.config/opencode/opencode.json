@@ -2,28 +2,28 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "opencode-bell@0.1.0",
-    "opencode-claude-auth",
+    // "opencode-claude-auth",
     // "file:./obsidian-notes",
   ],
   "mcp": {},
   "agent": {
     "build": {
-      "model": "anthropic/claude-sonnet-4-6"
+      "model": "openai/gpt-5.4"
     },
     "plan": {
-      "model": "anthropic/claude-opus-4-6"
+      "model": "openai/gpt-5.4"
     },
     "rubber-ducky": {
-      "model": "anthropic/claude-opus-4-6"
+      "model": "openai/gpt-5.4"
     },
     "explore": {
-      "model": "anthropic/claude-haiku-4-5"
+      "model": "openai/gpt-5.3-codex-spark"
     },
     "title": {
-      "model": "anthropic/claude-haiku-4-5"
+      "model": "openai/gpt-5.3-codex-spark"
     },
     "summary": {
-      "model": "anthropic/claude-haiku-4-5"
+      "model": "openai/gpt-5.3-codex-spark"
     },
   },
   "formatter": {

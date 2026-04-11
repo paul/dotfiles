@@ -3,6 +3,8 @@ description: Make a single commit following CONTRIBUTING.md conventions
 agent: build
 ---
 
+$ARGUMENTS
+
 You have been granted permission to make **one (1) commit** as part of this command. This is a
 one-time, explicit, scoped approval. It does not constitute permission to commit again in the future,
 in this session or any other. Every future commit requires its own explicit approval.

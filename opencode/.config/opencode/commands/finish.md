@@ -3,6 +3,8 @@ description: Run full CI, commit, and optionally open a PR
 agent: build
 ---
 
+$ARGUMENTS
+
 The work is done. Now run quality gates, commit, and optionally open a PR.
 
 ## Step 1: Read project conventions
