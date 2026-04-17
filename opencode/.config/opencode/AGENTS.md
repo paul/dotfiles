@@ -1,3 +1,4 @@
+
 # Agent Instructions
 
 Use **tk** (ticket) for local issue tracking. Run `tk help` to get started.
@@ -45,24 +46,6 @@ changes, and explicitly tell you to commit.
 11. **Verify** - All changes committed
 12. **Hand off** - Provide context for next session
 
-# Git Commits
-
-- Commit messages include both a subject and a body.
-- The Commit subject is short, imperative and explains _what_ the change is for. They should always begin with one of
-  only these five prefixes:
-  - Add
-  - Update
-  - Fix
-  - Remove
-  - Refactor
-- Each Git commit almost always includes a body, which explains _why_ the commit was made. It needs to explain the following:
-  - Why the change is necessary.
-  - How the change was implemented.
-- Commit bodies are written as paragraphs.
-  - Each paragraph is properly capitalized and reads like a page out of a book.
-  - Each paragraph is devoted to a single idea and uses proper punctuation.
-- If we worked on a ticket, include the ticket id and title in the body.
-
 # CRITICAL RULES
 
 - Work is NOT complete until `git commit` succeeds
@@ -72,3 +55,7 @@ changes, and explicitly tell you to commit.
 - If what I'm asking would add significantly more complexity, stop and ask. One of us might be
   misunderstanding the other, don't just brute force a solution. There's almost always a simpler way
   to do something, and if there isn't one, we should figure one out.
+- When your own changes introduce regressions, do not keep stacking localized fixes. After one or
+  two regressions in the same area, stop and re-evaluate the approach against existing local patterns.
+  Prefer replacing the wrong approach over salvaging it.
+
