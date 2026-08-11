@@ -125,6 +125,8 @@ REGISTRY_AUTH_FILE=$HOME/.config/containers/auth.json
 # Don't show less when < 1 page of output
 export LESS="--quit-if-one-screen $LESS"
 
+# graphite
+if command -v gt >/dev/null 2>&1; then 
 #compdef gt
 ###-begin-gt-completions-###
 #
@@ -144,14 +146,28 @@ _gt_yargs_completions()
 }
 compdef _gt_yargs_completions gt
 ###-end-gt-completions-###
+fi
 
 # Starship prompt
 (( $+commands[starship] )) && eval "$(starship init zsh)"
 
-# # bun completions
-# [ -s "/home/rando/.bun/_bun" ] && source "/home/rando/.bun/_bun"
-#
-# # bun
-# export BUN_INSTALL="$HOME/.bun"
-# export PATH="$BUN_INSTALL/bin:$PATH"
+# bun
+if command -v bun >/dev/null 2>&1; then 
+  # bun completions
+  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
 
+# ticket shell completions
+if command -v tk >/dev/null 2>&1; then 
+  source <(COMPLETE=zsh tk)
+  compdef _clap_dynamic_completer_ticket tk
+fi
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+if command -v meridian >/dev/null 2>&1; then 
+  export ANTHROPIC_BASE_URL="http://127.0.0.1:3456"
+  export ANTHROPIC_API_KEY="x"
+fi
