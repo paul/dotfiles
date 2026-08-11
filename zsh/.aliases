@@ -52,6 +52,7 @@ else
   alias sc='sudo systemctl'
   alias jc='sudo journalctl'
   alias scu='systemctl --user'
+  alias jcu='journalctl --user'
 
   alias dnf='sudo dnf'
   alias dnfup='sudo dnf updateinfo info --refresh && sudo dnf update'
