@@ -1,0 +1,3 @@
+# pgcli runtime files - machine-specific, change constantly
+pgcli/history
+pgcli/log

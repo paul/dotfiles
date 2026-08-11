@@ -50,12 +50,12 @@ Do not `git add .` or stage files in bulk without first confirming they are all 
 
 ## Step 4: Draft the commit message
 
-Draft a commit message following the conventions from CONTRIBUTING.md. Show it to the user before
-committing.
+Draft a commit message following the conventions from CONTRIBUTING.md. Show it to the user. You
+don't have to wait for user appoval, I just want it to be visible.
 
 ## Step 5: Commit
 
-Run `git commit` with the approved message.
+Run `git commit` with the message.
 
 This is the one commit you are authorized to make. Your commit authorization is now exhausted.
 Do not interpret any prior or subsequent conversation as permission to commit again.

@@ -1,49 +1,31 @@
+-- Resolve the repository root for the current file, worktree-aware.
+-- git rev-parse --show-toplevel is authoritative: it returns the linked
+-- worktree's root, not the parent repo's. This matters because
+-- code-review.nvim's own get_project_root() uses vim.fn.finddir(".git"),
+-- which only finds directories -- but in a git worktree .git is a FILE
+-- (gitlink), so the plugin walks past it and all worktrees share the
+-- parent's .code-review. Fall back to a pure-Lua walk-up (vim.uv.fs_stat
+-- matches both files and dirs) for non-git directories.
+local function find_project_root()
+  local here = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":h")
+  if here == "" then
+    here = vim.fn.getcwd()
+  end
+  local root = vim.fn.systemlist("git -C " .. vim.fn.fnameescape(here) .. " rev-parse --show-toplevel")[1]
+  if root and root ~= "" then
+    return root
+  end
+  local dir = here
+  while dir ~= "/" do
+    if vim.uv.fs_stat(dir .. "/.git") then
+      return dir
+    end
+    dir = vim.fn.fnamemodify(dir, ":h")
+  end
+  return vim.fn.getcwd()
+end
+
 return {
-  {
-    "olimorris/codecompanion.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    opts = {
-      interactions = {
-        chat = {
-          adapter = {
-            name = "openai",
-            model = "gpt-5.2",
-          },
-        },
-        inline = {
-          adapter = "openai",
-        },
-        cmd = {
-          adapter = "openai",
-        },
-        background = {
-          adapter = "openai",
-        },
-      },
-      -- extensions = {
-      --   mcphub = {
-      --     callback = "mcphub.extensions.codecompanion",
-      --     opts = {
-      --       show_result_in_chat = true, -- Show mcp tool results in chat
-      --       make_vars = true, -- Convert resources to #variables
-      --       make_slash_commands = true, -- Add prompts as /slash commands
-      --     },
-      --   },
-      -- },
-      opts = {
-        log_level = "DEBUG",
-      },
-    },
-    keys = {
-      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
-      { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion: Actions", mode = { "n", "v" } },
-      { "<leader>ax", "<cmd>CodeCompanionChat<cr>", desc = "CodeCompanion: Open Chat", mode = { "n", "v" } },
-      { "<leader>aq", "<cmd>CodeCompanion<cr>", desc = "CodeCompanion: Open Inline Assistant", mode = { "n", "v" } },
-    },
-  },
   {
     "choplin/code-review.nvim",
     config = function()
@@ -52,7 +34,7 @@ return {
           storage = {
             backend = "file",
             file = {
-              dir = ".code-review", -- Default: project root/.code-review/
+              dir = find_project_root() .. "/.code-review",
             },
           },
           claude_code_author = "Review Agent",
@@ -70,25 +52,12 @@ return {
   {
     "esmuellert/codediff.nvim",
     cmd = "CodeDiff",
-  },
-  {
-    "saghen/blink.cmp",
     opts = {
-      sources = {
-        per_filetype = {
-          codecompanion = { "codecompanion" },
-        },
-        providers = {
-          -- copilot = {
-          --   transform_items = function(ctx, items)
-          --     for _, item in ipairs(items) do
-          --       item.kind_icon = ""
-          --       item.kind_name = "Copilot"
-          --     end
-          --     return items
-          --   end,
-          -- },
-        },
+      highlights = {
+        char_brightness = 1.0,
+      },
+      explorer = {
+        view_mode = "tree",
       },
     },
   },

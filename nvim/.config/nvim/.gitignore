@@ -6,4 +6,6 @@ debug
 foo.*
 *.log
 data
+
+# Plugin lock file — changes with every :Lazy update
 lazy-lock.json

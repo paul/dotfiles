@@ -23,7 +23,7 @@
 # Logs and databases #
 ######################
 *.log
-*.sql
+# *.sql
 *.sqlite
 *.csv
 
@@ -52,10 +52,12 @@ Thumbs.db
 !.env.local.example
 .byebug_history
 
-# git worktree
-work
+.code-review
 
 # Beads stealth mode:
 .beads
 # bv (beads viewer) local config and caches
 .bv/
+
+# Rubocop external references
+.rubocop-remote-*

@@ -104,6 +104,7 @@ return {
       },
       servers = {
         ruby_lsp = {
+          cmd = { "bundle", "exec", "ruby-lsp" },
           mason = false,
           init_options = {
             addon_settings = {
@@ -118,6 +119,7 @@ return {
         -- solargraph = { mason = false, enabled = false, autostart = false },
         erb_formatter = { mason = false, enabled = false, autostart = false },
         erb_lint = { mason = false, enabled = false, autostart = false },
+        herb_ls = { enable = true },
         yamlls = {
           redhat = { telemetry = { enabled = false } },
           yaml = {
