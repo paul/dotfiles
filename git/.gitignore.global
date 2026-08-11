@@ -54,10 +54,8 @@ Thumbs.db
 
 .code-review
 
-# Beads stealth mode:
-.beads
-# bv (beads viewer) local config and caches
-.bv/
+# tickets llm tool
+# .tickets
 
 # Rubocop external references
 .rubocop-remote-*
