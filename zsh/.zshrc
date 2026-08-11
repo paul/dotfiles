@@ -41,13 +41,12 @@ plugins=(
   # rails # Its just dumb aliases
   # ruby  # just aliases
   # vagrant
-  ssh-agent
 
   auto-notify # https://github.com/MichaelAquilina/zsh-auto-notify
 )
 
 if [[ "$OSX" == "1" ]]; then
-	plugins+=(brew)
+	plugins+=(brew ssh-agent)
 fi
 
 # Make locally installed completion functions available to compinit.
@@ -95,14 +94,17 @@ export EDITOR=nvim
 export BROWSER=firefox
 
 # Enable ssh-agent identities
-zstyle :omz:plugins:ssh-agent quiet yes
-zstyle :omz:plugins:ssh-agent lazy yes
 if [[ "$OSX" == "1" ]]; then
+  zstyle :omz:plugins:ssh-agent quiet yes
+  zstyle :omz:plugins:ssh-agent lazy yes
   # zstyle :omz:plugins:ssh-agent identities id_plane_github
   # zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
   export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+else
+  # ssh-agent is managed as a systemd user service on Linux
+  zstyle :omz:plugins:ssh-agent identities id_rsyncnet
+  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 fi
-# export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 export RUBY_GC_MALLOC_LIMIT=1000000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
