@@ -45,8 +45,6 @@
 [commit]
   verbose = true
   gpgsign = true
-[gpg "ssh"]
-	allowedSignersFile = /home/rando/.gitallowedsigners
 [diff]
   wordRegex = [^[:space:]] # For Github-style word diffs
   algorithm = patience     # combine "functions" together in diff

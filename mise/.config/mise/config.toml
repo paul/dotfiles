@@ -18,6 +18,7 @@ gh = "latest"
 terraform = "latest"
 rust = "latest"
 bun = "latest"
+aube = "latest"
 opencode = "latest"
 gum = "latest"
 # Don't add it here, as soon as it upgrades itself it uses bun again anyway

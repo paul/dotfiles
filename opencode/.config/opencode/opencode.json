@@ -4,7 +4,7 @@
     "opencode-bell@0.1.0",
     "@slkiser/opencode-quota",
     "opencode-browser",
-    "/home/rando/.local/share/mise/installs/node/22.21.1/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+    "{env:HOME}/.local/share/mise/installs/node/22/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
   ],
   "model": "opencode-go/deepseek-v4-flash",
   "small_model": "opencode-go/deepseek-v4-flash",
@@ -22,6 +22,10 @@
       "type": "remote",
       "url": "https://design.penpot.app/mcp/stream?userToken={env:PENPOT_MCP_TOKEN}"
     },
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp"
+    }
   },
   "agent": {
     "build": {
@@ -32,7 +36,7 @@
     },
     "rubber-ducky": {
       "model": "opencode-go/deepseek-v4-flash"
-    },
+    }
   },
   "formatter": {
     "rubocop": {

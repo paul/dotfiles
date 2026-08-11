@@ -41,13 +41,18 @@ plugins=(
   # rails # Its just dumb aliases
   # ruby  # just aliases
   # vagrant
-  # ssh-agent
+  ssh-agent
 
   auto-notify # https://github.com/MichaelAquilina/zsh-auto-notify
 )
 
 if [[ "$OSX" == "1" ]]; then
 	plugins+=(brew)
+fi
+
+# Make locally installed completion functions available to compinit.
+if [[ -d "$HOME/.local/share/zsh/site-functions" ]]; then
+  fpath=("$HOME/.local/share/zsh/site-functions" $fpath)
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -67,7 +72,13 @@ source ~/.aliases
 # Always my sure my paths are at the front
 typeset -U path # make path unique
 function fix_path() {
-  path=(./bin ~/bin ~/.local/bin /home/rando/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin ~/.local/share/npm/bin /usr/pgsql-16/bin "$path[@]")
+  local os_paths
+  if [[ "$OSX" == "1" ]]; then
+    os_paths=(/Applications/Obsidian.app/Contents/MacOS)
+  else
+    os_paths=(/usr/pgsql-16/bin)
+  fi
+  path=(./bin ~/bin ~/.local/bin $HOME/.cargo/bin $GOPATH/bin $NPM_PACKAGES/bin $HOME/.local/share/npm/bin "${os_paths[@]}" "$path[@]")
 }
 
 if [[ ! "$preexec_functions" == *fix_path* ]]; then
@@ -84,8 +95,14 @@ export EDITOR=nvim
 export BROWSER=firefox
 
 # Enable ssh-agent identities
-zstyle :omz:plugins:ssh-agent identities id_rsyncnet
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+zstyle :omz:plugins:ssh-agent quiet yes
+zstyle :omz:plugins:ssh-agent lazy yes
+if [[ "$OSX" == "1" ]]; then
+  # zstyle :omz:plugins:ssh-agent identities id_plane_github
+  # zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
+  export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+fi
+# export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 export RUBY_GC_MALLOC_LIMIT=1000000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.25
@@ -171,3 +188,9 @@ if command -v meridian >/dev/null 2>&1; then
   export ANTHROPIC_BASE_URL="http://127.0.0.1:3456"
   export ANTHROPIC_API_KEY="x"
 fi
+
+# >>> terminalwire >>>
+if [[ -d "$HOME/.terminalwire/bin" ]]; then
+  export PATH="$HOME/.terminalwire/bin:$HOME/.terminalwire/usr/bin:$PATH"
+fi
+# <<< terminalwire <<<
