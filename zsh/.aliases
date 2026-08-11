@@ -12,6 +12,7 @@ fi
 
 # Aliases to rust alternatives, if they exist
 if command -v eza 2>&1 >/dev/null; then
+  export EZA_CONFIG_DIR=$HOME/.config/eza
   alias ls='eza --hyperlink --classify --color=auto --group-directories-first --oneline'
   alias l='ls'
   alias ll='eza --hyperlink --classify --color=auto --group-directories-first --all --long --links --git'
@@ -43,6 +44,7 @@ fi
 # fi
 
 if [[ "$OSX" == "1" ]]; then
+  alias brewup='brew outdated && brew upgrade'
 
 else
   # Linux
