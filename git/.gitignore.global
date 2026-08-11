@@ -55,7 +55,4 @@ Thumbs.db
 # git worktree
 work
 
-# Beads stealth mode:
-.beads
-# bv (beads viewer) local config and caches
-.bv/
+.code-review

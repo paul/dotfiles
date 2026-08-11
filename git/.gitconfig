@@ -6,16 +6,10 @@
   editor = nvim
   excludesfile = ~/.gitignore.global
   attributesfile = ~/.gitattributes
-  pager = less --tabs=4 -RFX
-  askpass = /usr/bin/ksshaskpass
+  pager = delta
 
 [user]
   name = Paul Sadauskas
-  email = psadauskas@gmail.com
-	signingkey = 02DF4AA81F43CF58
-[credential]
-	; helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
-  helper = /usr/libexec/git-core/git-credential-libsecret
 [credential "https://github.com"]
   username = paul
 
@@ -35,12 +29,12 @@
   pretty = %Cblue%h%Creset %Cgreen[%cr]%Creset (%an) %s
 [help]
   autocorrect = prompt
+[interactive]
+    diffFilter = delta --color-only
 
 # Commands default options
 [apply]
   whitespace = fix
-[blame]
-  ignoreRevsFile = .git-blame-ignore-revs
 [branch]
   sort = -committerdate
   mergeoptions = no-ff
@@ -49,8 +43,10 @@
 [checkout]
   defaultRemote = origin
 [commit]
-	gpgsign = true
   verbose = true
+  gpgsign = true
+[gpg "ssh"]
+	allowedSignersFile = /home/rando/.gitallowedsigners
 [diff]
   wordRegex = [^[:space:]] # For Github-style word diffs
   algorithm = patience     # combine "functions" together in diff
@@ -94,9 +90,6 @@
 [rerere]
 	enabled = true
 	autoUpdate = true
-[gpg]
-  program = gpg2 ; fedora
-  ; program = gpg  ; ubuntu
 [pager]
   difftool = true
 
@@ -114,6 +107,9 @@
   cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 [difftool "difftastic"]
   cmd = difft "$LOCAL" "$REMOTE"
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
 
 [alias]
   b     = branch
@@ -225,5 +221,4 @@
 
   # Delete any branches that have been merged into current branch
   # See also: https://gist.github.com/robmiller/5133264
-  cleanup-branches = "!git branch --merged | grep -v '\\*' | grep -v '\\+' | xargs git branch -d"
-
+  cleanup-branches = "!git branch --merged | grep -v '\\*' | grep -v '+' | xargs git branch -d"
