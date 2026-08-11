@@ -20,6 +20,8 @@ rust = "latest"
 bun = "latest"
 opencode = "latest"
 gum = "latest"
+# Don't add it here, as soon as it upgrades itself it uses bun again anyway
+# "github:anomalyco/opencode" = "latest"
 
 [env]
 RUBY_YJIT_ENABLE = "1"
