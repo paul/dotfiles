@@ -21,12 +21,14 @@ bun = "latest"
 aube = "latest"
 opencode = "latest"
 gum = "latest"
+ollama = "latest"
+yarn = "latest"
+node = "latest"
 # Don't add it here, as soon as it upgrades itself it uses bun again anyway
 # "github:anomalyco/opencode" = "latest"
 
 [env]
 RUBY_YJIT_ENABLE = "1"
-
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
