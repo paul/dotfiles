@@ -1,4 +1,3 @@
-
 # Agent Instructions
 
 Use **tk** (ticket) for local issue tracking. Run `tk help` to get started.
@@ -59,3 +58,15 @@ changes, and explicitly tell you to commit.
   two regressions in the same area, stop and re-evaluate the approach against existing local patterns.
   Prefer replacing the wrong approach over salvaging it.
 
+## Git Lock Handling
+
+- Treat `.git/**/index.lock` errors from `git add`, `git commit`, `git status`, or similar commands
+  as transient Git contention first, especially in worktrees with editors, watchers, or other agents
+  open.
+- Do not immediately investigate the lock file or ask to remove it.
+- Retry the failed Git command after a short delay, for example `sleep 0.1`, and retry a few times
+  before escalating.
+- When chaining staging and committing, prefer either separate Bash calls or include a short pause:
+  `git add ... && sleep 0.1 && git commit ...`.
+- Only inspect processes or ask about deleting `index.lock` if the lock persists after short retries.
+  Never remove a Git lock file without explicit user approval.
