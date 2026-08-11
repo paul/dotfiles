@@ -1,6 +1,10 @@
 git/.gitconfig.local
 zsh/.env.local
 
+# gpg keyring (regenerated locally)
+git/.gnupg/pubring.kbx*
+git/.gnupg/trustdb.gpg
+
 # generated
 nvim/.config/nvim/.netrwhist
 nvim/.local/share/nvim/shada/main.shada
