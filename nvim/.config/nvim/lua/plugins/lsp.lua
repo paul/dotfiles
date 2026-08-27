@@ -106,6 +106,7 @@ return {
         ruby_lsp = {
           cmd = { "bundle", "exec", "ruby-lsp" },
           mason = false,
+          filetypes = { "ruby", "eruby", "rake", "gemspec" },
           init_options = {
             addon_settings = {
               enabledFeatures = {

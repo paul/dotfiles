@@ -52,6 +52,10 @@ return {
   {
     "esmuellert/codediff.nvim",
     cmd = "CodeDiff",
+    -- Load the plugin whenever a codediff:// buffer is read (e.g. session
+    -- restore), so its BufReadCmd guard + content loader always run before
+    -- filetype detection can attach LSP clients to the custom URI scheme.
+    event = { "BufReadCmd codediff:///*" },
     opts = {
       highlights = {
         char_brightness = 1.0,
@@ -60,5 +64,12 @@ return {
         view_mode = "tree",
       },
     },
+    config = function(_, opts)
+      require("codediff").setup(opts)
+      -- The semantic-token bridge sends the virtual buffer's codediff:// URI
+      -- to the real file's LSP client; file-URI-only servers like terraform-ls
+      -- panic and exit with code 2. No upstream fix through 2.67.0.
+      require("codediff.ui.semantic_tokens").apply_semantic_tokens = function() end
+    end,
   },
 }

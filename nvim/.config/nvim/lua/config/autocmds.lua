@@ -29,3 +29,20 @@ require("snacks").util.lsp.on(function(_, buffer)
   --   command = "silent! write!",
   -- })
 end)
+
+-- Prevent LSP clients from attaching to codediff:// virtual buffers.
+-- codediff.nvim guards its own buffers, but it is lazy-loaded on the
+-- :CodeDiff command, so a session restore (persistence.nvim) can read a
+-- codediff:// URL before the plugin exists. Without this guard, builtin
+-- filetype detection matches the .tf/.rb suffix and LSP servers attach to
+-- a URI scheme they cannot handle (terraform-ls panics and exits with
+-- code 2). Idempotent with the plugin's own BufReadCmd handler.
+vim.api.nvim_create_autocmd("BufReadCmd", {
+  group = vim.api.nvim_create_augroup("_codediff_lsp_guard", { clear = true }),
+  pattern = "codediff:///*",
+  callback = function(ev)
+    vim.bo[ev.buf].buftype = "nowrite"
+    vim.bo[ev.buf].bufhidden = "wipe"
+    vim.cmd("noautocmd setlocal filetype=")
+  end,
+})
