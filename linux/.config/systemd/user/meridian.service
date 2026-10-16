@@ -1,0 +1,17 @@
+[Unit]
+Description=Meridian local API bridge
+Wants=network-online.target
+After=network-online.target
+AssertFileIsExecutable=%h/.local/share/mise/installs/node/latest/lib/node_modules/@rynfar/meridian/bin/meridian-launchd.sh
+
+[Service]
+Type=simple
+WorkingDirectory=%h
+Environment=HOME=%h
+Environment=PATH=%h/.local/share/mise/installs/node/latest/bin:/usr/local/bin:/usr/bin
+ExecStart=%h/.local/share/mise/installs/node/latest/lib/node_modules/@rynfar/meridian/bin/meridian-launchd.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
