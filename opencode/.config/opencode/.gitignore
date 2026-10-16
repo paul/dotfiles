@@ -1,3 +1,7 @@
 node_modules
 bun.lock
 package-lock.json
+service.json
+herdr-opencode/
+herdr-tui-session.js
+plugins/herdr-agent-state.js
