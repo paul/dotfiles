@@ -6,8 +6,8 @@
 		"opencode-browser",
 		"{env:HOME}/.local/share/mise/installs/node/22/lib/node_modules/@rynfar/meridian/plugin/meridian.ts",
 	],
-	"model":       "opencode-go/deepseek-v4-flash",
-	"small_model": "opencode-go/deepseek-v4-flash",
+	"model":       "opencode-go/deepseek-v4.1-flash",
+	"small_model": "opencode-go/deepseek-v4.1-flash",
 	"mcp": {
 		"browsermcp": {
 			"type": "local",
@@ -25,16 +25,6 @@
 		"linear": {
 			"type": "remote",
 			"url":  "https://mcp.linear.app/mcp",
-		},
-		"GitKraken": {
-			"command": [
-				"/Users/rando/Library/Application Support/GitKrakenCLI/gk-alpha",
-				"mcp",
-				"--host=opencode",
-				"--session=kepler",
-			],
-			"enabled": true,
-			"type":    "local",
 		},
 	},
 	"agent": {},
@@ -57,6 +47,7 @@
 			"terraform fmt*":      "allow",
 			"terraform validate*": "allow",
 			"aws*":                "ask",
+			"sudo*":               "ask",
 		},
 		"external_directory": {
 			"/tmp/**":         "allow",

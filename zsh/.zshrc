@@ -91,7 +91,6 @@ cdpath=(~/Code)
 unsetopt correct_all
 
 export EDITOR=nvim
-export BROWSER=firefox
 
 # Enable ssh-agent identities
 if [[ "$OSX" == "1" ]]; then

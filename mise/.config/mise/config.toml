@@ -24,6 +24,7 @@ gum = "latest"
 ollama = "latest"
 yarn = "latest"
 node = "latest"
+herdr = "latest"
 # Don't add it here, as soon as it upgrades itself it uses bun again anyway
 # "github:anomalyco/opencode" = "latest"
 
