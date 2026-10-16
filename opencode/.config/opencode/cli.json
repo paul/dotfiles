@@ -19,5 +19,9 @@
   "attention": {
     "notifications": true,
     "sound": true
+  },
+  "keybinds": {
+    "agent.cycle": "tab",
+    "agent.cycle.reverse": "shift+tab"
   }
 }
