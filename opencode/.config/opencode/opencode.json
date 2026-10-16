@@ -26,10 +26,6 @@
 				"type": "remote",
 				"url":  "https://design.penpot.app/mcp/stream?userToken={env:PENPOT_MCP_TOKEN}",
 			},
-			"linear": {
-				"type": "remote",
-				"url":  "https://mcp.linear.app/mcp",
-			},
 		},
 	},
 	"formatter": {
@@ -64,6 +60,7 @@
 	},
 	"experimental": {
 		"quotaToast": {
+			"enabledProviders": ["anthropic", "openai", "opencode-go"],
 			"enableToast": false,
 		},
 	},
