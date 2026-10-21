@@ -1,0 +1,11 @@
+[Unit]
+Description=Preset the TPM signing key passphrase
+Wants=gpg-agent.socket
+After=gpg-agent.socket
+
+[Service]
+Type=oneshot
+ExecStart=%h/bin/gpg-unlock-tpm
+
+[Install]
+WantedBy=default.target graphical-session.target

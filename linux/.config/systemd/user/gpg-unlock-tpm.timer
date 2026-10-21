@@ -1,0 +1,9 @@
+[Unit]
+Description=Re-preset the TPM signing key passphrase
+
+[Timer]
+OnBootSec=10s
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

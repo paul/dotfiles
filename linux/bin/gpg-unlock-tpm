@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+keygrip_file="${XDG_CONFIG_HOME:-$HOME/.config}/gpg-tpm/keygrip"
+cred="$HOME/.config/credstore.encrypted/tpm-signing-passphrase.cred"
+
+# Safe on machines that do not have the TPM key set up.
+[ -r "$keygrip_file" ] || exit 0
+[ -r "$cred" ] || exit 0
+
+keygrip=$(cat "$keygrip_file")
+pass=$(systemd-creds decrypt --user --name=tpm-signing-passphrase "$cred" -)
+[ -n "$pass" ] || exit 1
+
+n=0
+while ! printf '%s' "$pass" | /usr/libexec/gpg-preset-passphrase --preset "$keygrip"; do
+  n=$((n + 1))
+  [ "$n" -ge 10 ] && exit 1
+  sleep 0.2
+done
