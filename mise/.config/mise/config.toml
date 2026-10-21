@@ -19,7 +19,7 @@ terraform = "latest"
 rust = "latest"
 bun = "latest"
 aube = "latest"
-opencode = "latest"
+opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
 gum = "latest"
 ollama = "latest"
 yarn = "latest"
