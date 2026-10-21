@@ -3,7 +3,7 @@ description: >-
   Ticket-scoped code reviewer. Reviews local changes or a PR diff against a
   specific ticket or stated goal, posts inline annotations via review-comment,
   and produces a structured summary verdict.
-mode: primary
+mode: all
 tools:
   write: false
   edit: false

@@ -17,7 +17,9 @@ Read the following files to understand this project's conventions — not all ma
 
 ## Step 2: Look up the ticket
 
-Using the ticket tool documented in the project instructions, look up ticket `$1`. The tool varies by project — it may be `tk`, `acli`, `linear`, or something else. Read the project instructions to determine the right command.
+Use the ticket tool named in the project instructions to look up ticket `$1`. The tool varies
+by project. Read the project instructions to find the correct command. Get the full ticket:
+summary, description, acceptance criteria, status, assignee, and parent/epic.
 
 ## Step 3: Present and challenge the ticket
 
@@ -35,3 +37,7 @@ Propose a concrete plan of attack:
 - Identify which files, components, or systems will need to change
 
 **Wait for explicit approval of the plan before proceeding.** Do not start any implementation.
+
+Additional Notes:
+
+$ARGUMENTS

@@ -7,12 +7,12 @@ The plan has been approved. Now implement it.
 
 # IF THIS IS THE FIRST TIME YOU ARE IMPLEMENTING THE PLAN:
 
-## Step 1: Mark the ticket in progress
+## Step 1: Start the ticket
 
-- If the ticket tool manages status locally (e.g., `tk`): mark the ticket in progress using the
-  appropriate command. If the ticket belongs to an epic that isn't in progress, start the epic too.
-- If the ticket tool is externally managed (e.g., Jira, Linear): do NOT change the ticket status —
-  the lifecycle is managed outside this workflow.
+Use the ticket tool named in the project instructions. If the tool manages ticket status,
+assign the ticket to the current user and move it to **In Progress**. If the ticket belongs
+to an epic that is not in progress, start the epic too. If the ticket is managed outside this
+workflow, do not change its status.
 
 ## Step 2: Set up the branch
 
@@ -37,7 +37,8 @@ Implement the plan that was discussed and approved earlier in this session. Foll
 
 ## Step 1: Update the ticket if needed
 
-If the design changed based on review or feedback, update the ticket with relevant notes
+If the design changed based on review or feedback, record the change on the ticket with the
+project's ticket tool.
 
 ## Step 2: Implement the work
 
@@ -45,3 +46,14 @@ Same as before:
 
 - If something is surprising or not what you expected, **pause and ask** — do not brute-force through ambiguity
 - If a simpler approach becomes apparent during implementation, surface it rather than continuing with the original plan
+
+# Completing the work
+
+Run targeted tests and changed-file linters during implementation. Do not run the full CI
+suite, commit, push, or open a pull request. Stop when the implementation is ready for review.
+/finish owns full CI and finalization.
+
+Additional Notes:
+
+$ARGUMENTS
+

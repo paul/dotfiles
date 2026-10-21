@@ -20,7 +20,8 @@ Read the following files — skip any that don't exist:
 
 Run the **full** CI suite — do not scope it to only changed files. Something you didn't touch may have broken.
 
-Look for a CI script in the project (e.g., `bin/ci`, `make ci`, etc.) and run it. Then run the full test suite separately if the CI script doesn't include it (e.g., `bin/rspec`, `bin/test`, `pytest`, etc.).
+Find the project's full CI command in the project instructions and run it. It usually includes
+the full test suite. If it does, do not run the suite again separately.
 
 **If anything fails: stop immediately.** Report the errors clearly and do not proceed to commit. Fix the failures first, then re-run.
 
@@ -34,11 +35,7 @@ Draft a commit message following the project's commit conventions (from CONTRIBU
 
 Commit the changes.
 
-## Step 5: Ask about a PR
-
-Ask the user: "Do you want to open a pull request?"
-
-If yes:
+## Step 4: Open a PR
 
 1. Read the PR template (`.github/PULL_REQUEST_TEMPLATE.md` or equivalent)
 2. Draft the PR body following all required sections in the template
@@ -49,8 +46,8 @@ If yes:
    - Or whatever tool the project instructions specify
 5. Return the PR URL
 
-## Step 6: Close the ticket
+## Step 5: Close the ticket
 
-If the project uses a locally-managed ticket tool (e.g., `tk`): close the ticket with the appropriate command.
-
-If the ticket tool is externally managed (e.g., Jira, Linear): do not change the ticket status.
+If the project tracks tickets locally, close the ticket with its tool. If a pull request was
+opened, link it in the ticket. If tickets are managed outside this workflow, leave the ticket
+status unchanged.

@@ -18,17 +18,12 @@ Read `CONTRIBUTING.md` to understand the commit message format for this project.
 - Body format (paragraphs explaining *why* and *how*)
 - Any ticket ID requirements
 
-## Step 2: Close the ticket (if applicable)
+## Step 2: Ticket status
 
-Check whether this project tracks tickets locally by looking for a `.tickets/` directory. If it
-exists and a ticket was worked in this session:
-
-- Run `tk close {id}` to mark it closed before staging anything.
-- After closing, run `git status` again — if the ticket file (e.g., `.tickets/{id}.md`) now appears
-  as a change, it **must** be staged as part of this commit. Do not commit without it.
-
-If the project uses an externally-managed ticket tool (Jira, Linear, etc.), do not change the ticket
-status.
+Read the project instructions to find how tickets are managed. If the project tracks tickets
+locally and a ticket was worked in this session, update or close it before staging. Run
+`git status` again and stage the ticket file with this commit. If tickets are managed outside
+this workflow, do not change the ticket status.
 
 ## Step 3: Identify what to commit
 
@@ -37,10 +32,8 @@ work — and nothing else.
 
 - Run `git diff` to review unstaged changes and understand what each file contains.
 - Stage files that are clearly part of this session's work using `git add`.
-- Always stage any `.tickets/` files that were added or modified during this session — these travel
-  with the work that created or changed them. This includes the ticket closed in step 2, as well as
-  any tickets created or updated as part of the session (e.g., sub-tickets, follow-up tickets,
-  notes added to the ticket).
+- Stage ticket files that were added or modified during this session. They belong with the
+  work that created or changed them.
 - If any changed files are **unrelated** to the work done in this session, do **not** stage them.
   Call them out explicitly to the user: "I noticed changes in X that appear unrelated — I've left
   them unstaged."
