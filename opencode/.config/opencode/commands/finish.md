@@ -20,7 +20,9 @@ Read the following files — skip any that don't exist:
 
 Run the **full** CI suite — do not scope it to only changed files. Something you didn't touch may have broken.
 
-Find the project's full CI command in the project instructions and run it. It usually includes
+Find the project's full CI command in the project instructions and run it, including any lock the
+instructions wrap it in (for example a `flock` that keeps parallel worktrees off a shared test
+database). It usually includes
 the full test suite. If it does, do not run the suite again separately.
 
 **If anything fails: stop immediately.** Report the errors clearly and do not proceed to commit. Fix the failures first, then re-run.

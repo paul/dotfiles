@@ -49,7 +49,9 @@ Same as before:
 
 # Completing the work
 
-Run targeted tests and changed-file linters during implementation. Do not run the full CI
+Run targeted tests and changed-file linters during implementation, exactly as the project
+instructions show them, including any lock they wrap spec runs in (for example a `flock` that
+keeps parallel worktrees off a shared test database). Do not run the full CI
 suite, commit, push, or open a pull request. Stop when the implementation is ready for review.
 /finish owns full CI and finalization.
 

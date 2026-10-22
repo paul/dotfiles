@@ -37,8 +37,9 @@ Once scope is established, gather the relevant diff. Do not proceed with a revie
 
 ## Step 4: Conduct the review
 
-Run the project's full CI command, as documented in the project instructions. It includes the
-full test suite. Do not run the test suite separately in the same review session.
+Run the project's full CI command, as documented in the project instructions, including any lock
+the instructions wrap it in (for example a `flock` that keeps parallel worktrees off a shared test
+database). It includes the full test suite. Do not run the test suite separately in the same review session.
 
 Proceed with the review per your operating rules: restrict to the established scope, apply the severity framework, call `review-comment` for each finding, and produce the structured summary verdict.
 
