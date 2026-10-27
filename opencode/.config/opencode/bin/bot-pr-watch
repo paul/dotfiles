@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Watches one pull request and exits as soon as it needs the bot's attention,
+# printing one line per reason. The bot runs this as a background shell, so the
+# exit is what wakes its session.
+#
+#   bot-pr-watch <pr-number>
+#
+# Every bot reply starts with 🤖. Anything older than the newest bot reply has
+# already been handled, so the watch keeps no state of its own. A merge
+# conflict counts only when the base branch moved after that reply, so a
+# conflict the bot already gave up on does not wake it again.
+set -euo pipefail
+
+pr=${1:?usage: bot-pr-watch <pr-number>}
+interval=${BOT_PR_WATCH_INTERVAL:-600}
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+
+read -r -d '' FILTER <<'JQ' || true
+def bot: (.body // "") | startswith("🤖");
+def count($events; $what): $events | length | select(. > 0) | "\(.) new \($what)";
+
+.pr as $pr | .inline as $inline
+| ([$pr.comments[], $inline[] | select(bot) | .createdAt // .created_at] | max // "") as $cut
+| if $pr.state != "OPEN" then "PR #\($pr.number) is \($pr.state | ascii_downcase)"
+  else
+    count([$pr.comments[] | select((bot | not) and .createdAt > $cut)]; "comment(s)"),
+    count([$inline[] | select((bot | not) and .created_at > $cut)]; "review comment(s)"),
+    count([$pr.reviews[] | select((bot | not) and .submittedAt > $cut
+      and (.state == "CHANGES_REQUESTED" or (.body // "") != ""))]; "review(s)"),
+    ([$pr.statusCheckRollup[]
+      | select((.conclusion // .state) | IN("FAILURE", "ERROR", "TIMED_OUT", "CANCELLED", "STARTUP_FAILURE", "ACTION_REQUIRED"))
+      | select((.completedAt // .startedAt // "") > $cut)
+      | .name // .context]
+      | select(length > 0) | "CI failed: \(join(", "))"),
+    (select($pr.mergeable == "CONFLICTING" and .base_moved > $cut) | "merge conflict with \($pr.baseRefName)")
+  end
+JQ
+
+check() {
+  local pr_json inline base_moved
+  pr_json=$(gh pr view "$pr" --json number,state,mergeable,baseRefName,statusCheckRollup,reviews,comments) || return 1
+  inline=$(gh api --paginate "repos/$repo/pulls/$pr/comments" --jq '.[]' | jq -s .) || return 1
+  base_moved=$(gh api "repos/$repo/commits/$(jq -r .baseRefName <<<"$pr_json")" --jq .commit.committer.date) || return 1
+  jq -nr --argjson pr "$pr_json" --argjson inline "$inline" --arg base_moved "$base_moved" \
+    "{pr: \$pr, inline: \$inline, base_moved: \$base_moved} | $FILTER"
+}
+
+while true; do
+  if reasons=$(check) && [[ -n $reasons ]]; then
+    echo "PR #$pr needs attention:"
+    echo "$reasons"
+    exit 0
+  fi
+  sleep "$interval"
+done

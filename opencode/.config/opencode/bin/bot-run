@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Runs one unit of automated work as the automation-lead agent, on the planning
+# model from ~/.config/opencode/models/planning.
+#
+#   bot-run space <title> <prompt>                 start the work in its own Herdr space
+#   bot-run run <title> <prompt>                   run the work here, with no Herdr space
+#   bot-run session <workspace> <title> <prompt>   runs inside the space's pane
+#
+# Both start from the current directory. A space's label gets today's date, so a
+# space still open from an earlier run keeps a distinct name.
+#
+# A space's session ends as an interactive TUI. The agent keeps watching its pull
+# requests in the background and closes the space itself when they are all
+# closed. A run that leaves no watch running gets its space closed here.
+set -euo pipefail
+
+lead() {
+  opencode run --agent automation-lead --model "$(<"$HOME/.config/opencode/models/planning")" "$@"
+}
+
+space() {
+  local title prompt=$2 created workspace pane
+  title="$1 $(date +%m-%d)"
+  created=$(herdr workspace create --cwd "$PWD" --label "$title" --no-focus)
+  workspace=$(jq -r .result.workspace.workspace_id <<<"$created")
+  pane=$(jq -r .result.root_pane.pane_id <<<"$created")
+  herdr pane run "$pane" "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$title" "$prompt")" >/dev/null
+}
+
+session() {
+  local workspace=$1 title=$2 prompt=$3 id
+  id="ses_bot$(date +%Y%m%d%H%M%S%N)"
+
+  lead --session "$id" --title "$title" "$prompt"$'\n\n'"Your Herdr workspace ID is $workspace." || true
+
+  if ! watching "$id"; then
+    herdr workspace close "$workspace" >/dev/null
+    exit 0
+  fi
+  exec opencode --session "$id"
+}
+
+watching() {
+  opencode api get "/api/shell?location[directory]=$PWD" |
+    jq -e --arg id "$1" 'any(.data[]; .metadata.sessionID == $id and .status == "running")' >/dev/null
+}
+
+case ${1:-} in
+  space) space "${2:?title}" "${3:?prompt}" ;;
+  run) lead --title "${2:?title}" "${3:?prompt}" ;;
+  session) session "${2:?workspace}" "${3:?title}" "${4:?prompt}" ;;
+  *) echo "usage: bot-run space|run <title> <prompt>" >&2; exit 2 ;;
+esac

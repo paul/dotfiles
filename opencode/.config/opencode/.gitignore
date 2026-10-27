@@ -5,5 +5,3 @@ service.json
 herdr-opencode/
 herdr-tui-session.js
 plugins/herdr-agent-state.js
-scheduler/
-logs/

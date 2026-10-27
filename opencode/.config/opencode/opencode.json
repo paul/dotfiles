@@ -2,7 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "plugins": [
     "@slkiser/opencode-quota@latest",
-    "@nguquen/opencode-scheduler",
     "{env:HOME}/.local/share/mise/installs/node/latest/lib/node_modules/@rynfar/meridian/dist/meridian-v2",
   ],
   "model": "opencode-go/deepseek-v4.1-flash",
@@ -86,6 +85,11 @@
       "resource": "/private/tmp/**",
       "effect": "allow"
     },
+    {
+      "action": "external_directory",
+      "resource": "*/opencode/skills/*",
+      "effect": "allow"
+    },
   ],
   "policies": [
     {
@@ -99,9 +103,12 @@
       "effect": "deny"
     },
   ],
-  "providers": {
-    "anthropic": {},
-    "openai": {},
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456"
+      }
+    }
   },
   "experimental": {
     "quotaToast": {

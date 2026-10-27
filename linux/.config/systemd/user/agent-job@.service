@@ -1,0 +1,8 @@
+# One agent job per instance. Each instance sets WorkingDirectory= and ExecStart=
+# in agent-job@<name>.service.d/job.conf.
+[Unit]
+Description=Agent job %i
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin

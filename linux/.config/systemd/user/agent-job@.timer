@@ -1,0 +1,9 @@
+# Each instance sets OnCalendar= in agent-job@<name>.timer.d/schedule.conf.
+[Unit]
+Description=Schedule for agent job %i
+
+[Timer]
+Persistent=true
+
+[Install]
+WantedBy=timers.target
