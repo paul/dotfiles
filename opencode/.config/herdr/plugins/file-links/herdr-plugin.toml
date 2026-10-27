@@ -1,0 +1,23 @@
+id = "rando.file-links"
+name = "File links"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+description = "Open file:// links from agent output in a split nvim pane."
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "open-file"
+title = "Open file link"
+command = ["bash", "open.sh"]
+
+[[panes]]
+id = "file"
+title = "File"
+placement = "split"
+command = ["bin/pane.sh"]
+
+[[link_handlers]]
+id = "file-url"
+title = "Open file in nvim"
+pattern = '^file://'
+action = "open-file"

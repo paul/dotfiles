@@ -1,0 +1,11 @@
+onboarding = false
+
+[keys]
+# prefix+e used to open scrollback. The CodeDiff toggle now uses it.
+edit_scrollback = ""
+
+[[keys.command]]
+key = "prefix+e"
+type = "plugin_action"
+command = "rando.codediff.toggle"
+description = "CodeDiff pane"

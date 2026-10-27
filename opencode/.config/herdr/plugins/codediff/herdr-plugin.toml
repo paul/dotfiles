@@ -1,0 +1,18 @@
+id = "rando.codediff"
+name = "CodeDiff pane"
+version = "0.2.0"
+min_herdr_version = "0.9.5"
+description = "Toggle a Neovim CodeDiff pane for the current tab's Git worktree."
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "toggle"
+title = "Toggle CodeDiff pane"
+contexts = ["pane", "workspace"]
+command = ["bash", "toggle.sh"]
+
+[[panes]]
+id = "codediff"
+title = "CodeDiff"
+placement = "split"
+command = ["bin/pane.sh"]
