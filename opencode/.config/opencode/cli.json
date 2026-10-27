@@ -13,7 +13,8 @@
   "session": {
     "sidebar": "auto",
     "scrollbar": false,
-    "thinking": "hide"
+    "thinking": "hide",
+    "image_preview": true
   },
   "animations": true,
   "attention": {

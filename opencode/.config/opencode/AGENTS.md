@@ -36,6 +36,13 @@ Use ASD-STE100 Simplified Technical English for all writing and communication:
 - One word, one meaning. No slang, idiom, or filler.
 - Write instructions as commands. Use a vertical list for more than two items.
 
+## Diagrams and images
+
+This terminal supports images and mermaid block diagrams. Use them when appropriate. Don't overdo it.
+
+- After a change to a page or component, take a screenshot with chrome-devtools. The transcript shows it.
+- To show an image file, use the `read` tool.
+
 ## File references
 
 Every file in prose is a Markdown link to an absolute `file://` URL, as in the example above.
