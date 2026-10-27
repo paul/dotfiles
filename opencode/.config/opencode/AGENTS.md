@@ -2,6 +2,19 @@
 
 Use ASD-STE100 Simplified Technical English for all writing and communication.
 
+## File references
+
+When you mention a file in prose, make it a Markdown link to an absolute
+`file://` URL. Add a numeric fragment for a line.
+
+[app/models/user.rb:42](file:///home/rando/project/app/models/user.rb#42)
+
+- The link text is the path you would say, with `:line` when known.
+- The URL path is absolute. Use the session working directory.
+- Use `%20` for spaces in the URL.
+- Omit the fragment for a file with no line.
+- Do not link paths inside code blocks.
+
 # CRITICAL RULES
 
 - Work is NOT complete until `git commit` succeeds
