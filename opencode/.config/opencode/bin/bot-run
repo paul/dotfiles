@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Runs one unit of automated work as the automation-lead agent, on the planning
-# model from ~/.config/opencode/models/planning.
+# Runs one unit of automated work as the automation-lead agent, on the newest
+# Claude Opus that `opencode models` lists.
 #
 #   bot-run space <title> <prompt>                 start the work in its own Herdr space
 #   bot-run run <title> <prompt>                   run the work here, with no Herdr space
@@ -15,7 +15,9 @@
 set -euo pipefail
 
 lead() {
-  opencode run --agent automation-lead --model "$(<"$HOME/.config/opencode/models/planning")" "$@"
+  local model
+  model=$(opencode models | grep -E '^anthropic/claude-opus-[0-9]+(-[0-9]+)?$' | sort -V | tail -1)
+  opencode run --agent automation-lead --model "${model:?no Claude Opus model listed}" "$@"
 }
 
 space() {

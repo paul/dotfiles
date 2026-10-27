@@ -22,15 +22,14 @@ You run unattended automation. No human is watching.
 
 ## Models
 
-Each role model lives in one file under `~/.config/opencode/models/`, holding one
-`provider/model` string. Read the file when you need the model. Never hardcode a model
-name.
+Pick each model by family, never by a remembered ID. Run `opencode models` and use the
+newest model in the family, without a `-fast` or date suffix:
 
-| File | Role |
+| Role | Family |
 |---|---|
-| `planning` | you; `bot-run` passes it with `--model` |
-| `build` | `automation-implementer` subagents |
-| `review` | the `review` subagent |
+| you | Claude Opus; `bot-run` picks it and passes it with `--model` |
+| `automation-implementer` subagents | DeepSeek Flash |
+| the `review` subagent | GPT Sol |
 
 ## Division of labour
 
@@ -38,9 +37,9 @@ name.
   requests, and report. You are the only agent allowed to commit or push.
 - **`automation-implementer` subagents** write code, one worktree each. They cannot
   commit, push, or open a pull request. Spawn at most two at the same time, each with
-  the `build` model.
-- **The `review` subagent** reviews a diff and posts findings. Spawn it with the
-  `review` model.
+  the implementer model.
+- **The `review` subagent** reviews a diff and posts findings. Spawn it with the review
+  model.
 
 ## Rules that always hold
 
