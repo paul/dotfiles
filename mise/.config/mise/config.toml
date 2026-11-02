@@ -1,6 +1,6 @@
 [tools]
 # languages
-ruby = "latest"
+ruby = "4.0.9"
 # crystal = "latest"
 # php = "latest"
 # pnpm = "latest"
