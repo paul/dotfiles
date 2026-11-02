@@ -4,15 +4,15 @@
 #
 #   bot-run space <title> <prompt>                 start the work in its own Herdr space
 #   bot-run run <title> <prompt>                   run the work here, with no Herdr space
-#   bot-run session <workspace> <title> <prompt>   runs inside the space's pane
+#   bot-run resume <session-id> <title>            carry on an interrupted session in a new space
+#   bot-run session <workspace> <title> <prompt> [session-id]   runs inside the space's pane
 #
-# Both start from the current directory. A space's label gets today's date, so a
-# space still open from an earlier run keeps a distinct name.
-#
-# A space's session ends as an interactive TUI. The agent keeps watching its pull
-# requests in the background and closes the space itself when they are all
-# closed. A run that leaves no watch running gets its space closed here.
+# A space's session ends as an interactive TUI. A run that leaves no watch running
+# gets its space closed here, unless the agent has created its hold file, which
+# means a human decision is outstanding.
 set -euo pipefail
+
+STATE=${XDG_STATE_HOME:-$HOME/.local/state}/agent-jobs
 
 lead() {
   local model
@@ -21,21 +21,38 @@ lead() {
 }
 
 space() {
-  local title prompt=$2 created workspace pane
-  title="$1 $(date +%m-%d)"
-  created=$(herdr workspace create --cwd "$PWD" --label "$title" --no-focus)
+  local label prompt=$2 created workspace pane
+  label="$1 $(date +%m-%d)"
+  created=$(herdr workspace create --cwd "$PWD" --label "$label" --no-focus)
   workspace=$(jq -r .result.workspace.workspace_id <<<"$created")
   pane=$(jq -r .result.root_pane.pane_id <<<"$created")
-  herdr pane run "$pane" "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$title" "$prompt")" >/dev/null
+  herdr pane run "$pane" \
+    "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$label" "$prompt")" >/dev/null
+}
+
+resume() {
+  local existing=$1 label=$2 created workspace pane prompt
+  prompt="You were interrupted before you finished this work. Check \`git status\`, \`git log\` and
+the branch you were on, then carry on from there. Do not start over, and do not undo the work
+already in the tree."
+  created=$(herdr workspace create --cwd "$PWD" --label "$label" --no-focus)
+  workspace=$(jq -r .result.workspace.workspace_id <<<"$created")
+  pane=$(jq -r .result.root_pane.pane_id <<<"$created")
+  herdr pane run "$pane" \
+    "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$label" "$prompt" "$existing")" >/dev/null
 }
 
 session() {
-  local workspace=$1 title=$2 prompt=$3 id
-  id="ses_bot$(date +%Y%m%d%H%M%S%N)"
+  local workspace=$1 title=$2 prompt=$3 id=${4:-} hold
+  id=${id:-"ses_bot$(date +%Y%m%d%H%M%S%N)"}
+  hold="$STATE/$id.hold"
 
-  lead --session "$id" --title "$title" "$prompt"$'\n\n'"Your Herdr workspace ID is $workspace." || true
+  lead --session "$id" --title "$title" \
+    "$prompt"$'\n\n'"Your Herdr workspace ID is $workspace. Your session ID is $id. Your hold file is
+$hold: create it with \`mkdir -p $STATE && touch $hold\` when you need a human decision, and delete it
+once the decision is made." || true
 
-  if ! watching "$id"; then
+  if ! watching "$id" && [[ ! -e $hold ]]; then
     herdr workspace close "$workspace" >/dev/null
     exit 0
   fi
@@ -50,6 +67,7 @@ watching() {
 case ${1:-} in
   space) space "${2:?title}" "${3:?prompt}" ;;
   run) lead --title "${2:?title}" "${3:?prompt}" ;;
-  session) session "${2:?workspace}" "${3:?title}" "${4:?prompt}" ;;
-  *) echo "usage: bot-run space|run <title> <prompt>" >&2; exit 2 ;;
+  resume) resume "${2:?session-id}" "${3:?title}" ;;
+  session) session "${2:?workspace}" "${3:?title}" "${4:?prompt}" "${5:-}" ;;
+  *) echo "usage: bot-run space|run <title> <prompt>, or bot-run resume <session-id> <title>" >&2; exit 2 ;;
 esac
