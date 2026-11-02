@@ -100,9 +100,7 @@ if [[ "$OSX" == "1" ]]; then
   # zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
   export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
 else
-  # ssh-agent is managed as a systemd user service on Linux
   zstyle :omz:plugins:ssh-agent identities id_rsyncnet
-  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 fi
 
 export RUBY_GC_MALLOC_LIMIT=1000000000
