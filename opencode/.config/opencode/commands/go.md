@@ -50,9 +50,7 @@ Same as before:
 # Completing the work
 
 Run targeted tests and changed-file linters during implementation, exactly as the project
-instructions show them, including any lock they wrap spec runs in (for example a `flock` that
-keeps parallel worktrees off a shared test database). Do not run the full CI
-suite, commit, push, or open a pull request.
+instructions show them. Do not run the full CI suite, commit, push, or open a pull request.
 
 When the implementation is complete, load the `simplify` skill and follow it on the changes. Rerun
 the targeted tests and linters for every file it changes.
