@@ -3,9 +3,17 @@ onboarding = false
 [keys]
 # prefix+e used to open scrollback. The CodeDiff toggle now uses it.
 edit_scrollback = ""
+# prefix+c starts the build/review/code handoff.
+new_tab = "prefix+t"
 
 [[keys.command]]
 key = "prefix+e"
 type = "plugin_action"
 command = "rando.codediff.toggle"
 description = "CodeDiff pane"
+
+[[keys.command]]
+key = "prefix+c"
+type = "plugin_action"
+command = "rando.handoff.start"
+description = "Build/review/code handoff"

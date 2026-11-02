@@ -1,0 +1,12 @@
+id = "rando.handoff"
+name = "Build/review/code handoff"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+description = "Promote the focused tab to its own space, then open review and code tabs in its worktree."
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "start"
+title = "Start build/review/code handoff"
+contexts = ["pane", "workspace"]
+command = ["bash", "start.sh"]
