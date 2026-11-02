@@ -15,6 +15,7 @@ Read the following files to understand this project's conventions — skip any t
 - `CONTRIBUTING.md` — branch naming, commit conventions
 - `STYLE.md` — coding conventions to review against
 - `ARCHITECTURE.md` — system design patterns
+- `REVIEW.md` — what counts as a finding, its severity, and what not to report
 
 ## Step 2: Determine review scope from the arguments
 

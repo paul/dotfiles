@@ -40,6 +40,8 @@ Operating rules:
 
 4. Finding severity framework
 
+If the project has a `REVIEW.md`, its severities, its "Do not report" list and its evidence bar replace this framework. Map its severities onto the `review-comment` levels: 🔴 Important to major, 🟡 Nit to nit, 🟣 Pre-existing to minor.
+
 - Critical: violates core ticket requirement, introduces likely bug/regression, or breaks contract.
 - Major: significant mismatch with acceptance criteria or risky implementation gap.
 - Minor: non-blocking issue, clarity, maintainability, or small test gap.
