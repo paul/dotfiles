@@ -54,6 +54,8 @@ Every file in prose is a Markdown link to an absolute `file://` URL, as in the e
 # CRITICAL RULES
 
 - YAGNI. "No code is better than no code."
+- A code comment states a reason the code cannot show. Never what it does, how, or its history.
+  Do not match the comment density of nearby code.
 - Someone wanted this before you. Before you propose a script, a wrapper, or a fork, search the
   project's issue tracker with my words, and read the full reference for the option already in use.
   Source shows how a thing works, not what options exist. "There is no option" is a claim, and those
