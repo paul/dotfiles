@@ -94,6 +94,11 @@
   "policies": [
     {
       "action": "provider.use",
+      "resource": "amazon-bedrock",
+      "effect": "deny"
+    },
+    {
+      "action": "provider.use",
       "resource": "opencode",
       "effect": "deny"
     }, // prefer opencode-go
@@ -103,9 +108,9 @@
       "effect": "deny"
     },
   ],
-  "provider": {
+  "providers": {
     "anthropic": {
-      "options": {
+      "settings": {
         "baseURL": "http://127.0.0.1:3456"
       }
     }
