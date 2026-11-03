@@ -90,6 +90,21 @@
       "resource": "*/opencode/skills/*",
       "effect": "allow"
     },
+    {
+      "action": "external_directory",
+      "resource": "~/.local/share/opencode/*",
+      "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "~/.local/share/opencode/*",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.local/share/opencode/*",
+      "effect": "deny"
+    },
   ],
   "policies": [
     {
