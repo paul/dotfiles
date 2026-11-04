@@ -66,10 +66,6 @@ return {
     },
     config = function(_, opts)
       require("codediff").setup(opts)
-      -- The semantic-token bridge sends the virtual buffer's codediff:// URI
-      -- to the real file's LSP client; file-URI-only servers like terraform-ls
-      -- panic and exit with code 2. No upstream fix through 2.67.0.
-      require("codediff.ui.semantic_tokens").apply_semantic_tokens = function() end
     end,
   },
 }
