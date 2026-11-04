@@ -62,6 +62,16 @@
     },
     {
       "action": "shell",
+      "resource": "terraform plan*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "terraform show*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
       "resource": "aws*",
       "effect": "ask"
     },
@@ -130,14 +140,8 @@
       }
     }
   },
-  "experimental": {
-    "quotaToast": {
-      "enabledProviders": [
-        "anthropic",
-        "openai",
-        "opencode-go"
-      ],
-      "enableToast": false,
-    },
+  "provider": {
+    "openai": {},
+    "opencode-go": {}
   },
 }
