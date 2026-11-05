@@ -1,0 +1,7 @@
+[Unit]
+Description=Gem audit, with an agent run when advisories are found
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/share/mise/shims:%h/.config/opencode/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.config/opencode/bin/gem-audit-watch

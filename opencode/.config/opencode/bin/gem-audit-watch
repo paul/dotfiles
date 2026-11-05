@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Hourly gem audit. A clean hour costs one advisory-database pull; an agent starts only
+# when bundler-audit reports a vulnerability and no fix is already open.
+set -euo pipefail
+
+repo=$HOME/Code/statrankings/statrankings/main
+dry_run=0
+[[ ${1:-} == --dry-run ]] && dry_run=1
+
+cd "$repo"
+git fetch origin main --quiet || exit 0
+
+# Audit main's lockfile, not whatever branch the primary worktree has checked out. The
+# config path resolves against the audited directory, so it is copied alongside.
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+mkdir -p "$tmp/config"
+git show origin/main:Gemfile.lock > "$tmp/Gemfile.lock" || exit 0
+git show origin/main:config/bundler-audit.yml > "$tmp/config/bundler-audit.yml"
+
+out=$(bin/bundler-audit check "$tmp" --update 2>&1) || true
+
+# A failed advisory-database download exits non-zero too, so only the report line counts.
+grep -q 'Vulnerabilities found!' <<<"$out" || exit 0
+
+open=$(gh pr list --state open --limit 50 --json headRefName \
+  --jq '.[] | select(.headRefName | test("^chore/(gem-audit|gems)-"))')
+[[ -z $open ]] || exit 0
+
+prompt="Load the dependency-update skill, gems section only. bundler-audit reports:
+
+$out"
+
+if (( dry_run )); then
+  echo "would run: bot-run run 'gem audit $(date +%F)'"
+  printf '%s\n' "$prompt"
+  exit 0
+fi
+
+exec "$HOME/.config/opencode/bin/bot-run" run "gem audit $(date +%F)" "$prompt"
