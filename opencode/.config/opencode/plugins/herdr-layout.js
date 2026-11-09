@@ -25,8 +25,8 @@ Choose the model yourself. Ask the user only when the choice is unclear.
 Run \`opencode models\` and use the newest model in the family:
 
 - Routine work from a clear plan: DeepSeek Flash (ex: \`opencode-go/deepseek-v4.1-flash\`)
-- Planning, ambiguity, coordinating parallel work: newest Claude Opus (ex: \`anthropic/claude-opus-5-5\`)
-- UI/UX/design: newest Claude Fable (ex: \`anthropic/claude-fable-5-1\`)
+- Planning, ambiguity, coordinating parallel work: newest Claude Opus (ex: \`claude-agent/opus\`)
+- UI/UX/design: newest Claude Fable (ex: \`claude-agent/fable\`)
 - Reviews: newest GPT Sol (ex: \`openai/gpt-6.1-sol\`); GPT Astra for complicated reviews (ex: \`openai/gpt-6-astra\`)
 
 Use a different model for review than the one that wrote the code.

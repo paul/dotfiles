@@ -16,7 +16,7 @@ STATE=${XDG_STATE_HOME:-$HOME/.local/state}/agent-jobs
 
 lead() {
   local model
-  model=$(opencode models | grep -E '^anthropic/claude-opus-[0-9]+(-[0-9]+)?$' | sort -V | tail -1)
+  model=$(opencode models | grep -E '^claude-agent/claude-opus-[0-9]+(-[0-9]+)?$' | sort -V | tail -1)
   opencode run --agent automation-lead --model "${model:?no Claude Opus model listed}" "$@"
 }
 

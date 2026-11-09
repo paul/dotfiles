@@ -2,7 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "plugins": [
     "@slkiser/opencode-quota@latest",
-    "{env:HOME}/.local/share/mise/installs/node/latest/lib/node_modules/@rynfar/meridian/dist/meridian-v2",
   ],
   "model": "opencode-go/deepseek-v4.1-flash",
   "agents": {
@@ -133,13 +132,6 @@
       "effect": "deny"
     },
   ],
-  "providers": {
-    "anthropic": {
-      "settings": {
-        "baseURL": "http://127.0.0.1:3456"
-      }
-    }
-  },
   "provider": {
     "openai": {},
     "opencode-go": {}

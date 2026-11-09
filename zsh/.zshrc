@@ -183,11 +183,6 @@ fi
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
-if command -v meridian >/dev/null 2>&1; then 
-  export ANTHROPIC_BASE_URL="http://127.0.0.1:3456"
-  export ANTHROPIC_API_KEY="x"
-fi
-
 # >>> terminalwire >>>
 if [[ -d "$HOME/.terminalwire/bin" ]]; then
   export PATH="$HOME/.terminalwire/bin:$HOME/.terminalwire/usr/bin:$PATH"
