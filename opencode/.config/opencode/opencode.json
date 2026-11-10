@@ -104,6 +104,16 @@
     },
     {
       "action": "external_directory",
+      "resource": "{env:HOME}/.config/opencode/**",
+      "effect": "allow"
+    },
+    {
+      "action": "external_directory",
+      "resource": "{env:HOME}/.config/worktrunk/**",
+      "effect": "allow"
+    },
+    {
+      "action": "external_directory",
       "resource": "~/.local/share/opencode/*",
       "effect": "allow"
     },
