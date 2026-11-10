@@ -4,6 +4,9 @@
     "@slkiser/opencode-quota@latest",
   ],
   "model": "opencode-go/deepseek-v4.1-flash",
+  "experimental": {
+    "subagent_depth": 2,
+  },
   "agents": {
     "title": {
       "model": "opencode-go/deepseek-v4.1-flash",

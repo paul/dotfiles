@@ -16,12 +16,14 @@ Read the following files to understand this project's conventions — skip any t
 - `STYLE.md` — coding conventions to review against
 - `ARCHITECTURE.md` — system design patterns
 - `REVIEW.md` — what counts as a finding, its severity, and what not to report
+- Every `README.md` in a changed file's directory and each parent directory up to the repo root
 
 ## Step 2: Determine review scope from the arguments
 
 Establish what is being reviewed based on the scope above.
 
-- **Empty** — If cwd is a branch of main, review the changes since main. If unclear or
+- **Empty** — If cwd is a branch of main, review the changes since main. On `main`, review the
+  uncommitted diff. If unclear or
   ambiguous, stop and ask for clarification. If the project tracks tickets, find the in-progress
   tickets with its ticket tool. If exactly one is in progress, use it as scope. If multiple are
   in progress or none are found, ask one concise question to clarify what to review.
@@ -29,6 +31,8 @@ Establish what is being reviewed based on the scope above.
   ticket tool. Use the ticket title, description, and acceptance criteria as the review scope.
   Gather the diff for any uncommitted local changes, or `git diff main...HEAD` if on a feature
   branch.
+- **Commit-ish** (e.g., `HEAD~1`, `abc1234`) — Treat it as a git revision and review
+  `git diff {rev}^..{rev}`.
 - **PR number or GitHub URL** (e.g., `45`, `#45`, `https://github.com/...`) — Fetch PR metadata with `gh pr view {number} --json number,title,body,headRefName,baseRefName,author,url`. Check out the branch with `wt switch {branch}` if `wt` is available, otherwise `git fetch && git checkout {branch}`. Use the PR title and body as the review scope, and `git diff main...HEAD` for the diff.
 - **Freeform instructions** (e.g., "this branch against main for code quality") — Treat the text directly as the review goal and scope. Gather whatever diff is appropriate (e.g., `git diff main...HEAD`, `git diff`, etc.).
 
@@ -41,7 +45,9 @@ Once scope is established, gather the relevant diff. Do not proceed with a revie
 Run the project's full CI command, as documented in the project instructions. It includes the
 full test suite. Do not run the test suite separately in the same review session.
 
-Proceed with the review per your operating rules: restrict to the established scope, apply the severity framework, call `review-comment` for each finding, and produce the structured summary verdict.
+Proceed with the review per the `review` skill: restrict to the established scope, apply the
+severity framework, post the findings with the `write-review` skill, and produce the structured
+summary verdict.
 
 Additional Notes:
 

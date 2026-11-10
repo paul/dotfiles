@@ -27,9 +27,8 @@ Run \`opencode models\` and use the newest model in the family:
 - Routine work from a clear plan: DeepSeek Flash (ex: \`opencode-go/deepseek-v4.1-flash\`)
 - Planning, ambiguity, coordinating parallel work: newest Claude Opus (ex: \`claude-agent/opus\`)
 - UI/UX/design: newest Claude Fable (ex: \`claude-agent/fable\`)
-- Reviews: newest GPT Sol (ex: \`openai/gpt-6.1-sol\`); GPT Astra for complicated reviews (ex: \`openai/gpt-6-astra\`)
+- Reviews: the newest model made by a different company, at the same strength as the model that wrote the code. Review Claude with OpenAI. Review OpenAI or DeepSeek with Claude.
 
-Use a different model for review than the one that wrote the code.
 Do not use a version from memory; check \`opencode models\` before you choose.`;
 
 function inHerdrPane() {

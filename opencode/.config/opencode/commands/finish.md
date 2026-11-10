@@ -25,7 +25,13 @@ the full test suite. If it does, do not run the suite again separately.
 
 **If anything fails: stop immediately.** Report the errors clearly and do not proceed to commit. Fix the failures first, then re-run.
 
-## Step 3: Draft the commit
+## Step 3: Close the ticket
+
+If the project tracks tickets locally, close the ticket with its tool before the commit, so the
+ticket file goes in the commit. If tickets are managed outside this workflow, leave the ticket
+status unchanged.
+
+## Step 4: Draft the commit
 
 Draft a commit message following the project's commit conventions (from CONTRIBUTING.md):
 
@@ -35,7 +41,9 @@ Draft a commit message following the project's commit conventions (from CONTRIBU
 
 Commit the changes.
 
-## Step 4: Open a PR
+## Step 5: Open a PR
+
+Skip this step if the project instructions say to work directly on `main`.
 
 1. Read the PR template (`.github/PULL_REQUEST_TEMPLATE.md` or equivalent)
 2. Draft the PR body following all required sections in the template
@@ -44,10 +52,5 @@ Commit the changes.
    - `hub pull-request -p -m "Title\n\nbody"` (if `hub` is documented)
    - `gh pr create` (if `gh` is documented)
    - Or whatever tool the project instructions specify
-5. Return the PR URL
-
-## Step 5: Close the ticket
-
-If the project tracks tickets locally, close the ticket with its tool. If a pull request was
-opened, link it in the ticket. If tickets are managed outside this workflow, leave the ticket
-status unchanged.
+5. If the ticket lives in an outside tracker, link the PR in the ticket
+6. Return the PR URL
