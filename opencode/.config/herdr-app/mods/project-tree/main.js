@@ -105,6 +105,8 @@ export default class ProjectTree extends View {
     // only, so a tracker set up later is asked on the next start.
     this.lookups = JSON.parse(localStorage.getItem("lookups") ?? "{}");
     this.shorts = JSON.parse(localStorage.getItem("shorts") ?? "{}"); // title -> short label
+    // Space -> the ticket id found for it, still asked for after a rename drops it from the name.
+    this.spaceTickets = JSON.parse(localStorage.getItem("space.tickets") ?? "{}");
     this.ticketQueue = [];
     // Spaces made while this runs wait (at most a moment) for their git, so a
     // worktree appears under its project instead of jumping there.
@@ -203,10 +205,17 @@ export default class ProjectTree extends View {
   // after an agent makes that worktree.
   resolve(w, ps, g) {
     const start = this.work(w, ps, g, null);
-    const texts = [w.named ? w.name : null, DEFAULT_BRANCHES.has(start.branch) ? null : start.branch].filter(Boolean);
+    const name = w.named ? w.name : null;
+    const texts = this.queryTexts(name, start.branch, this.spaceTickets[w.id]);
     const key = JSON.stringify([w.machine ?? null, g.repo, ...texts]);
     const ticket = texts.length ? this.lookups[key] ?? null : null;
-    return { ...this.work(w, ps, g, ticket?.id), ticket, texts, key, cwd0: start.cwd };
+    return { ...this.work(w, ps, g, ticket?.id), ticket, texts, key, cwd0: start.cwd, name, branch0: start.branch };
+  }
+
+  // What get-ticket searches, first match wins: a ticket named in the space name beats the
+  // one found before, so renaming a space to another ticket id switches to it.
+  queryTexts(name, branch, known) {
+    return [...new Set([name, DEFAULT_BRANCHES.has(branch) ? null : branch, known].filter(Boolean))];
   }
 
   // Branches off the default one whose PR wasn't asked for yet, or not for a while.
@@ -230,16 +239,22 @@ export default class ProjectTree extends View {
     for (const w of sp) {
       const g = this.git[where(w, ps)];
       if (!g) continue;
-      const { texts, key, cwd0 } = this.resolve(w, ps, g);
+      const { texts, key, cwd0, name, branch0 } = this.resolve(w, ps, g);
+      const found = this.lookups[key];
+      if (found && this.spaceTickets[w.id] !== found.id) {
+        this.spaceTickets[w.id] = found.id;
+        localStorage.setItem("space.tickets", JSON.stringify(this.spaceTickets));
+        this.lookups[JSON.stringify([w.machine ?? null, g.repo, ...this.queryTexts(name, branch0, found.id)])] = found;
+      }
       if (!texts.length || key in this.lookups) continue;
       this.lookups[key] = undefined;
-      this.ticketQueue.push({ key, on: w.machine ?? null, cwd: cwd0, texts });
+      this.ticketQueue.push({ key, on: w.machine ?? null, cwd: cwd0, texts, space: w.id, repo: g.repo, name, branch: branch0 });
     }
     if (!this.ticketQueue.length || this.fetchingTickets) return;
     this.fetchingTickets = true;
     cx.spawn(async (cx) => {
       while (this.ticketQueue.length) {
-        const { key, on, cwd, texts } = this.ticketQueue.shift();
+        const { key, on, cwd, texts, space, repo, name, branch } = this.ticketQueue.shift();
         let ticket = null;
         try {
           const r = await exec("get-ticket", ["-C", cwd, ...texts], { on, timeout: 30000 });
@@ -251,6 +266,12 @@ export default class ProjectTree extends View {
           localStorage.setItem("shorts", JSON.stringify(this.shorts));
         }
         this.lookups[key] = ticket;
+        if (ticket) {
+          this.spaceTickets[space] = ticket.id;
+          localStorage.setItem("space.tickets", JSON.stringify(this.spaceTickets));
+          // The next look includes the found id: answer it now instead of asking again.
+          this.lookups[JSON.stringify([on, repo, ...this.queryTexts(name, branch, ticket.id)])] = ticket;
+        }
         localStorage.setItem("lookups", JSON.stringify(Object.fromEntries(Object.entries(this.lookups).filter(([, v]) => v?.short))));
         cx.notify();
       }
@@ -604,7 +625,17 @@ export default class ProjectTree extends View {
     const head = h_flex().id(`space-${w.id}`).h(28).flex_none().pl(depth ? 22 : 4).pr(6).gap(6).items_center().rounded(7)
       .when(on, (el) => el.bg(t.selected))
       .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
-      .on_mouse_down("left", () => { this.pressed = w.id; this.pressedGroup = group; this.over = w.id; })
+      .on_mouse_down("left", (e) => {
+        if (e.click_count === 2) {
+          this.pressed = this.over = null;
+          openOverlay({ mod: "prompt", kind: "dialog", width: 420, height: 210, props: {
+            title: "Rename space", value: name, hint: "Empty: back to the automatic name.",
+            command: { name: "space.rename", args: { id: w.id } },
+          } });
+          return;
+        }
+        this.pressed = w.id; this.pressedGroup = group; this.over = w.id;
+      })
       .on_mouse_down("right", () => openOverlay({ mod: "menu", kind: "popup", width: 200, height: 260, props: { tab: "space", target: { id: w.id } } }))
       .child(this.chevron(key, folded, t))
       .when(depth === 0, (el) => el.child(h_flex().size(18).flex_none().rounded(5).bg(fill).items_center().justify_center().text_size(10.5).font_bold().text_color("#ffffff").child([...w.name][0]?.toUpperCase() ?? "?")))
@@ -640,6 +671,7 @@ export default class ProjectTree extends View {
       .when(on, (el) => el.bg(t.raised))
       .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
       .when(c.settled, (el) => el.opacity(0.6))
+      .on_mouse_down("left", (e) => { if (e.click_count === 2) run("tab.rename", { id: c.id }); })
       .on_click(() => {
         if (!w.active) run("space.select", { id: w.id });
         run("tab.select", { id: c.id });
