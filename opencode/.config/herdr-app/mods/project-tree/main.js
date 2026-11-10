@@ -90,7 +90,7 @@ function parseWorktrees(text) {
 
 export default class ProjectTree extends View {
   init(_props, cx) {
-    this.git = {}; // where() -> { name, branch, ahead, behind, repo, linked }, null: not a repo
+    this.git = {}; // where() -> { name, branch, repo, linked }, null: not a repo
     this.checked = {}; // where() -> when it was last looked at
     this.unsure = new Set(); // where()s git couldn't answer for (a machine away)
     this.pending = new Set(); // where()s to look at next
@@ -134,7 +134,22 @@ export default class ProjectTree extends View {
     const prs = this.duePrs(now, sp, ps);
     if (prs.length) this.refreshPrs(prs, cx);
     this.wantTickets(sp, ps, cx);
-    if (sp.some((s) => !this.shown.has(s.id))) cx.notify();
+    const waiting = sp.some((s) => !this.shown.has(s.id));
+    this.publishFolders(this.tree());
+    if (waiting) cx.notify();
+  }
+
+  // Where a space's new tabs start (project-tabs opens them): the checkout of its
+  // branch, else the project's main checkout. Published from the timer, which keeps
+  // running while the sidebar is hidden.
+  publishFolders(tree) {
+    const out = {};
+    for (const host of tree.values()) for (const p of host.projects) {
+      const list = this.worktrees[p.repo]?.list ?? [];
+      const main = list.find((x) => DEFAULT_BRANCHES.has(x.branch))?.path ?? JSON.parse(p.repo)[1].replace(/\/\.git$/, "");
+      for (const r of p.rows) out[r.w.id] = list.find((x) => x.branch && x.branch === r.branch)?.path ?? main;
+    }
+    if (JSON.stringify(out) !== JSON.stringify(shared("space.folder") ?? {})) setShared("space.folder", out);
   }
 
   // Places whose git could have changed: new ones (a new space, a cd), where a
@@ -153,7 +168,7 @@ export default class ProjectTree extends View {
     for (const p of ps) {
       if (!p.terminal || !spaceOf[p.tab]) continue;
       busy[p.pane] = p.status === "working" || !(p.program?.shell || p.program?.agent);
-      if (this.busy[p.pane] && !busy[p.pane]) this.sameRepo(at[spaceOf[p.tab].id], keys).forEach((k) => due.add(k));
+      if (this.busy[p.pane] && !busy[p.pane]) due.add(at[spaceOf[p.tab].id]);
     }
     this.busy = busy;
     for (const m of machines()) {
@@ -170,11 +185,6 @@ export default class ProjectTree extends View {
     return due;
   }
 
-  // `key` and the other places in its repo (a commit there moves their ahead/behind).
-  sameRepo(key, keys) {
-    const repo = this.git[key]?.repo;
-    return [key, ...(repo ? [...keys].filter((k) => this.git[k]?.repo === repo) : [])];
-  }
 
   // The branch a space works on: a pane of it off the default branch, else the repo's
   // worktree whose branch names the space's ticket (an agent made it with `wt switch`
@@ -375,14 +385,13 @@ export default class ProjectTree extends View {
     });
   }
 
-  // One place's git: branch, ahead/behind, its repo.
+  // One place's git: its branch and its repo.
   async check(key, cx) {
     const [on, cwd] = JSON.parse(key);
     this.checked[key] = Date.now();
     this.unsure.delete(key);
     try {
-      // Writes nothing under .git (index lock, fsmonitor cookie): watch() would wake on it.
-      const r = await exec("git", ["--no-optional-locks", "-c", "core.fsmonitor=false", "status", "--porcelain=v2", "--branch"], { cwd, on });
+      const r = await exec("git", ["branch", "--show-current"], { cwd, on });
       if (r.code !== 0) {
         // Only git's own "no" is remembered as no repo; anything else is asked again.
         if (!/not a git repository/i.test(r.stderr)) this.unsure.add(key);
@@ -395,15 +404,7 @@ export default class ProjectTree extends View {
       const common = await exec("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], { cwd, on });
       const repo = common.stdout.trim();
       const name = repo.endsWith("/.git") ? base(repo.slice(0, -5)) : base(repo).replace(/\.git$/, "");
-      const info = { name, branch: null, ahead: 0, behind: 0, repo: JSON.stringify([on, repo]), linked: repo !== `${top.stdout.trim()}/.git` };
-      for (const line of r.stdout.split("\n")) {
-        if (line.startsWith("# branch.head ")) info.branch = line.slice(14);
-        else if (line.startsWith("# branch.ab ")) {
-          const [a, b] = line.slice(12).split(" ");
-          info.ahead = Math.abs(parseInt(a, 10)) || 0;
-          info.behind = Math.abs(parseInt(b, 10)) || 0;
-        }
-      }
+      const info = { name, branch: r.stdout.trim() || null, repo: JSON.stringify([on, repo]), linked: repo !== `${top.stdout.trim()}/.git` };
       this.git[key] = info;
       await this.listWorktrees(info.repo, cwd, on);
       if (!on) this.watch(repo, cx);
@@ -612,9 +613,7 @@ export default class ProjectTree extends View {
       .when(Boolean(ticket), (el) => el.child(this.pill(`ticket-${w.id}`, ticket.id, t.accent, t,
         [ticket.status, ticket.title].filter(Boolean).join(" · "), () => ticket.url && openUrl(ticket.url))))
       .when(Boolean(pr), (el) => el.child(this.pill(`pr-${w.id}`, `#${pr.number}`, prColor, t,
-        `${pr.isDraft ? "Draft · " : ""}${pr.state.toLowerCase()} · ${pr.title}`, () => openUrl(pr.url))))
-      .when(Boolean(g?.ahead), (el) => el.child(div().flex_none().text_size(11).text_color(t.ansi2).child(`\u2191${g.ahead}`)))
-      .when(Boolean(g?.behind), (el) => el.child(div().flex_none().text_size(11).text_color(t.ansi1).child(`\u2193${g.behind}`)));
+        `${pr.isDraft ? "Draft · " : ""}${pr.state.toLowerCase()} · ${pr.title}`, () => openUrl(pr.url))));
     const ps = panes();
     // The space and its tabs move as one block, so the drop line goes above or below all of it.
     return [v_flex().id(`space-block-${w.id}`).relative().flex_none().gap(1)
