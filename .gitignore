@@ -9,4 +9,18 @@ git/.gnupg/trustdb.gpg
 nvim/.config/nvim/.netrwhist
 nvim/.local/share/nvim/shada/main.shada
 
+# Herdr writes most of its home itself (state, shipped layouts and mods, type files):
+# track only what is mine.
+opencode/.config/herdr-app/*
+!opencode/.config/herdr-app/settings.json
+!opencode/.config/herdr-app/fonts/
+!opencode/.config/herdr-app/layouts/
+opencode/.config/herdr-app/layouts/*
+!opencode/.config/herdr-app/layouts/projects.json
+!opencode/.config/herdr-app/mods/
+opencode/.config/herdr-app/mods/*
+!opencode/.config/herdr-app/mods/project-tree/
+opencode/.config/herdr-app/mods/*/gpui-kit.d.ts
+opencode/.config/herdr-app/mods/*/jsconfig.json
+
 nvim/.local/share/nvim/shada/main.shada

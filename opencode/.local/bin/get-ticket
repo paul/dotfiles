@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# get-ticket [-C <dir>] [--full] <text>...
+#
+# Finds the first ticket id in <text> for the tracker the repo at <dir> declares,
+# and prints it as one JSON line: {tool, id, title, url, status}.
+# --full adds body, comments [{author, created, body}] and raw (the tracker's own output).
+# Exits 1 when the repo declares no tracker, or no text names a ticket it knows.
+#
+# Declare a tracker once per repo (all worktrees share it):
+#   git config ticket.tool linear|jira|tk|github
+# A repo with a .tickets/ folder uses tk without the setting.
+
+set -uo pipefail
+
+dir=.
+full=false
+texts=()
+while (($#)); do
+  case $1 in
+    -C) dir=$2; shift 2 ;;
+    --full) full=true; shift ;;
+    -h|--help) sed -n '2,11s/^# \{0,1\}//p' "$0"; exit 0 ;;
+    *) texts+=("$1"); shift ;;
+  esac
+done
+cd "$dir" 2>/dev/null || { echo "get-ticket: no such folder: $dir" >&2; exit 2; }
+((${#texts[@]})) || exit 1
+
+tool=$(git config --get ticket.tool 2>/dev/null)
+if [[ -z $tool ]]; then
+  top=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+  [[ -d $top/.tickets ]] && tool=tk
+fi
+[[ -n $tool ]] || exit 1
+
+# Candidate ids in the order the texts give them, each once.
+candidates() {
+  local pattern=$1 text
+  for text in "${texts[@]}"; do
+    grep -oiE "$pattern" <<<"$text"
+  done | awk '!seen[$0]++'
+}
+
+# Atlassian Document Format to plain text.
+ADF='def adf:
+  if type == "array" then map(adf) | join("")
+  elif type != "object" then ""
+  elif .type == "text" then .text
+  elif .type == "hardBreak" then "\n"
+  elif .type == "mention" or .type == "emoji" then (.attrs.text // "")
+  elif .type == "inlineCard" then (.attrs.url // "")
+  elif (.type | IN("paragraph", "heading", "listItem", "codeBlock", "blockquote", "tableRow")) then ((.content // []) | adf) + "\n"
+  else (.content // []) | adf end;'
+
+linear() {
+  local id=$1 out args=(issue view "$1" --json --no-download --no-input)
+  $full || args+=(--no-comments)
+  out=$(command linear "${args[@]}" 2>/dev/null) || return 1
+  jq -c --argjson full "$full" '
+    {tool: "linear", id: .identifier, title, url, status: .state.name}
+    + if $full then {body: (.description // ""),
+        comments: [(.comments // [])[] | {author: (.user.name // .externalUser.name), created: .createdAt, body}],
+        raw: .} else {} end' <<<"$out"
+}
+
+jira() {
+  local id out site fields=summary,status
+  id=$(tr '[:lower:]' '[:upper:]' <<<"$1")
+  $full && fields='*all'
+  out=$(acli jira workitem view "$id" --fields "$fields" --json 2>/dev/null) || return 1
+  site=$(acli jira auth status 2>/dev/null | sed -n 's/^ *Site: *//p')
+  jq -c --argjson full "$full" --arg site "$site" "$ADF"'
+    {tool: "jira", id: .key, title: .fields.summary,
+     url: (if $site == "" then null else "https://\($site)/browse/\(.key)" end),
+     status: .fields.status.name}
+    + if $full then {body: (.fields.description | adf),
+        comments: [(.fields.comment.comments // [])[] | {author: .author.displayName, created, body: (.body | adf)}],
+        raw: .} else {} end' <<<"$out"
+}
+
+tk() {
+  local id out
+  id=$(tr '[:upper:]' '[:lower:]' <<<"$1")
+  out=$(command tk show "$id" 2>/dev/null) || return 1
+  jq -Rsc --argjson full "$full" --arg id "$id" '
+    (split("\n")) as $lines
+    | ($lines | index("---")) as $a
+    | ($lines[$a + 1:] | index("---") + $a + 1) as $b
+    | ($lines[$b + 1:] | map(select(startswith("# "))) | first // "" | ltrimstr("# ")) as $title
+    | ([$lines[$a + 1:$b][] | capture("^status: *(?<s>.*)$").s] | first) as $status
+    | {tool: "tk", id: $id, title: $title, url: null, status: $status}
+      + if $full then {body: ($lines[$b + 1:] | join("\n") | sub("^\\s*# [^\n]*\n"; "") | sub("^\\s+"; "")),
+          comments: [], raw: .} else {} end' <<<"$out"
+}
+
+github() {
+  local n=${1#\#} out fields=number,title,url,state
+  $full && fields+=,body,comments,labels,assignees,author,createdAt
+  out=$(gh issue view "$n" --json "$fields" 2>/dev/null) || return 1
+  jq -c --argjson full "$full" '
+    {tool: "github", id: "#\(.number)", title, url, status: .state}
+    + if $full then {body: (.body // ""),
+        comments: [(.comments // [])[] | {author: .author.login, created: .createdAt, body}],
+        raw: .} else {} end' <<<"$out"
+}
+
+case $tool in
+  linear|jira) pattern='(^|[^a-z0-9])[a-z][a-z0-9]*-[0-9]+' ;;
+  tk) pattern='(^|[^a-z0-9])[a-z0-9]+-[0-9a-f]{4}([^0-9a-z]|$)' ;;
+  github) pattern='#[0-9]+|(^|/)[0-9]+-' ;;
+  *) echo "get-ticket: unknown ticket.tool: $tool" >&2; exit 2 ;;
+esac
+
+while read -r id; do
+  id=$(sed -E 's/^[^A-Za-z0-9#]+//; s/[^A-Za-z0-9]+$//' <<<"$id")
+  [[ -n $id ]] || continue
+  "$tool" "$id" && exit 0
+done < <(candidates "$pattern")
+exit 1
