@@ -110,6 +110,8 @@ export default class ProjectTree extends View {
     // worktree appears under its project instead of jumping there.
     this.shown = new Set(spaces().map((s) => s.id));
     this.born = {};
+    this.pressed = null; // space being dragged
+    this.over = null; // space it would land at
     this.machines = [];
     this.reconnecting = JSON.parse(localStorage.getItem("machines.reconnecting") ?? "{}");
     for (const state of Object.values(this.reconnecting)) state.busy = false;
@@ -464,11 +466,9 @@ export default class ProjectTree extends View {
       if (!host.projects.has(g.repo)) host.projects.set(g.repo, { name: g.name, repo: g.repo, rows: [] });
       host.projects.get(g.repo).rows.push(row);
     }
-    const first = (r) => (DEFAULT_BRANCHES.has(r.g.branch) ? 0 : 1);
     const out = new Map();
     for (const [m, host] of hosts) {
       const projects = [...host.projects.values()].sort((a, b) => a.name.localeCompare(b.name));
-      for (const p of projects) p.rows.sort((a, b) => first(a) - first(b) || a.w.index - b.w.index);
       out.set(m, { projects, loose: host.loose });
     }
     return out;
@@ -534,7 +534,7 @@ export default class ProjectTree extends View {
       return [
         head,
         ...host.projects.flatMap((p) => this.project(p, m, t)),
-        ...host.loose.flatMap((r) => this.space(r, t, 0)),
+        ...host.loose.flatMap((r) => this.space(r, t, 0, `loose:${m}`)),
       ];
     });
   }
@@ -542,6 +542,7 @@ export default class ProjectTree extends View {
   chevron(key, folded, t) {
     return div().id(`fold-${key}`).size(14).flex_none().flex().items_center().justify_center().rounded(3).text_color(t.dim)
       .hover(s => s.bg(t.hover).text_color(t.foreground))
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
       .on_click((_e, cx) => { cx.stop_propagation(); this.toggle(key, cx); })
       .child(svg(ICON(`chevron-${folded ? "right" : "down"}`)).size(10));
   }
@@ -564,19 +565,31 @@ export default class ProjectTree extends View {
         .tooltip("New space on main")
         .on_click((_e, cx) => { cx.stop_propagation(); this.newSpace(p, m, cx); })
         .child("+"));
-    return [head, ...(folded ? [] : p.rows.flatMap((r) => this.space(r, t, 1)))];
+    return [head, ...(folded ? [] : p.rows.flatMap((r) => this.space(r, t, 1, p.repo)))];
   }
 
   pill(id, text, color, t, tip, onClick) {
     return div().id(id).flex_none().px(5).h(17).rounded(4).flex().items_center().text_size(10.5).font_semibold()
       .bg(color + "22").text_color(color).hover(s => s.bg(color + "40"))
       .when(Boolean(tip), el => el.tooltip(tip))
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
       .on_click((_e, cx) => { cx.stop_propagation(); onClick(); })
       .child(text);
   }
 
+  // A release lands where the drop line shows, even off the rows (below the last
+  // space): `over` keeps the last space hovered in the dragged one's group.
+  drop(cx) {
+    const from = this.pressed, over = this.over;
+    this.pressed = this.over = null;
+    if (from !== null && over !== null && from !== over) run("space.move", { id: from, index: spaces().findIndex((s) => s.id === over) + 1 });
+    else if (from !== null && from === over) run("space.select", { id: from });
+    cx.notify();
+  }
+
   // depth 1: under a project; 0: straight under its machine (no repo).
-  space({ w, g, branch, pr, ticket }, t, depth) {
+  // A drag reorders spaces within `group` only.
+  space({ w, g, branch, pr, ticket }, t, depth, group) {
     const key = `s:${w.id}`;
     const folded = this.treeFolded.has(key);
     const on = w.active;
@@ -585,10 +598,12 @@ export default class ProjectTree extends View {
     const color = colors[w.id] ?? "ansi6";
     const fill = color.startsWith("#") ? color : (MARK[color] ?? t[color]);
     const prColor = !pr ? null : pr.state === "MERGED" ? t.ansi5 : pr.state === "CLOSED" ? t.ansi1 : pr.isDraft ? t.muted : t.ansi2;
+    const order = spaces().map((s) => s.id);
+    const from = order.indexOf(this.pressed), here = order.indexOf(w.id);
     const head = h_flex().id(`space-${w.id}`).h(28).flex_none().pl(depth ? 22 : 4).pr(6).gap(6).items_center().rounded(7)
       .when(on, (el) => el.bg(t.selected))
       .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
-      .on_click(() => run("space.select", { id: w.id }))
+      .on_mouse_down("left", () => { this.pressed = w.id; this.pressedGroup = group; this.over = w.id; })
       .on_mouse_down("right", () => openOverlay({ mod: "menu", kind: "popup", width: 200, height: 260, props: { tab: "space", target: { id: w.id } } }))
       .child(this.chevron(key, folded, t))
       .when(depth === 0, (el) => el.child(h_flex().size(18).flex_none().rounded(5).bg(fill).items_center().justify_center().text_size(10.5).font_bold().text_color("#ffffff").child([...w.name][0]?.toUpperCase() ?? "?")))
@@ -600,9 +615,22 @@ export default class ProjectTree extends View {
         `${pr.isDraft ? "Draft · " : ""}${pr.state.toLowerCase()} · ${pr.title}`, () => openUrl(pr.url))))
       .when(Boolean(g?.ahead), (el) => el.child(div().flex_none().text_size(11).text_color(t.ansi2).child(`\u2191${g.ahead}`)))
       .when(Boolean(g?.behind), (el) => el.child(div().flex_none().text_size(11).text_color(t.ansi1).child(`\u2193${g.behind}`)));
-    if (folded) return [head];
     const ps = panes();
-    return [head, ...(w.tabs ?? []).map((c) => this.tab(c, w, ps, t, depth))];
+    // The space and its tabs move as one block, so the drop line goes above or below all of it.
+    return [v_flex().id(`space-block-${w.id}`).relative().flex_none().gap(1)
+      .when(this.pressed === w.id && this.over !== w.id, (el) => el.opacity(0.5))
+      .when(this.pressed !== null && this.over === w.id && this.pressed !== w.id, (el) => el.child(
+        div().absolute().left(0).right(0).h(2).bg(t.accent)
+          .when(from < here, (line) => line.bottom(-1))
+          .when(from > here, (line) => line.top(-1))))
+      .on_mouse_move((_e, cx) => {
+        if (this.pressed === null) return;
+        const over = this.pressedGroup === group ? w.id : null;
+        if (this.over !== over) { this.over = over; cx.notify(); }
+      })
+      .on_mouse_up("left", (_e, cx) => this.drop(cx))
+      .child(head)
+      .when(!folded, (el) => el.children((w.tabs ?? []).map((c) => this.tab(c, w, ps, t, depth))))];
   }
 
   tab(c, w, ps, t, depth) {
@@ -684,6 +712,7 @@ export default class ProjectTree extends View {
           .tooltip("New space")
           .on_click(() => run("space.new")).child(svg(ICON("plus")).size(14))))
       .child(v_flex().flex_1().min_h(0).px(collapsed ? 0 : 8).pb(14).gap(1).overflow_y_scrollbar().mode("always")
+        .on_mouse_up("left", (_e, cx) => this.drop(cx))
         .children(this.grouped(t, collapsed, tree)));
   }
 }
