@@ -20,6 +20,7 @@ opencode/.config/herdr-app/layouts/*
 !opencode/.config/herdr-app/mods/
 opencode/.config/herdr-app/mods/*
 !opencode/.config/herdr-app/mods/project-tree/
+!opencode/.config/herdr-app/mods/space-start/
 opencode/.config/herdr-app/mods/*/gpui-kit.d.ts
 opencode/.config/herdr-app/mods/*/jsconfig.json
 

@@ -272,10 +272,10 @@ export default class ProjectTree extends View {
   newSpace(p, m, cx) {
     cx.spawn(async () => {
       const folder = await this.mainCheckout(p);
-      openOverlay({ mod: "prompt", kind: "dialog", width: 420, height: 210, props: {
+      openOverlay({ mod: "space-start", kind: "dialog", width: 460, height: 230, props: {
         title: `New space in ${p.name}`,
-        hint: `Ticket or name. Starts a terminal in ${folder}${m ? ` on ${m}` : ""}.`,
-        command: { name: "space.new", args: { folder, machine: m ?? "" } },
+        folder,
+        machine: m ?? "",
       } });
     });
   }
