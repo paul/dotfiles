@@ -34,6 +34,44 @@ app/aspects/<domain>/
 
 Use `app/transactions/` only for cross-domain operations that do not belong naturally to a single slice.
 
+## Layers
+
+Every class belongs to exactly one layer. Dependencies point down only.
+
+| Layer | Holds |
+|---|---|
+| Presentation | controllers, Phlex views and components, forms, filters |
+| Application | transactions, policies, notifiers, mailers |
+| Domain | models, value objects, DataModels, query objects |
+| Infrastructure | clients, adapters, configuration objects, logging, instrumentation |
+
+- A lower layer never reads from a higher one. Models do not read `Current`, params, requests, policies, or components. Transactions do not accept `request` or `params`.
+- If a new class needs objects from two layers that are not adjacent, split it.
+- A layer may skip the one below it. Do not add pass-through objects only to fill a gap.
+
+## Specification Test
+
+List the cases an object's spec must cover. If a case belongs to another layer's job, move that behavior to that layer.
+
+Example: a controller spec that covers each webhook event type tests application logic. Move the event handling into a transaction and leave one controller case for the wiring.
+
+## New Abstractions
+
+- Do not extract early. Wait until the same shape appears two or three times.
+- A new kind of object needs a convention: a base class, a name suffix (`*Query`, `*Filter`, `*Policy`, `*Notifier`), and one public entry method.
+- A folder of unrelated objects with no shared interface is not a layer. Split it into named abstractions.
+
+## Refactor Targets
+
+Pick refactor targets by churn × complexity, not by file length.
+
+```sh
+git log --format=oneline --since=1.year -- app/models/user.rb | wc -l   # churn
+flog -s app/models/user.rb                                              # complexity
+```
+
+Start with files in the top ten of both lists.
+
 ## Boundaries
 
 - Models define data shape: associations, scopes, string enums, and minimal validations.
@@ -56,6 +94,8 @@ Keep the boundary clean:
 - Clients should raise for transport or HTTP failures instead of returning business-level monads.
 - Adapters should accept application inputs, translate to provider inputs, call the client, parse the response, and return monadic results.
 - Do not leak provider-shaped hashes far past the adapter boundary.
+
+Use one adapter per provider. Add a swappable backend only when an environment needs different behavior, for example a no-op adapter in staging. Register the backend per environment in the container. Do not branch on the environment inside the adapter.
 
 ## Data Models
 

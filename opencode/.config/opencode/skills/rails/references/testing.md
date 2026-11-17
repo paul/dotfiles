@@ -5,6 +5,7 @@ Use RSpec and dependency injection.
 ## Priorities
 
 - Transactions get the most coverage.
+- Policies, filters, query objects, value objects, and notifiers get unit specs. Transaction specs then cover one case per collaborator, not every branch.
 - Adapters and clients are tested at the HTTP boundary.
 - Phlex components are tested when they contain meaningful conditional rendering.
 - System specs are smoke tests for critical user flows.
