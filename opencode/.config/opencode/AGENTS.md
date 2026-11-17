@@ -68,6 +68,10 @@ Every file in prose is a Markdown link to an absolute `file://` URL, as in the e
   directory, with `#line` as the fragment.
 - Use `%20` for spaces. Do not link paths inside code blocks.
 
+## Herdr
+
+If the user asks for work in Herdr spaces, or a task needs Herdr, run `hc --skill` (terminals and agents) and `herdr-app --skill` (window, keys, layouts, mods).
+
 # CRITICAL RULES
 
 - YAGNI. "No code is better than no code."
