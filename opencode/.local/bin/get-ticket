@@ -3,7 +3,7 @@
 #
 # Finds the first ticket id in <text> for the tracker the repo at <dir> declares,
 # and prints it as one JSON line: {tool, id, title, url, status}.
-# --full adds body, comments [{author, created, body}] and raw (the tracker's own output).
+# --full adds body as Markdown, comments [{author, created, body}] and raw (the tracker's own output).
 # Exits 1 when the repo declares no tracker, or no text names a ticket it knows.
 #
 # Declare a tracker once per repo (all worktrees share it):
@@ -41,16 +41,60 @@ candidates() {
   done | awk '!seen[$0]++'
 }
 
-# Atlassian Document Format to plain text.
-ADF='def adf:
-  if type == "array" then map(adf) | join("")
-  elif type != "object" then ""
-  elif .type == "text" then .text
-  elif .type == "hardBreak" then "\n"
-  elif .type == "mention" or .type == "emoji" then (.attrs.text // "")
-  elif .type == "inlineCard" then (.attrs.url // "")
-  elif (.type | IN("paragraph", "heading", "listItem", "codeBlock", "blockquote", "tableRow")) then ((.content // []) | adf) + "\n"
-  else (.content // []) | adf end;'
+# Atlassian Document Format to Markdown.
+ADF='def adf($ind):
+  def inline:
+    if type == "array" then map(inline) | join("")
+    elif type != "object" then ""
+    elif .type == "text" then
+      .text as $t | (.marks // []) as $m
+      | (if ($m | map(.type) | index("code")) then "`\($t)`" else $t end)
+      | (if ($m | map(.type) | index("strong")) then "**\(.)**" else . end)
+      | (if ($m | map(.type) | index("em")) then "*\(.)*" else . end)
+      | (if ($m | map(.type) | index("strike")) then "~~\(.)~~" else . end)
+      | (if ($m | map(.type) | index("link")) then "[\(.)](\($m[] | select(.type == "link") | .attrs.href))" else . end)
+    elif .type == "hardBreak" then "  \n"
+    elif .type == "mention" then "@\(.attrs.text // .attrs.id)"
+    elif .type == "emoji" then (.attrs.text // .attrs.shortName // "")
+    elif .type == "inlineCard" then (.attrs.url // "")
+    elif .type == "status" then "`\(.attrs.text)`"
+    else ((.content // []) | map(inline) | join(""))
+    end;
+  def cell:
+    (.content // [])
+    | map(if .type == "paragraph" then ((.content // []) | map(inline) | join("")) else adf($ind) end)
+    | join(" ") | gsub("\\|"; "\\|") | gsub("\n"; " ");
+  def table:
+    (.content // []) as $rows
+    | ($rows[0].content // [] | map(cell)) as $head
+    | ["\($ind)| \($head | join(" | ")) |", "\($ind)| \($head | map("---") | join(" | ")) |"]
+      + ($rows[1:] | map("\($ind)| \((.content // []) | map(cell) | join(" | ")) |"))
+    | join("\n");
+  def item($ordered; $n):
+    .content as $c
+    | (($c[0] // {}) | if .type == "paragraph" then ((.content // []) | map(inline) | join("")) else "" end) as $first
+    | ($c[1:] | map(adf($ind + "  ")) | map(select(. != "")) | join("\n\n")) as $rest
+    | "\($ind)\(if $ordered then "\($n). " else "- " end)\($first)" + (if $rest == "" then "" else "\n\($rest)" end);
+  if type != "object" then ""
+  elif .type == "doc" then ((.content // []) | map(adf("")) | map(select(. != "")) | join("\n\n"))
+  elif .type == "paragraph" then ((.content // []) | map(inline) | join(""))
+  elif .type == "heading" then ("#" * (.attrs.level // 1)) + " " + ((.content // []) | map(inline) | join(""))
+  elif .type == "rule" then "\($ind)---"
+  elif .type == "blockquote" then (((.content // []) | map(adf($ind)) | join("\n\n")) | split("\n") | map("\($ind)> " + .) | join("\n"))
+  elif .type == "codeBlock" then "\($ind)```\(.attrs.language // "")\n\((.content // []) | map(.text // "") | join("") | split("\n") | map($ind + .) | join("\n"))\n\($ind)```"
+  elif .type == "bulletList" then ((.content // []) | map(item(false; null)) | join("\n"))
+  elif .type == "orderedList" then ((.attrs.order // 1) as $start | (.content // []) | to_entries | map(.key as $k | .value | item(true; $start + $k)) | join("\n"))
+  elif .type == "listItem" then item(false; null)
+  elif .type == "table" then table
+  elif .type == "mediaSingle" or .type == "mediaGroup" then ((.content // []) | map(adf($ind)) | join("\n"))
+  elif .type == "media" then "\($ind)[image: \(.attrs.alt // .attrs.id // "media")]"
+  elif .type == "panel" then (((.content // []) | map(adf($ind)) | join("\n\n")) | split("\n") | map("\($ind)> " + .) | join("\n"))
+  elif .type == "expand" or .type == "nestedExpand" then ((.content // []) | map(adf($ind)) | join("\n\n"))
+  elif .type == "taskList" then ((.content // []) | map(adf($ind)) | join("\n"))
+  elif .type == "taskItem" then "\($ind)- [\(if .attrs.state == "DONE" then "x" else " " end)] \((.content // []) | map(if .type == "paragraph" then ((.content // []) | map(inline) | join("")) else adf($ind) end) | join(" "))"
+  else ((.content // []) | map(adf($ind)) | map(select(. != "")) | join("\n\n"))
+  end;
+def adf: adf("");'
 
 linear() {
   local id=$1 out args=(issue view "$1" --json --no-download --no-input)
