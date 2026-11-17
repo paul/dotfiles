@@ -2,17 +2,25 @@
 # Runs one unit of automated work as the automation-lead agent, on the newest
 # Claude Opus that `opencode models` lists.
 #
-#   bot-run space <title> <prompt>                 start the work in its own Herdr space
-#   bot-run run <title> <prompt>                   run the work here, with no Herdr space
-#   bot-run resume <session-id> <title>            carry on an interrupted session in a new space
-#   bot-run session <workspace> <title> <prompt> [session-id]   runs inside the space's pane
+#   bot-run run <title> <prompt>                   run the work in the job's space, and wait
+#   bot-run space <title> <prompt>                 start the work in its own tab
+#   bot-run resume <session-id> <title>            carry on an interrupted session in a new tab
+#   bot-run lead <space> <title> <prompt>          the program the coordinator's terminal runs
+#   bot-run session <space> <title> <prompt> [session-id]   the program a worker's terminal runs
 #
-# A space's session ends as an interactive TUI. A run that leaves no watch running
-# gets its space closed here, unless the agent has created its hold file, which
-# means a human decision is outstanding.
+# `space` and `resume` print {"space":...,"terminal":...} on one line.
+#
+# Every run joins the herdr-app space that BOT_SPACE names, found by name or made
+# here when it is missing. A space keeps an `idle` shell tab, because the app
+# removes a space when its last terminal ends. A run's own tab closes when its
+# terminal ends, and the space is closed only by hand.
+#
+# hc starts a terminal with a clean environment, so the space name travels as an
+# argument, and `lead` and `session` export it again for the workers they start.
 set -euo pipefail
 
 STATE=${XDG_STATE_HOME:-$HOME/.local/state}/agent-jobs
+SPACES=$STATE/spaces.json
 
 lead() {
   local model
@@ -20,40 +28,125 @@ lead() {
   opencode run --agent automation-lead --model "${model:?no Claude Opus model listed}" "$@"
 }
 
+# The app's space of this name, made with an idle tab when it is missing. The
+# app's own list wins over the cache every time, because a space can be closed by
+# hand; the cache only answers while the window is closed.
+space_id() {
+  local name=$1 folder=$2 id=''
+  id=$(herdr-app ls 2>/dev/null |
+    jq -r --arg n "$name" '.spaces[] | select(.name == $n) | .id' | head -1) || id=''
+  if [[ -z $id ]]; then
+    id=$(herdr-app 'do' space.new --name "$name" --folder "$folder" --tab idle \
+      2>/dev/null | jq -r '.space // empty') || id=''
+  fi
+  if [[ -z $id ]]; then
+    id=$(cached_space "$name")
+    echo "herdr-app has no space '$name'${id:+; using $id from the cache}" >&2
+  else
+    remember_space "$name" "$id"
+  fi
+  printf '%s' "$id"
+}
+
+cached_space() {
+  [[ -f $SPACES ]] || return 0
+  jq -r --arg n "$1" '.[$n] // empty' "$SPACES"
+}
+
+remember_space() {
+  local tmp
+  mkdir -p "$STATE"
+  tmp=$(mktemp "$STATE/spaces.XXXXXX")
+  { [[ -f $SPACES ]] && cat "$SPACES" || echo '{}'; } |
+    jq --arg n "$1" --arg i "$2" '.[$n] = $i' >"$tmp"
+  mv "$tmp" "$SPACES"
+}
+
+# The job's space; empty when BOT_SPACE names none.
+job_space() {
+  [[ -n ${BOT_SPACE:-} ]] || return 0
+  space_id "$BOT_SPACE" "$1"
+}
+
+# 1-32 of a-z 0-9 - _: hc's rule for a terminal name, which its tab shows.
+terminal_name() {
+  local base
+  base=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]\+/-/g' -e 's/^-//' -e 's/-$//')
+  [[ -n $base ]] || base=job
+  printf '%s-%s-%04x' "${base:0:16}" "$(date +%m%d)" "$RANDOM"
+}
+
+# launch <space> <terminal-name> <cwd> <cmd...>: prints the terminal's address.
+launch() {
+  local space=$1 name=$2 cwd=$3
+  shift 3
+  local args=(run --bg --no-parent --name "$name" --cwd "$cwd")
+  [[ -n $space ]] && args+=(--label "herdr.space=$space")
+  hc "${args[@]}" -- "$@" | jq -r '.address'
+}
+
+# Prints the program's exit code once the terminal ends, past each check-in.
+wait_exit() {
+  local terminal=$1 answer
+  while answer=$(hc wait "$terminal" --timeout 3600 2>/dev/null); do
+    if [[ $(jq -r '.ended' <<<"$answer") == true ]]; then
+      jq -r '.exit_code // 0' <<<"$answer"
+      return 0
+    fi
+  done
+  echo "lost the terminal $terminal before it ended" >&2
+  return 1
+}
+
 space() {
-  local label prompt=$2 created workspace pane
-  label="$1 $(date +%m-%d)"
-  created=$(herdr workspace create --cwd "$PWD" --label "$label" --no-focus)
-  workspace=$(jq -r .result.workspace.workspace_id <<<"$created")
-  pane=$(jq -r .result.root_pane.pane_id <<<"$created")
-  herdr pane run "$pane" \
-    "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$label" "$prompt")" >/dev/null
+  local title=$1 prompt=$2 job=${BOT_SPACE:-} id name terminal
+  id=$(job_space "$PWD")
+  name=$(terminal_name "$title")
+  terminal=$(launch "$id" "$name" "$PWD" "$(realpath "$0")" session "$job" "$title" "$prompt")
+  jq -cn --arg s "$id" --arg t "$terminal" '{space:$s,terminal:$t}'
 }
 
 resume() {
-  local existing=$1 label=$2 created workspace pane prompt
+  local existing=$1 title=$2 prompt job=${BOT_SPACE:-} id name terminal
   prompt="You were interrupted before you finished this work. Check \`git status\`, \`git log\` and
 the branch you were on, then carry on from there. Do not start over, and do not undo the work
 already in the tree."
-  created=$(herdr workspace create --cwd "$PWD" --label "$label" --no-focus)
-  workspace=$(jq -r .result.workspace.workspace_id <<<"$created")
-  pane=$(jq -r .result.root_pane.pane_id <<<"$created")
-  herdr pane run "$pane" \
-    "exec $(printf '%q ' "$(realpath "$0")" session "$workspace" "$label" "$prompt" "$existing")" >/dev/null
+  id=$(job_space "$PWD")
+  name=$(terminal_name "$title")
+  terminal=$(launch "$id" "$name" "$PWD" "$(realpath "$0")" session "$job" "$title" "$prompt" "$existing")
+  jq -cn --arg s "$id" --arg t "$terminal" '{space:$s,terminal:$t}'
+}
+
+run() {
+  local title=$1 prompt=$2 job=${BOT_SPACE:-} id name terminal code
+  id=$(job_space "$PWD")
+  name=$(terminal_name "$title")
+  terminal=$(launch "$id" "$name" "$PWD" "$(realpath "$0")" lead "$job" "$title" "$prompt")
+  code=$(wait_exit "$terminal") || exit 1
+  (( code == 0 )) || hc read "$terminal" --lines 200 >&2 || true
+  exit "$code"
+}
+
+# The coordinator's terminal program. Workers it starts read BOT_SPACE from here.
+lead_job() {
+  local job=$1 title=$2 prompt=$3
+  export BOT_SPACE=$job
+  lead --title "$title" "$prompt"
 }
 
 session() {
-  local workspace=$1 title=$2 prompt=$3 id=${4:-} hold
+  local job=$1 title=$2 prompt=$3 id=${4:-} hold
+  export BOT_SPACE=$job
   id=${id:-"ses_bot$(date +%Y%m%d%H%M%S%N)"}
   hold="$STATE/$id.hold"
 
   lead --session "$id" --title "$title" \
-    "$prompt"$'\n\n'"Your Herdr workspace ID is $workspace. Your session ID is $id. Your hold file is
-$hold: create it with \`mkdir -p $STATE && touch $hold\` when you need a human decision, and delete it
-once the decision is made." || true
+    "$prompt"$'\n\n'"You run in the Herdr space ${job:-none}. This terminal is
+${HC_TERMINAL_ID:-unknown}. Your session ID is $id. Your hold file is $hold: create it with
+\`mkdir -p $STATE && touch $hold\` when you need a human decision, and delete it once the decision
+is made." || true
 
   if ! watching "$id" && [[ ! -e $hold ]]; then
-    herdr workspace close "$workspace" >/dev/null
     exit 0
   fi
   exec opencode --session "$id"
@@ -65,9 +158,10 @@ watching() {
 }
 
 case ${1:-} in
+  run) run "${2:?title}" "${3:?prompt}" ;;
   space) space "${2:?title}" "${3:?prompt}" ;;
-  run) lead --title "${2:?title}" "${3:?prompt}" ;;
   resume) resume "${2:?session-id}" "${3:?title}" ;;
-  session) session "${2:?workspace}" "${3:?title}" "${4:?prompt}" "${5:-}" ;;
-  *) echo "usage: bot-run space|run <title> <prompt>, or bot-run resume <session-id> <title>" >&2; exit 2 ;;
+  lead) lead_job "${2:-}" "${3:?title}" "${4:?prompt}" ;;
+  session) session "${2:-}" "${3:?title}" "${4:?prompt}" "${5:-}" ;;
+  *) echo "usage: bot-run run|space <title> <prompt>, resume <session-id> <title>" >&2; exit 2 ;;
 esac
