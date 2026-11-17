@@ -7,15 +7,18 @@ import { spaces, panes, exec, theme, window } from "herdr";
 const DEFAULT_BRANCHES = new Set(["main", "master"]);
 const EVERY = 5 * 60000;
 
-// The same texts project-tree looks a space's ticket up by: its name if someone
-// named it, and its first branch off the default one.
+// The shown tab's name comes first, because one project space can hold sessions for
+// several tickets and an agent names its tab after its own. Then the texts
+// project-tree looks a space's ticket up by: its name if someone named it, and its
+// first branch off the default one.
 function lookup() {
   const space = spaces().find((s) => s.active);
   if (!space) return null;
+  const tab = (space.tabs ?? []).find((c) => c.active);
   const tabs = new Set((space.tabs ?? []).map((c) => c.id));
   const ps = panes().filter((p) => tabs.has(p.tab) && p.cwd);
   const pane = ps.find((p) => p.branch && !DEFAULT_BRANCHES.has(p.branch));
-  const texts = [space.named ? space.name : null, pane?.branch].filter(Boolean);
+  const texts = [tab?.named ? tab.name : null, space.named ? space.name : null, pane?.branch].filter(Boolean);
   const cwd = pane?.cwd ?? ps[0]?.cwd ?? space.folder;
   const on = space.machine ?? null;
   return { key: JSON.stringify([on, ...texts]), on, cwd, texts };
