@@ -47,10 +47,14 @@ Skip this step if the project instructions say to work directly on `main`.
 
 1. Read the PR template (`.github/PULL_REQUEST_TEMPLATE.md` or equivalent)
 2. Draft the PR body following all required sections in the template
-3. Show the draft to the user for review
-4. After approval, open the PR using whatever tool the project instructions specify:
-   - `hub pull-request -p -m "Title\n\nbody"` (if `hub` is documented)
-   - `gh pr create` (if `gh` is documented)
-   - Or whatever tool the project instructions specify
+3. Show the draft. Do not wait for approval; it is shown so the user can read it.
+4. Open the PR:
+   - If the branch is in a `gh stack` stack (`gh stack view --json` exits 0), run
+     `gh stack submit --auto --open`. It pushes every branch and opens a PR for each branch that has
+     none. Then set the body of each new PR with `gh pr edit <n> --body "..."`, one draft per PR.
+     Load the `gh-stack` skill first.
+   - Otherwise, use the tool the project instructions specify:
+     - `hub pull-request -p -m "Title\n\nbody"` (if `hub` is documented)
+     - `gh pr create` (if `gh` is documented)
 5. If the ticket lives in an outside tracker, link the PR in the ticket
-6. Return the PR URL
+6. Return the PR URL, or every PR URL in the stack
