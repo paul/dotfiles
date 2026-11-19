@@ -21,6 +21,8 @@ that ticket. The rest of the arguments are notes.
   directory, the tool is `tk`; load the `tickets` skill.
 - Get the full ticket: summary, description, acceptance criteria, status, assignee, and
   parent/epic.
+- Rename this session to `<ticket ID>: <ticket summary in 2-5 words>`, for example
+  `ENG-1234: Fix TPS reports`, with the `session_rename` tool.
 
 Otherwise, the arguments are the goal. There is no ticket. Do not mention tickets in this session.
 

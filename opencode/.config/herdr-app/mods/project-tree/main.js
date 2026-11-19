@@ -53,6 +53,15 @@ export function tone(t, status) {
 
 const openUrl = (url) => exec("open", [url]).catch(() => {});
 const WORKTREES_EVERY = 60000;
+// The session title from opencode's terminal title, not its OSC 7501 report: an idle report
+// has no title, so a rename between turns would never arrive.
+const OPENCODE = /^OC \| (.+)$/;
+// What opencode calls a session until it has generated a title.
+const UNTITLED = /^(New|Child) session - \d{4}-\d\d-\d\dT/;
+const sessionTitle = (p) => {
+  const title = p.title?.match(OPENCODE)?.[1];
+  return title && !UNTITLED.test(title) ? title : null;
+};
 const SHORTEN = `Turn this issue title into a 2-4 word label for a sidebar. Keep domain words; drop filler like "update", "bring", "current patterns". Reply with only the label: no quotes, no trailing period.\n\n`;
 
 // A 2-4 word label for a ticket title, or null when it can't give one. Runs in the
@@ -107,6 +116,9 @@ export default class ProjectTree extends View {
     this.shorts = JSON.parse(localStorage.getItem("shorts") ?? "{}"); // title -> short label
     // Space -> the ticket id found for it, still asked for after a rename drops it from the name.
     this.spaceTickets = JSON.parse(localStorage.getItem("space.tickets") ?? "{}");
+    // Space or tab -> the name this mod gave it. Herdr marks every rename `named`, so a
+    // name that differs from this one was typed by someone, and stays.
+    this.titled = JSON.parse(localStorage.getItem("titled") ?? "{}");
     this.ticketQueue = [];
     // Spaces made while this runs wait (at most a moment) for their git, so a
     // worktree appears under its project instead of jumping there.
@@ -136,6 +148,7 @@ export default class ProjectTree extends View {
     const prs = this.duePrs(now, sp, ps);
     if (prs.length) this.refreshPrs(prs, cx);
     this.wantTickets(sp, ps, cx);
+    this.autoTitle(sp, ps);
     const waiting = sp.some((s) => !this.shown.has(s.id));
     this.publishFolders(this.tree());
     if (waiting) cx.notify();
@@ -152,6 +165,31 @@ export default class ProjectTree extends View {
       for (const r of p.rows) out[r.w.id] = list.find((x) => x.branch && x.branch === r.branch)?.path ?? main;
     }
     if (JSON.stringify(out) !== JSON.stringify(shared("space.folder") ?? {})) setShared("space.folder", out);
+  }
+
+  // A tab takes its opencode session's title, a space its first tab's while that tab's name
+  // is automatic: naming the first tab by hand says the space is about more.
+  // Only names nobody typed change; space-start's bare ticket id counts as nobody's.
+  autoTitle(sp, ps) {
+    let changed = false;
+    const give = (kind, x, title, ours) => {
+      if (x.named && !ours && x.name !== this.titled[x.id]) return false;
+      if (title && x.name !== title) {
+        run(`${kind}.rename`, { id: x.id, name: title });
+        this.titled[x.id] = title;
+        changed = true;
+      }
+      return true;
+    };
+    for (const w of sp) {
+      const first = w.tabs?.[0];
+      if (!first) continue;
+      const titleOf = (c) => ps.filter((p) => p.tab === c.id).map(sessionTitle).find(Boolean);
+      for (const c of w.tabs.slice(1)) give("tab", c, titleOf(c), false);
+      const title = titleOf(first);
+      if (give("tab", first, title, false)) give("space", w, title, w.name.toLowerCase() === this.spaceTickets[w.id]?.toLowerCase());
+    }
+    if (changed) localStorage.setItem("titled", JSON.stringify(this.titled));
   }
 
   // Places whose git could have changed: new ones (a new space, a cd), where a
